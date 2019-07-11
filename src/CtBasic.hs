@@ -3,24 +3,26 @@
 
 module CtBasic
   ( List
+  , (-)
+  , require
+  , Bool(..)
   , Int
   , Float
   , Char
-  , P.Bool(..)
-  , P.Monad
-  , P.IO
-  , (-)
-  , require
+  , IO
+  , Monad
   , andThen
   , fromInt64
   , fromInt32
   , trace
   , mapTrace
   , mixLists
+  , first
   , slice
   , toFloat
   , replaceChar
   , showText
+  , second
   , toIO
   , range
   , mark
@@ -37,25 +39,30 @@ import           Flow
 import           Data.Int                       ( Int64
                                                 , Int32
                                                 )
-import qualified Data.List                     as List
+-- import qualified Data.List                     as List
 import           Data.Text.Lazy                 ( Text )
 import qualified Data.Text.Lazy                as T
-import qualified Data.Text.Lazy.Read           as TR
+-- import qualified Data.Text.Lazy.Read           as TR
 import qualified Prelude                       as P
 import           Prelude                        ( (-)
                                                 , (==)
                                                 , (>>=)
                                                 , (++)
+                                                , Bool
+                                                , Int
+                                                , Float
+                                                , Char
+                                                , Monad
+                                                , IO
                                                 )
 import qualified Debug.Trace                   as Debug
 
-type Int = P.Int
 
-type Float = P.Float
+first :: (a, b) -> a
+first (a, _) = a
 
-type Char = P.Char
-
-type Bool = P.Bool
+second :: (a, b) -> b
+second (_, b) = b
 
 mapIO :: (a -> b) -> P.IO a -> P.IO b
 mapIO = P.fmap

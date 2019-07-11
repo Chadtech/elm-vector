@@ -1,10 +1,15 @@
-module Vector3 exposing
-    ( Vector3
-    , Nat
-    , get
+module Vector3.Internal exposing
+    ( Vector(..)
+    , VectorModel
     )
 
 
+type Vector
+    = Vector (VectorModel a)
 
-import Vector1.Internal as Vector1Int exposing (Vector1)
-import Vector2.Internal as Vector2Int exposing (Vector2)
+
+type alias VectorModel a  =
+    { n0 : a
+    , n1 : a
+    , n2 : a
+    }
