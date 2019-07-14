@@ -2,14 +2,28 @@ module Vector32 exposing
     ( Vector32 
     , Index(..)
     , get
+    , push
+    , pop
+    , shift
+    , unshift
     , map
+    , mapItem
     , toList
+    , fromList
+    , fromListWithDefault
     , toIndexedList
     , repeat
+    , initializeFromInt
+    , initializeFromIndex
+    , indexToInt
+    , intToIndex
     )
 
 
-import Vector32.Internal exposing (Vector(..))
+import Vector32.Internal exposing (Vector(..), VectorModel)
+import Vector33.Internal as Vector33
+import Vector31.Internal as Vector31
+import Util exposing (andAnother, andAnotherSafe)
 
 
 type alias Vector32 a = 
@@ -151,8 +165,45 @@ get index (Vector vector) =
             vector.n31
 
 
-map : Index -> (a -> b) -> Vector32 a -> Vector32 b
-map index mapper (Vector vector) =
+map : (a -> b) -> Vector32 a -> Vector32 b
+map f (Vector vector) =
+    { n0 = f vector.n0
+    , n1 = f vector.n1
+    , n2 = f vector.n2
+    , n3 = f vector.n3
+    , n4 = f vector.n4
+    , n5 = f vector.n5
+    , n6 = f vector.n6
+    , n7 = f vector.n7
+    , n8 = f vector.n8
+    , n9 = f vector.n9
+    , n10 = f vector.n10
+    , n11 = f vector.n11
+    , n12 = f vector.n12
+    , n13 = f vector.n13
+    , n14 = f vector.n14
+    , n15 = f vector.n15
+    , n16 = f vector.n16
+    , n17 = f vector.n17
+    , n18 = f vector.n18
+    , n19 = f vector.n19
+    , n20 = f vector.n20
+    , n21 = f vector.n21
+    , n22 = f vector.n22
+    , n23 = f vector.n23
+    , n24 = f vector.n24
+    , n25 = f vector.n25
+    , n26 = f vector.n26
+    , n27 = f vector.n27
+    , n28 = f vector.n28
+    , n29 = f vector.n29
+    , n30 = f vector.n30
+    , n31 = f vector.n31
+    }
+
+
+mapItem : Index -> (a -> a) -> Vector32 a -> Vector32 a
+mapItem index mapper (Vector vector) =
     case index of
         Index0 ->
             Vector { vector | n0 = mapper vector.n0 }
@@ -288,6 +339,80 @@ toList (Vector vector) =
     ]
 
 
+fromList : List a -> Maybe (List a, Vector32 a)
+fromList items =
+    Just (items, VectorModel)
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+
+
+
+fromListWithDefault : a -> List a -> Vector32 a
+fromListWithDefault default items =
+    (default, items, VectorModel)
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+
+
+
 toIndexedList : Vector32 a -> List (Index, a)
 toIndexedList (Vector vector) =
     [ ( Index0, vector.n0)
@@ -325,6 +450,80 @@ toIndexedList (Vector vector) =
     ]
 
 
+initializeFromInt : (Int -> a) -> Vector32 a
+initializeFromInt f =
+    { n0 = f 0
+    , n1 = f 1
+    , n2 = f 2
+    , n3 = f 3
+    , n4 = f 4
+    , n5 = f 5
+    , n6 = f 6
+    , n7 = f 7
+    , n8 = f 8
+    , n9 = f 9
+    , n10 = f 10
+    , n11 = f 11
+    , n12 = f 12
+    , n13 = f 13
+    , n14 = f 14
+    , n15 = f 15
+    , n16 = f 16
+    , n17 = f 17
+    , n18 = f 18
+    , n19 = f 19
+    , n20 = f 20
+    , n21 = f 21
+    , n22 = f 22
+    , n23 = f 23
+    , n24 = f 24
+    , n25 = f 25
+    , n26 = f 26
+    , n27 = f 27
+    , n28 = f 28
+    , n29 = f 29
+    , n30 = f 30
+    , n31 = f 31
+    }
+
+
+initializeFromIndex : (Index -> a) -> Vector32 a
+initializeFromIndex f =
+    { n0 = f Index0
+    , n1 = f Index1
+    , n2 = f Index2
+    , n3 = f Index3
+    , n4 = f Index4
+    , n5 = f Index5
+    , n6 = f Index6
+    , n7 = f Index7
+    , n8 = f Index8
+    , n9 = f Index9
+    , n10 = f Index10
+    , n11 = f Index11
+    , n12 = f Index12
+    , n13 = f Index13
+    , n14 = f Index14
+    , n15 = f Index15
+    , n16 = f Index16
+    , n17 = f Index17
+    , n18 = f Index18
+    , n19 = f Index19
+    , n20 = f Index20
+    , n21 = f Index21
+    , n22 = f Index22
+    , n23 = f Index23
+    , n24 = f Index24
+    , n25 = f Index25
+    , n26 = f Index26
+    , n27 = f Index27
+    , n28 = f Index28
+    , n29 = f Index29
+    , n30 = f Index30
+    , n31 = f Index31
+    }
+
+
 repeat : a -> Vector32 a
 repeat a =
     { n0 = a
@@ -360,3 +559,362 @@ repeat a =
     , n30 = a
     , n31 = a
     }
+
+
+indexToInt : Index -> Int
+indexToInt index =
+    case index of
+        Index0 ->
+            0
+
+        Index1 ->
+            1
+
+        Index2 ->
+            2
+
+        Index3 ->
+            3
+
+        Index4 ->
+            4
+
+        Index5 ->
+            5
+
+        Index6 ->
+            6
+
+        Index7 ->
+            7
+
+        Index8 ->
+            8
+
+        Index9 ->
+            9
+
+        Index10 ->
+            10
+
+        Index11 ->
+            11
+
+        Index12 ->
+            12
+
+        Index13 ->
+            13
+
+        Index14 ->
+            14
+
+        Index15 ->
+            15
+
+        Index16 ->
+            16
+
+        Index17 ->
+            17
+
+        Index18 ->
+            18
+
+        Index19 ->
+            19
+
+        Index20 ->
+            20
+
+        Index21 ->
+            21
+
+        Index22 ->
+            22
+
+        Index23 ->
+            23
+
+        Index24 ->
+            24
+
+        Index25 ->
+            25
+
+        Index26 ->
+            26
+
+        Index27 ->
+            27
+
+        Index28 ->
+            28
+
+        Index29 ->
+            29
+
+        Index30 ->
+            30
+
+        Index31 ->
+            31
+
+
+intToIndex : Int -> Int
+intToIndex int =
+    case int of
+        0 ->
+            Just Index0
+
+        1 ->
+            Just Index1
+
+        2 ->
+            Just Index2
+
+        3 ->
+            Just Index3
+
+        4 ->
+            Just Index4
+
+        5 ->
+            Just Index5
+
+        6 ->
+            Just Index6
+
+        7 ->
+            Just Index7
+
+        8 ->
+            Just Index8
+
+        9 ->
+            Just Index9
+
+        10 ->
+            Just Index10
+
+        11 ->
+            Just Index11
+
+        12 ->
+            Just Index12
+
+        13 ->
+            Just Index13
+
+        14 ->
+            Just Index14
+
+        15 ->
+            Just Index15
+
+        16 ->
+            Just Index16
+
+        17 ->
+            Just Index17
+
+        18 ->
+            Just Index18
+
+        19 ->
+            Just Index19
+
+        20 ->
+            Just Index20
+
+        21 ->
+            Just Index21
+
+        22 ->
+            Just Index22
+
+        23 ->
+            Just Index23
+
+        24 ->
+            Just Index24
+
+        25 ->
+            Just Index25
+
+        26 ->
+            Just Index26
+
+        27 ->
+            Just Index27
+
+        28 ->
+            Just Index28
+
+        29 ->
+            Just Index29
+
+        30 ->
+            Just Index30
+
+        31 ->
+            Just Index31
+
+        _ ->
+            Nothing
+
+
+push : a -> Vector32 a -> Vector33 a
+push a (Vector vector) =
+    { n0 = vector.n0
+    , n1 = vector.n1
+    , n2 = vector.n2
+    , n3 = vector.n3
+    , n4 = vector.n4
+    , n5 = vector.n5
+    , n6 = vector.n6
+    , n7 = vector.n7
+    , n8 = vector.n8
+    , n9 = vector.n9
+    , n10 = vector.n10
+    , n11 = vector.n11
+    , n12 = vector.n12
+    , n13 = vector.n13
+    , n14 = vector.n14
+    , n15 = vector.n15
+    , n16 = vector.n16
+    , n17 = vector.n17
+    , n18 = vector.n18
+    , n19 = vector.n19
+    , n20 = vector.n20
+    , n21 = vector.n21
+    , n22 = vector.n22
+    , n23 = vector.n23
+    , n24 = vector.n24
+    , n25 = vector.n25
+    , n26 = vector.n26
+    , n27 = vector.n27
+    , n28 = vector.n28
+    , n29 = vector.n29
+    , n30 = vector.n30
+    , n31 = vector.n31
+    , n32 = a
+    }
+        |> Vector33.Vector
+
+
+pop : Vector32 a -> (Vector31 a, a )
+pop (Vector vector) =
+    (
+    { n0 = vector.n0
+    , n1 = vector.n1
+    , n2 = vector.n2
+    , n3 = vector.n3
+    , n4 = vector.n4
+    , n5 = vector.n5
+    , n6 = vector.n6
+    , n7 = vector.n7
+    , n8 = vector.n8
+    , n9 = vector.n9
+    , n10 = vector.n10
+    , n11 = vector.n11
+    , n12 = vector.n12
+    , n13 = vector.n13
+    , n14 = vector.n14
+    , n15 = vector.n15
+    , n16 = vector.n16
+    , n17 = vector.n17
+    , n18 = vector.n18
+    , n19 = vector.n19
+    , n20 = vector.n20
+    , n21 = vector.n21
+    , n22 = vector.n22
+    , n23 = vector.n23
+    , n24 = vector.n24
+    , n25 = vector.n25
+    , n26 = vector.n26
+    , n27 = vector.n27
+    , n28 = vector.n28
+    , n29 = vector.n29
+    , n30 = vector.n30
+    }
+        |> Vector31.Vector
+    , vector.n31
+    )
+
+
+shift : Vector32 a -> ( a, Vector31 a )
+shift (Vector vector) =
+    (vector.n0
+    ,    { n0 = vector.n1
+    , n1 = vector.n2
+    , n2 = vector.n3
+    , n3 = vector.n4
+    , n4 = vector.n5
+    , n5 = vector.n6
+    , n6 = vector.n7
+    , n7 = vector.n8
+    , n8 = vector.n9
+    , n9 = vector.n10
+    , n10 = vector.n11
+    , n11 = vector.n12
+    , n12 = vector.n13
+    , n13 = vector.n14
+    , n14 = vector.n15
+    , n15 = vector.n16
+    , n16 = vector.n17
+    , n17 = vector.n18
+    , n18 = vector.n19
+    , n19 = vector.n20
+    , n20 = vector.n21
+    , n21 = vector.n22
+    , n22 = vector.n23
+    , n23 = vector.n24
+    , n24 = vector.n25
+    , n25 = vector.n26
+    , n26 = vector.n27
+    , n27 = vector.n28
+    , n28 = vector.n29
+    , n29 = vector.n30
+    , n30 = vector.n31
+    }
+        |> Vector31.Vector    )
+
+
+unshift : a -> Vector32 a -> Vector33 a
+unshift a (Vector vector) =
+    { n0 = a
+    , n1 = vector.n0
+    , n2 = vector.n1
+    , n3 = vector.n2
+    , n4 = vector.n3
+    , n5 = vector.n4
+    , n6 = vector.n5
+    , n7 = vector.n6
+    , n8 = vector.n7
+    , n9 = vector.n8
+    , n10 = vector.n9
+    , n11 = vector.n10
+    , n12 = vector.n11
+    , n13 = vector.n12
+    , n14 = vector.n13
+    , n15 = vector.n14
+    , n16 = vector.n15
+    , n17 = vector.n16
+    , n18 = vector.n17
+    , n19 = vector.n18
+    , n20 = vector.n19
+    , n21 = vector.n20
+    , n22 = vector.n21
+    , n23 = vector.n22
+    , n24 = vector.n23
+    , n25 = vector.n24
+    , n26 = vector.n25
+    , n27 = vector.n26
+    , n28 = vector.n27
+    , n29 = vector.n28
+    , n30 = vector.n29
+    , n31 = vector.n30
+    , n32 = vector.n31
+    }
+        |> Vector33.Vector

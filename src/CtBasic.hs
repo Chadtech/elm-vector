@@ -4,7 +4,11 @@
 module CtBasic
   ( List
   , (-)
+  , (+)
+  , (==)
+  , (<)
   , require
+  , Maybe(..)
   , Bool(..)
   , Int
   , Float
@@ -13,6 +17,7 @@ module CtBasic
   , Monad
   , andThen
   , fromInt64
+  , toInt64
   , fromInt32
   , trace
   , mapTrace
@@ -22,11 +27,11 @@ module CtBasic
   , toFloat
   , replaceChar
   , showText
-  , second
   , toIO
   , range
   , mark
   , intToText
+  , second
   , mapIO
   , (++)
   , maxInt32Sample
@@ -45,9 +50,12 @@ import qualified Data.Text.Lazy                as T
 -- import qualified Data.Text.Lazy.Read           as TR
 import qualified Prelude                       as P
 import           Prelude                        ( (-)
+                                                , (+)
                                                 , (==)
                                                 , (>>=)
                                                 , (++)
+                                                , (<)
+                                                , Maybe(..)
                                                 , Bool
                                                 , Int
                                                 , Float
@@ -134,6 +142,9 @@ range n m = [n .. m]
 fromInt64 :: Int64 -> Int
 fromInt64 = P.fromIntegral
 
+
+toInt64 :: Int -> Int64
+toInt64 = P.fromIntegral
 
 fromInt32 :: Int32 -> Int
 fromInt32 = P.fromIntegral

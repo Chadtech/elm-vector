@@ -2,14 +2,28 @@ module Vector8 exposing
     ( Vector8 
     , Index(..)
     , get
+    , push
+    , pop
+    , shift
+    , unshift
     , map
+    , mapItem
     , toList
+    , fromList
+    , fromListWithDefault
     , toIndexedList
     , repeat
+    , initializeFromInt
+    , initializeFromIndex
+    , indexToInt
+    , intToIndex
     )
 
 
-import Vector8.Internal exposing (Vector(..))
+import Vector8.Internal exposing (Vector(..), VectorModel)
+import Vector9.Internal as Vector9
+import Vector7.Internal as Vector7
+import Util exposing (andAnother, andAnotherSafe)
 
 
 type alias Vector8 a = 
@@ -55,8 +69,21 @@ get index (Vector vector) =
             vector.n7
 
 
-map : Index -> (a -> b) -> Vector8 a -> Vector8 b
-map index mapper (Vector vector) =
+map : (a -> b) -> Vector8 a -> Vector8 b
+map f (Vector vector) =
+    { n0 = f vector.n0
+    , n1 = f vector.n1
+    , n2 = f vector.n2
+    , n3 = f vector.n3
+    , n4 = f vector.n4
+    , n5 = f vector.n5
+    , n6 = f vector.n6
+    , n7 = f vector.n7
+    }
+
+
+mapItem : Index -> (a -> a) -> Vector8 a -> Vector8 a
+mapItem index mapper (Vector vector) =
     case index of
         Index0 ->
             Vector { vector | n0 = mapper vector.n0 }
@@ -96,6 +123,32 @@ toList (Vector vector) =
     ]
 
 
+fromList : List a -> Maybe (List a, Vector8 a)
+fromList items =
+    Just (items, VectorModel)
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+        |> andAnother
+
+
+
+fromListWithDefault : a -> List a -> Vector8 a
+fromListWithDefault default items =
+    (default, items, VectorModel)
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+        |> andAnotherSafe
+
+
+
 toIndexedList : Vector8 a -> List (Index, a)
 toIndexedList (Vector vector) =
     [ ( Index0, vector.n0)
@@ -109,6 +162,32 @@ toIndexedList (Vector vector) =
     ]
 
 
+initializeFromInt : (Int -> a) -> Vector8 a
+initializeFromInt f =
+    { n0 = f 0
+    , n1 = f 1
+    , n2 = f 2
+    , n3 = f 3
+    , n4 = f 4
+    , n5 = f 5
+    , n6 = f 6
+    , n7 = f 7
+    }
+
+
+initializeFromIndex : (Index -> a) -> Vector8 a
+initializeFromIndex f =
+    { n0 = f Index0
+    , n1 = f Index1
+    , n2 = f Index2
+    , n3 = f Index3
+    , n4 = f Index4
+    , n5 = f Index5
+    , n6 = f Index6
+    , n7 = f Index7
+    }
+
+
 repeat : a -> Vector8 a
 repeat a =
     { n0 = a
@@ -120,3 +199,122 @@ repeat a =
     , n6 = a
     , n7 = a
     }
+
+
+indexToInt : Index -> Int
+indexToInt index =
+    case index of
+        Index0 ->
+            0
+
+        Index1 ->
+            1
+
+        Index2 ->
+            2
+
+        Index3 ->
+            3
+
+        Index4 ->
+            4
+
+        Index5 ->
+            5
+
+        Index6 ->
+            6
+
+        Index7 ->
+            7
+
+
+intToIndex : Int -> Int
+intToIndex int =
+    case int of
+        0 ->
+            Just Index0
+
+        1 ->
+            Just Index1
+
+        2 ->
+            Just Index2
+
+        3 ->
+            Just Index3
+
+        4 ->
+            Just Index4
+
+        5 ->
+            Just Index5
+
+        6 ->
+            Just Index6
+
+        7 ->
+            Just Index7
+
+        _ ->
+            Nothing
+
+
+push : a -> Vector8 a -> Vector9 a
+push a (Vector vector) =
+    { n0 = vector.n0
+    , n1 = vector.n1
+    , n2 = vector.n2
+    , n3 = vector.n3
+    , n4 = vector.n4
+    , n5 = vector.n5
+    , n6 = vector.n6
+    , n7 = vector.n7
+    , n8 = a
+    }
+        |> Vector9.Vector
+
+
+pop : Vector8 a -> (Vector7 a, a )
+pop (Vector vector) =
+    (
+    { n0 = vector.n0
+    , n1 = vector.n1
+    , n2 = vector.n2
+    , n3 = vector.n3
+    , n4 = vector.n4
+    , n5 = vector.n5
+    , n6 = vector.n6
+    }
+        |> Vector7.Vector
+    , vector.n7
+    )
+
+
+shift : Vector8 a -> ( a, Vector7 a )
+shift (Vector vector) =
+    (vector.n0
+    ,    { n0 = vector.n1
+    , n1 = vector.n2
+    , n2 = vector.n3
+    , n3 = vector.n4
+    , n4 = vector.n5
+    , n5 = vector.n6
+    , n6 = vector.n7
+    }
+        |> Vector7.Vector    )
+
+
+unshift : a -> Vector8 a -> Vector9 a
+unshift a (Vector vector) =
+    { n0 = a
+    , n1 = vector.n0
+    , n2 = vector.n1
+    , n3 = vector.n2
+    , n4 = vector.n3
+    , n5 = vector.n4
+    , n6 = vector.n5
+    , n7 = vector.n6
+    , n8 = vector.n7
+    }
+        |> Vector9.Vector
