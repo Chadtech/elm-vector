@@ -84,6 +84,7 @@ fromList items =
     Just (items, VectorModel)
         |> andAnother
         |> andAnother
+        |> andAnother
 
 
 

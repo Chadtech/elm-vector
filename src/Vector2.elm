@@ -74,6 +74,7 @@ fromList : List a -> Maybe (List a, Vector2 a)
 fromList items =
     Just (items, VectorModel)
         |> andAnother
+        |> andAnother
 
 
 

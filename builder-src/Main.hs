@@ -418,7 +418,7 @@ makeFromListDefinition n =
             [("List a", "items")]
             (["Maybe (List a, ", vectorOf n "a", ")"] |> T.concat)
     , indent 1 "Just (items, VectorModel)"
-    , T.replicate (toInt64 (n - 1)) (indent 2 "|> andAnother\n")
+    , T.replicate (toInt64 n) (indent 2 "|> andAnother\n")
     ]
     |> T.intercalate "\n"
 
