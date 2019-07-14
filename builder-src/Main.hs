@@ -232,7 +232,7 @@ makeVectorDefinition n =
 
 makeInternalVectorDefinition :: Int -> Text
 makeInternalVectorDefinition n =
-  [ "type Vector"
+  [ "type Vector a"
     , "\n"
     , indent 1 "= Vector (VectorModel a)"
     , "\n\n\n"
