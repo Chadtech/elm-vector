@@ -56,6 +56,7 @@ makeHelper =
   [ "module Util exposing"
     , indent 1 "( andAnother"
     , indent 1 ", andAnotherSafe"
+    , indent 1 ", finishOffAndAnotherSafe"
     , indent 1 ")\n\n"
     , "andAnother : Maybe (List a, a -> b) -> Maybe (List a, b)"
     , "andAnother maybeItems ="
