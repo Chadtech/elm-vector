@@ -2189,7 +2189,7 @@ intToIndex int =
             Nothing
 
 
-pop : Vector100 a -> (Vector99 a, a )
+pop : Vector100 a -> ( Vector99.Vector a, a )
 pop (Vector vector) =
     (
     { n0 = vector.n0

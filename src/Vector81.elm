@@ -1881,7 +1881,7 @@ push a (Vector vector) =
         |> Vector82.Vector
 
 
-pop : Vector81 a -> (Vector80 a, a )
+pop : Vector81 a -> ( Vector80.Vector a, a )
 pop (Vector vector) =
     (
     { n0 = vector.n0

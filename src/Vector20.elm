@@ -539,7 +539,7 @@ push a (Vector vector) =
         |> Vector21.Vector
 
 
-pop : Vector20 a -> (Vector19 a, a )
+pop : Vector20 a -> ( Vector19.Vector a, a )
 pop (Vector vector) =
     (
     { n0 = vector.n0

@@ -42,7 +42,7 @@ totalVectors = 100
 
 makeInternalFile :: Int -> Text
 makeInternalFile n =
-  [makeInternalModuleHeader n, makeInternalVectorDefinition n ]
+  [makeInternalModuleHeader n, makeInternalVectorDefinition n]
     |> T.intercalate "\n\n\n"
 
 makeExposedModules :: Text
@@ -333,9 +333,10 @@ makePop n = if 1 < n
   then
     let makeField :: Int -> (Text, Text)
         makeField i = (fieldName i, fieldGetter i)
-    in  [ funcDef "pop"
-                  [(vectorOf n "a", "(Vector vector)")]
-                  (["(", (vectorOf (n - 1) "a"), ", ", "a )"] |> T.concat)
+    in  [ funcDef
+          "pop"
+          [(vectorOf n "a", "(Vector vector)")]
+          (["( Vector", intToText (n - 1), ".Vector a", ", ", "a )"] |> T.concat)
         , [ indent 1 "(\n"
           , recordAllocation (List.map makeField (range 0 (n - 2)))
           , "\n"
