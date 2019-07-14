@@ -41,7 +41,8 @@ totalVectors = 100
 
 makeInternalFile :: Int -> Text
 makeInternalFile n =
-  [makeInternalModuleHeader n, makeInternalVectorDefinition n]
+  [makeInternalModuleHeader n, makeInternalVectorDefinition n
+  , makeModule n]
     |> T.intercalate "\n\n\n"
 
 makeExposedModules :: Text
