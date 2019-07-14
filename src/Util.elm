@@ -19,9 +19,9 @@ andAnother maybeItems =
 
 
 
-andAnotherSafe : (a, List a, a -> b) -> b
+andAnotherSafe : (a, List a, a -> b) -> (a, List a, b)
 andAnotherSafe (default, items, f) =
-    case remainingItems of
+    case items of
         next :: rest ->
             (default, rest, f next)
 
