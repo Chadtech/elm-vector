@@ -64,6 +64,7 @@ fromList items =
     Just (items, VectorModel)
         |> andAnother
 
+        |> Maybe.map (Tuple.mapSecond Vector)
 
 
 fromListWithDefault : a -> List a -> ( List a,Vector1 a)

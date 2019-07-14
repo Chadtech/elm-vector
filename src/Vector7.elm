@@ -126,6 +126,7 @@ fromList items =
         |> andAnother
         |> andAnother
 
+        |> Maybe.map (Tuple.mapSecond Vector)
 
 
 fromListWithDefault : a -> List a -> ( List a,Vector7 a)
