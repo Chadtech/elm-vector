@@ -182,20 +182,23 @@ everyGetExport n = List.map (T.append "get" <. intToText) (range 0 (n - 1))
 
 makeImports :: Int -> Text
 makeImports n =
-  let importThisVectorModule :: Int -> Text
-      importThisVectorModule m =
-          [ "import Vector"
-            , intToText m
-            , ".Internal exposing (Vector(..), VectorModel)"
-            ]
-            |> T.concat
-  in  [ Just <| importThisVectorModule n
-      , nextVectorImport n
-      , previousVectorImport n
-      , Just "import Util exposing (andAnother, andAnotherSafe, finishOffAndAnotherSafe)"
-      ]
-        |> onlyValues
-        |> T.intercalate "\n"
+  let
+    importThisVectorModule :: Int -> Text
+    importThisVectorModule m =
+      [ "import Vector"
+        , intToText m
+        , ".Internal exposing (Vector(..), VectorModel)"
+        ]
+        |> T.concat
+  in
+    [ Just <| importThisVectorModule n
+    , nextVectorImport n
+    , previousVectorImport n
+    , Just
+      "import Util exposing (andAnother, andAnotherSafe, finishOffAndAnotherSafe)"
+    ]
+    |> onlyValues
+    |> T.intercalate "\n"
 
 nextVectorImport :: Int -> Maybe Text
 nextVectorImport n = if n < totalVectors
@@ -305,7 +308,7 @@ makePush n = if n < totalVectors
         makeField i = (fieldName i, if i == n then "a" else fieldGetter i)
     in  [ funcDef "push"
                   [("a", "a"), (vectorOf n "a", "(Vector vector)")]
-                  (vectorOf (n + 1) "a")
+                  (["Vector", intToText (n + 1), ".Vector", " a"] |> T.concat)
         , recordAllocation (List.map makeField (range 0 n))
         , ["|> Vector", (intToText (n + 1)), ".Vector"] |> T.concat |> indent 2
         ]
@@ -321,7 +324,7 @@ makeUnshift n = if n < totalVectors
           (fieldName i, if i == 0 then "a" else fieldGetter (i - 1))
     in  [ funcDef "unshift"
                   [("a", "a"), (vectorOf n "a", "(Vector vector)")]
-                  (vectorOf (n + 1) "a")
+                  (["Vector", intToText (n + 1), ".Vector", " a"] |> T.concat)
         , recordAllocation (List.map makeField (range 0 n))
         , ["|> Vector", (intToText (n + 1)), ".Vector"] |> T.concat |> indent 2
         ]
@@ -420,7 +423,6 @@ makeFromListDefinition n =
     , indent 1 "Just (items, VectorModel)"
     , T.replicate (toInt64 n) (indent 2 "|> andAnother\n")
     , indent 2 "|> Maybe.map (Tuple.mapSecond Vector)"
-
     ]
     |> T.intercalate "\n"
 

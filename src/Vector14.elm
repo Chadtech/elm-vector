@@ -395,7 +395,7 @@ intToIndex int =
             Nothing
 
 
-push : a -> Vector14 a -> Vector15 a
+push : a -> Vector14 a -> Vector15.Vector a
 push a (Vector vector) =
     { n0 = vector.n0
     , n1 = vector.n1
@@ -458,7 +458,7 @@ shift (Vector vector) =
         |> Vector13.Vector    )
 
 
-unshift : a -> Vector14 a -> Vector15 a
+unshift : a -> Vector14 a -> Vector15.Vector a
 unshift a (Vector vector) =
     { n0 = a
     , n1 = vector.n0

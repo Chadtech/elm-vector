@@ -2138,7 +2138,7 @@ intToIndex int =
             Nothing
 
 
-push : a -> Vector97 a -> Vector98 a
+push : a -> Vector97 a -> Vector98.Vector a
 push a (Vector vector) =
     { n0 = vector.n0
     , n1 = vector.n1
@@ -2450,7 +2450,7 @@ shift (Vector vector) =
         |> Vector96.Vector    )
 
 
-unshift : a -> Vector97 a -> Vector98 a
+unshift : a -> Vector97 a -> Vector98.Vector a
 unshift a (Vector vector) =
     { n0 = a
     , n1 = vector.n0
