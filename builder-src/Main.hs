@@ -28,6 +28,7 @@ makeVectorFiles n =
         [ SysDir.createDirectoryIfMissing True <| T.unpack directory
         , TIO.writeFile (T.unpack <| T.append directory "/Internal.elm")
                         (makeInternalFile n)
+        , TIO.writeFile (T.append directory ".elm") (makeModule n)
         ]
 
 
@@ -41,8 +42,7 @@ totalVectors = 100
 
 makeInternalFile :: Int -> Text
 makeInternalFile n =
-  [makeInternalModuleHeader n, makeInternalVectorDefinition n
-  , makeModule n]
+  [makeInternalModuleHeader n, makeInternalVectorDefinition n ]
     |> T.intercalate "\n\n\n"
 
 makeExposedModules :: Text
