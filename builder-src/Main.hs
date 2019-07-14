@@ -28,7 +28,7 @@ makeVectorFiles n =
         [ SysDir.createDirectoryIfMissing True <| T.unpack directory
         , TIO.writeFile (T.unpack <| T.append directory "/Internal.elm")
                         (makeInternalFile n)
-        , TIO.writeFile (T.append directory ".elm") (makeModule n)
+        , TIO.writeFile (T.unpack <| T.append directory ".elm") (makeModule n)
         ]
 
 
