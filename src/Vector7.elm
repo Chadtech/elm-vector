@@ -161,6 +161,7 @@ initializeFromInt f =
     , n5 = f 5
     , n6 = f 6
     }
+        |> Vector
 
 
 initializeFromIndex : (Index -> a) -> Vector7 a
@@ -173,6 +174,7 @@ initializeFromIndex f =
     , n5 = f Index5
     , n6 = f Index6
     }
+        |> Vector
 
 
 repeat : a -> Vector7 a

@@ -1214,6 +1214,7 @@ initializeFromInt f =
     , n86 = f 86
     , n87 = f 87
     }
+        |> Vector
 
 
 initializeFromIndex : (Index -> a) -> Vector88 a
@@ -1307,6 +1308,7 @@ initializeFromIndex f =
     , n86 = f Index86
     , n87 = f Index87
     }
+        |> Vector
 
 
 repeat : a -> Vector88 a

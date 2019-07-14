@@ -81,12 +81,14 @@ initializeFromInt : (Int -> a) -> Vector1 a
 initializeFromInt f =
     { n0 = f 0
     }
+        |> Vector
 
 
 initializeFromIndex : (Index -> a) -> Vector1 a
 initializeFromIndex f =
     { n0 = f Index0
     }
+        |> Vector
 
 
 repeat : a -> Vector1 a

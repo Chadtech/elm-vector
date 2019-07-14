@@ -928,6 +928,7 @@ initializeFromInt f =
     , n64 = f 64
     , n65 = f 65
     }
+        |> Vector
 
 
 initializeFromIndex : (Index -> a) -> Vector66 a
@@ -999,6 +1000,7 @@ initializeFromIndex f =
     , n64 = f Index64
     , n65 = f Index65
     }
+        |> Vector
 
 
 repeat : a -> Vector66 a

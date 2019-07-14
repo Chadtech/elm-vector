@@ -96,6 +96,7 @@ initializeFromInt f =
     { n0 = f 0
     , n1 = f 1
     }
+        |> Vector
 
 
 initializeFromIndex : (Index -> a) -> Vector2 a
@@ -103,6 +104,7 @@ initializeFromIndex f =
     { n0 = f Index0
     , n1 = f Index1
     }
+        |> Vector
 
 
 repeat : a -> Vector2 a
