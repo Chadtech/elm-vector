@@ -140,6 +140,7 @@ map f (Vector vector) =
     , n18 = f vector.n18
     , n19 = f vector.n19
     }
+        |> Vector
 
 
 mapItem : Index -> (a -> a) -> Vector20 a -> Vector20 a

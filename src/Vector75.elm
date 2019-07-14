@@ -415,6 +415,7 @@ map f (Vector vector) =
     , n73 = f vector.n73
     , n74 = f vector.n74
     }
+        |> Vector
 
 
 mapItem : Index -> (a -> a) -> Vector75 a -> Vector75 a

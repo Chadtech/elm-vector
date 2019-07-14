@@ -50,6 +50,7 @@ map f (Vector vector) =
     { n0 = f vector.n0
     , n1 = f vector.n1
     }
+        |> Vector
 
 
 mapItem : Index -> (a -> a) -> Vector2 a -> Vector2 a

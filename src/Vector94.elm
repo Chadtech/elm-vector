@@ -510,6 +510,7 @@ map f (Vector vector) =
     , n92 = f vector.n92
     , n93 = f vector.n93
     }
+        |> Vector
 
 
 mapItem : Index -> (a -> a) -> Vector94 a -> Vector94 a

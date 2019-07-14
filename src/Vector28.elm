@@ -180,6 +180,7 @@ map f (Vector vector) =
     , n26 = f vector.n26
     , n27 = f vector.n27
     }
+        |> Vector
 
 
 mapItem : Index -> (a -> a) -> Vector28 a -> Vector28 a

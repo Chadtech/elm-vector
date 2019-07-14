@@ -43,6 +43,7 @@ map : (a -> b) -> Vector1 a -> Vector1 b
 map f (Vector vector) =
     { n0 = f vector.n0
     }
+        |> Vector
 
 
 mapItem : Index -> (a -> a) -> Vector1 a -> Vector1 a

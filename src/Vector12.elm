@@ -100,6 +100,7 @@ map f (Vector vector) =
     , n10 = f vector.n10
     , n11 = f vector.n11
     }
+        |> Vector
 
 
 mapItem : Index -> (a -> a) -> Vector12 a -> Vector12 a

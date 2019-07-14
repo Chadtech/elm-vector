@@ -115,6 +115,7 @@ map f (Vector vector) =
     , n13 = f vector.n13
     , n14 = f vector.n14
     }
+        |> Vector
 
 
 mapItem : Index -> (a -> a) -> Vector15 a -> Vector15 a

@@ -70,6 +70,7 @@ map f (Vector vector) =
     , n4 = f vector.n4
     , n5 = f vector.n5
     }
+        |> Vector
 
 
 mapItem : Index -> (a -> a) -> Vector6 a -> Vector6 a

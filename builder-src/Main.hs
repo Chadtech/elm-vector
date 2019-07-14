@@ -476,6 +476,7 @@ makeMapDefinition n =
                 [("(a -> b)", "f"), (vectorOf n "a", "(Vector vector)")]
                 (vectorOf n "b")
       , recordAllocation (List.map makeField (range 0 (n - 1)))
+      , indent 2 "|> Vector"
       ]
         |> T.intercalate "\n"
 
