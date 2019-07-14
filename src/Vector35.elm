@@ -717,7 +717,7 @@ indexToInt index =
             34
 
 
-intToIndex : Int -> Int
+intToIndex : Int -> Maybe Index
 intToIndex int =
     case int of
         0 ->

@@ -392,7 +392,7 @@ makeIntToIndex :: Int -> Text
 makeIntToIndex n =
   let indexCase :: Int -> (Text, Text)
       indexCase i = (intToText i, T.append "Just " <| indexOf i)
-  in  [ funcDef "intToIndex" [("Int", "int")] "Int"
+  in  [ funcDef "intToIndex" [("Int", "int")] "Maybe Index"
       , caseStatement "int" (List.map indexCase (range 0 (n - 1)))
       , ""
       , toCase ("_", "Nothing")

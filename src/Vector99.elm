@@ -1869,7 +1869,7 @@ indexToInt index =
             98
 
 
-intToIndex : Int -> Int
+intToIndex : Int -> Maybe Index
 intToIndex int =
     case int of
         0 ->

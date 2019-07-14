@@ -861,7 +861,7 @@ indexToInt index =
             42
 
 
-intToIndex : Int -> Int
+intToIndex : Int -> Maybe Index
 intToIndex int =
     case int of
         0 ->

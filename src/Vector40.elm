@@ -807,7 +807,7 @@ indexToInt index =
             39
 
 
-intToIndex : Int -> Int
+intToIndex : Int -> Maybe Index
 intToIndex int =
     case int of
         0 ->
