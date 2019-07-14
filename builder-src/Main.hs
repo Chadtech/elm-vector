@@ -361,7 +361,7 @@ makeShift n = if 1 < n
         makeField i = (fieldName (i - 1), fieldGetter i)
     in  [ funcDef "shift"
                   [(vectorOf n "a", "(Vector vector)")]
-                  (["( a, ", (vectorOf (n - 1) "a"), " )"] |> T.concat)
+                  (["( a, ", "Vector", intToText (n - 1), ".Vector a", " )"] |> T.concat)
         , [ indent 1 "("
           , fieldGetter 0
           , "\n"

@@ -2177,7 +2177,7 @@ pop (Vector vector) =
     )
 
 
-shift : Vector90 a -> ( a, Vector89 a )
+shift : Vector90 a -> ( a, Vector89.Vector a )
 shift (Vector vector) =
     (vector.n0
     ,    { n0 = vector.n1
