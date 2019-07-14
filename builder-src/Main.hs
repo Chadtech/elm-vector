@@ -14,7 +14,7 @@ import           Flow
 
 main :: P.IO ()
 main = P.sequence_
-  ( (TIO.writeFile "./elm-src/Util.elm" makeHelper)
+  ( (TIO.writeFile "./src/Util.elm" makeHelper)
   : (TIO.writeFile "./exposed-modules" makeExposedModules)
   : (List.map makeVectorFiles vectors)
   )
@@ -23,7 +23,7 @@ main = P.sequence_
 makeVectorFiles :: Int -> P.IO ()
 makeVectorFiles n =
   let directory :: Text
-      directory = T.append "./elm-src/Vector" <| T.pack <| P.show n
+      directory = T.append "./src/Vector" <| T.pack <| P.show n
   in  P.sequence_
         [ SysDir.createDirectoryIfMissing True <| T.unpack directory
         , TIO.writeFile (T.unpack <| T.append directory "/Internal.elm")
@@ -48,7 +48,7 @@ makeExposedModules :: Text
 makeExposedModules =
   let toVectorModuleName :: Int -> Text
       toVectorModuleName i = T.concat ["\"Vector", (intToText i), "\""]
-  in T.intercalate ",\n" <| List.map toVectorModuleName (range 1 totalVectors)
+  in  T.intercalate ",\n" <| List.map toVectorModuleName (range 1 totalVectors)
 
 makeHelper :: Text
 makeHelper =
