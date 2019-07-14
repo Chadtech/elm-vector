@@ -4,7 +4,7 @@ module Vector38.Internal exposing
     )
 
 
-type Vector
+type Vector a
     = Vector (VectorModel a)
 
 
