@@ -888,6 +888,7 @@ fromListWithDefault default items =
         |> andAnotherSafe
 
         |> finishOffAndAnotherSafe
+        |> Tuple.mapSecond Vector
 
 
 toIndexedList : Vector75 a -> List (Index, a)

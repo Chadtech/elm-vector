@@ -602,6 +602,7 @@ fromListWithDefault default items =
         |> andAnotherSafe
 
         |> finishOffAndAnotherSafe
+        |> Tuple.mapSecond Vector
 
 
 toIndexedList : Vector49 a -> List (Index, a)

@@ -430,6 +430,7 @@ makeFromListWithDefaultDefinition n =
     , indent 1 "(default, items, VectorModel)"
     , T.replicate (toInt64 n) (indent 2 "|> andAnotherSafe\n")
     , indent 2 "|> finishOffAndAnotherSafe"
+    , indent 2 "|> Tuple.mapSecond Vector"
     ]
     |> T.intercalate "\n"
 
