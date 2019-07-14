@@ -23,7 +23,7 @@ module Vector29 exposing
 import Vector29.Internal exposing (Vector(..), VectorModel)
 import Vector30.Internal as Vector30
 import Vector28.Internal as Vector28
-import Util exposing (andAnother, andAnotherSafe)
+import Util exposing (andAnother, andAnotherSafe, finishOffAndAnotherSafe)
 
 
 type alias Vector29 a = 
@@ -347,7 +347,7 @@ fromList items =
 
 
 
-fromListWithDefault : a -> List a -> Vector29 a
+fromListWithDefault : a -> List a -> ( List a,Vector29 a)
 fromListWithDefault default items =
     (default, items, VectorModel)
         |> andAnotherSafe
@@ -379,6 +379,7 @@ fromListWithDefault default items =
         |> andAnotherSafe
         |> andAnotherSafe
 
+        |> finishOffAndAnotherSafe
 
 
 toIndexedList : Vector29 a -> List (Index, a)

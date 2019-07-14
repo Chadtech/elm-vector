@@ -23,7 +23,7 @@ module Vector14 exposing
 import Vector14.Internal exposing (Vector(..), VectorModel)
 import Vector15.Internal as Vector15
 import Vector13.Internal as Vector13
-import Util exposing (andAnother, andAnotherSafe)
+import Util exposing (andAnother, andAnotherSafe, finishOffAndAnotherSafe)
 
 
 type alias Vector14 a = 
@@ -197,7 +197,7 @@ fromList items =
 
 
 
-fromListWithDefault : a -> List a -> Vector14 a
+fromListWithDefault : a -> List a -> ( List a,Vector14 a)
 fromListWithDefault default items =
     (default, items, VectorModel)
         |> andAnotherSafe
@@ -214,6 +214,7 @@ fromListWithDefault default items =
         |> andAnotherSafe
         |> andAnotherSafe
 
+        |> finishOffAndAnotherSafe
 
 
 toIndexedList : Vector14 a -> List (Index, a)

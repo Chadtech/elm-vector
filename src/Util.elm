@@ -16,9 +16,6 @@ andAnother maybeItems =
                     Nothing
         Nothing ->
             Nothing
-
-
-
 andAnotherSafe : (a, List a, a -> b) -> (a, List a, b)
 andAnotherSafe (default, items, f) =
     case items of
@@ -27,3 +24,6 @@ andAnotherSafe (default, items, f) =
 
         [] ->
             (default, [], f default)
+finishOffAndAnotherSafe : (a, List a, b) -> (List a, b)
+finishOffAndAnotherSafe (_, second, third) =
+    (second, third)

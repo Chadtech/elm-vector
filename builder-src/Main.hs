@@ -68,7 +68,6 @@ makeHelper =
     , indent 5 "Nothing"
     , indent 2 "Nothing ->"
     , indent 3 "Nothing"
-    , "\n\n"
     , "andAnotherSafe : (a, List a, a -> b) -> (a, List a, b)"
     , "andAnotherSafe (default, items, f) ="
     , indent 1 "case items of"
@@ -76,6 +75,9 @@ makeHelper =
     , indent 3 "(default, rest, f next)\n"
     , indent 2 "[] ->"
     , indent 3 "(default, [], f default)"
+    , "finishOffAndAnotherSafe : (a, List a, b) -> (List a, b)"
+    , "finishOffAndAnotherSafe (_, second, third) ="
+    , indent 1 "(second, third)"
     ]
     |> T.intercalate "\n"
 
@@ -189,7 +191,7 @@ makeImports n =
   in  [ Just <| importThisVectorModule n
       , nextVectorImport n
       , previousVectorImport n
-      , Just "import Util exposing (andAnother, andAnotherSafe)"
+      , Just "import Util exposing (andAnother, andAnotherSafe, finishOffAndAnotherSafe)"
       ]
         |> onlyValues
         |> T.intercalate "\n"
@@ -336,7 +338,8 @@ makePop n = if 1 < n
     in  [ funcDef
           "pop"
           [(vectorOf n "a", "(Vector vector)")]
-          (["( Vector", intToText (n - 1), ".Vector a", ", ", "a )"] |> T.concat)
+          (["( Vector", intToText (n - 1), ".Vector a", ", ", "a )"] |> T.concat
+          )
         , [ indent 1 "(\n"
           , recordAllocation (List.map makeField (range 0 (n - 2)))
           , "\n"
@@ -359,9 +362,11 @@ makeShift n = if 1 < n
   then
     let makeField :: Int -> (Text, Text)
         makeField i = (fieldName (i - 1), fieldGetter i)
-    in  [ funcDef "shift"
-                  [(vectorOf n "a", "(Vector vector)")]
-                  (["( a, ", "Vector", intToText (n - 1), ".Vector a", " )"] |> T.concat)
+    in  [ funcDef
+          "shift"
+          [(vectorOf n "a", "(Vector vector)")]
+          (["( a, ", "Vector", intToText (n - 1), ".Vector a", " )"] |> T.concat
+          )
         , [ indent 1 "("
           , fieldGetter 0
           , "\n"
@@ -420,9 +425,10 @@ makeFromListWithDefaultDefinition :: Int -> Text
 makeFromListWithDefaultDefinition n =
   [ funcDef "fromListWithDefault"
             [("a", "default"), ("List a", "items")]
-            (vectorOf n "a")
+            (["( List a,", (vectorOf n "a"), ")"] |> T.concat)
     , indent 1 "(default, items, VectorModel)"
     , T.replicate (toInt64 (n - 1)) (indent 2 "|> andAnotherSafe\n")
+    , indent 2 "|> finishOffAndAnotherSafe"
     ]
     |> T.intercalate "\n"
 

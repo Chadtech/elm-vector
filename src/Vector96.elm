@@ -23,7 +23,7 @@ module Vector96 exposing
 import Vector96.Internal exposing (Vector(..), VectorModel)
 import Vector97.Internal as Vector97
 import Vector95.Internal as Vector95
-import Util exposing (andAnother, andAnotherSafe)
+import Util exposing (andAnother, andAnotherSafe, finishOffAndAnotherSafe)
 
 
 type alias Vector96 a = 
@@ -1017,7 +1017,7 @@ fromList items =
 
 
 
-fromListWithDefault : a -> List a -> Vector96 a
+fromListWithDefault : a -> List a -> ( List a,Vector96 a)
 fromListWithDefault default items =
     (default, items, VectorModel)
         |> andAnotherSafe
@@ -1116,6 +1116,7 @@ fromListWithDefault default items =
         |> andAnotherSafe
         |> andAnotherSafe
 
+        |> finishOffAndAnotherSafe
 
 
 toIndexedList : Vector96 a -> List (Index, a)
