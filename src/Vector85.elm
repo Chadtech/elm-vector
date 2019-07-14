@@ -1354,6 +1354,7 @@ repeat a =
     , n83 = a
     , n84 = a
     }
+        |> Vector
 
 
 indexToInt : Index -> Int

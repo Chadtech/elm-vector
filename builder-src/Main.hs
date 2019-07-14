@@ -444,6 +444,7 @@ makeRepeatDefinition n =
       makeField i = (fieldName i, "a")
   in  [ funcDef "repeat" [("a", "a")] (vectorOf n "a")
       , recordAllocation (List.map makeField (range 0 (n - 1)))
+      , indent 2 "|> Vector"
       ]
         |> T.intercalate "\n"
 

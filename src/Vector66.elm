@@ -1069,6 +1069,7 @@ repeat a =
     , n64 = a
     , n65 = a
     }
+        |> Vector
 
 
 indexToInt : Index -> Int

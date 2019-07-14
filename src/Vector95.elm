@@ -1504,6 +1504,7 @@ repeat a =
     , n93 = a
     , n94 = a
     }
+        |> Vector
 
 
 indexToInt : Index -> Int

@@ -92,6 +92,7 @@ repeat : a -> Vector1 a
 repeat a =
     { n0 = a
     }
+        |> Vector
 
 
 indexToInt : Index -> Int

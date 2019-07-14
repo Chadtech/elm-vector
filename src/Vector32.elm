@@ -559,6 +559,7 @@ repeat a =
     , n30 = a
     , n31 = a
     }
+        |> Vector
 
 
 indexToInt : Index -> Int

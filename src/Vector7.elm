@@ -184,6 +184,7 @@ repeat a =
     , n5 = a
     , n6 = a
     }
+        |> Vector
 
 
 indexToInt : Index -> Int
