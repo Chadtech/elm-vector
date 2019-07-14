@@ -69,7 +69,7 @@ makeHelper =
     , indent 2 "Nothing ->"
     , indent 3 "Nothing"
     , "\n\n"
-    , "andAnotherSafe : (a, List a, a -> b) -> b"
+    , "andAnotherSafe : (a, List a, a -> b) -> (a, List a, b)"
     , "andAnotherSafe (default, items, f) ="
     , indent 1 "case remainingItems of"
     , indent 2 "next :: rest ->"
