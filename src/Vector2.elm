@@ -81,6 +81,7 @@ fromListWithDefault : a -> List a -> ( List a,Vector2 a)
 fromListWithDefault default items =
     (default, items, VectorModel)
         |> andAnotherSafe
+        |> andAnotherSafe
 
         |> finishOffAndAnotherSafe
 

@@ -92,6 +92,7 @@ fromListWithDefault default items =
     (default, items, VectorModel)
         |> andAnotherSafe
         |> andAnotherSafe
+        |> andAnotherSafe
 
         |> finishOffAndAnotherSafe
 

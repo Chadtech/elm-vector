@@ -428,7 +428,7 @@ makeFromListWithDefaultDefinition n =
             [("a", "default"), ("List a", "items")]
             (["( List a,", (vectorOf n "a"), ")"] |> T.concat)
     , indent 1 "(default, items, VectorModel)"
-    , T.replicate (toInt64 (n - 1)) (indent 2 "|> andAnotherSafe\n")
+    , T.replicate (toInt64 n) (indent 2 "|> andAnotherSafe\n")
     , indent 2 "|> finishOffAndAnotherSafe"
     ]
     |> T.intercalate "\n"
