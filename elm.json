@@ -74,17 +74,7 @@
         "Vector67",
         "Vector68",
         "Vector69",
-        "Vector70",
-        "Vector71",
-        "Vector72",
-        "Vector73",
-        "Vector74",
-        "Vector75",
-        "Vector76",
-        "Vector77",
-        "Vector78",
-        "Vector79",
-        "Vector80"
+        "Vector70"
     ],
     "elm-version": "0.19.0 <= v < 0.20.0",
     "dependencies": {
