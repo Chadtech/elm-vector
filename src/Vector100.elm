@@ -1,45 +1,63 @@
 module Vector100 exposing
-    ( Vector100
-    , fromList, repeat, from100, fromListWithDefault, initializeFromInt, initializeFromIndex
-    , Index(..), get, indexToInt, intToIndex
-    , map, mapItem, map4, map5
-    , toList, toIndexedList
-    , pop, uncons
-    , reverse, member
+    ( Vector100 
+    , Index(..)
+    , get
+    , pop
+    , uncons
+    , foldr
+    , foldl
+    , map
+    , indexedMap
+    , set
+    , mapItem
+    , toList
+    , fromList
+    , fromListWithDefault
+    , toIndexedList
+    , repeat
+    , initializeFromInt
+    , initializeFromIndex
+    , indexToInt
+    , intToIndex
+    , reverse
+    , member
+    , map5
+    , nextIndex
+    , previousIndex
+    , map4
+    , map3
+    , map2
+    , length
+    , group
+    , from100
     )
 
-{-| A vector of length 100
 
+{-| A vector of length 100
 
 # Vector100
 
 @docs Vector100
 
-
 # Creation
 
 @docs fromList, repeat, from100, fromListWithDefault, initializeFromInt, initializeFromIndex
 
-
 # Index
 
-@docs Index, get, indexToInt, intToIndex
-
+@docs Index, get, set, indexToInt, intToIndex, nextIndex, previousIndex
 
 # Transform
 
 @docs map, mapItem, indexedMap, foldr, foldl, map2, map3, map4, map5
 
-
 # Lists
 
 @docs toList, toIndexedList
 
-
 # Methods
 
 @docs pop, uncons
-
 
 # Util
 
@@ -47,15 +65,18 @@ module Vector100 exposing
 
 -}
 
-import Util exposing (andAnother, andAnotherSafe, finishOffAndAnotherSafe)
+
 import Vector100.Internal exposing (Vector(..), VectorModel)
 import Vector99.Internal as Vector99
+import Util exposing (andAnother, andAnotherSafe, finishOffAndAnotherSafe)
 
 
-type alias Vector100 a =
+{-| A vector that contains exactly 100 elements -}
+type alias Vector100 a = 
     Vector100.Internal.Vector a
 
 
+{-| All the indices to a `Vector100 a`. There are exactly 100 of them. Its kind of like an `Int` except there is a finite amount of them. -}
 type Index
     = Index0
     | Index1
@@ -159,6 +180,617 @@ type Index
     | Index99
 
 
+{-| Given an index, get the next one. Unless its the last index in which case there is no next index (`Nothing`) -}
+nextIndex : Index -> Maybe Index
+nextIndex index =
+    case index of
+        Index0 ->
+            Just Index1
+
+        Index1 ->
+            Just Index2
+
+        Index2 ->
+            Just Index3
+
+        Index3 ->
+            Just Index4
+
+        Index4 ->
+            Just Index5
+
+        Index5 ->
+            Just Index6
+
+        Index6 ->
+            Just Index7
+
+        Index7 ->
+            Just Index8
+
+        Index8 ->
+            Just Index9
+
+        Index9 ->
+            Just Index10
+
+        Index10 ->
+            Just Index11
+
+        Index11 ->
+            Just Index12
+
+        Index12 ->
+            Just Index13
+
+        Index13 ->
+            Just Index14
+
+        Index14 ->
+            Just Index15
+
+        Index15 ->
+            Just Index16
+
+        Index16 ->
+            Just Index17
+
+        Index17 ->
+            Just Index18
+
+        Index18 ->
+            Just Index19
+
+        Index19 ->
+            Just Index20
+
+        Index20 ->
+            Just Index21
+
+        Index21 ->
+            Just Index22
+
+        Index22 ->
+            Just Index23
+
+        Index23 ->
+            Just Index24
+
+        Index24 ->
+            Just Index25
+
+        Index25 ->
+            Just Index26
+
+        Index26 ->
+            Just Index27
+
+        Index27 ->
+            Just Index28
+
+        Index28 ->
+            Just Index29
+
+        Index29 ->
+            Just Index30
+
+        Index30 ->
+            Just Index31
+
+        Index31 ->
+            Just Index32
+
+        Index32 ->
+            Just Index33
+
+        Index33 ->
+            Just Index34
+
+        Index34 ->
+            Just Index35
+
+        Index35 ->
+            Just Index36
+
+        Index36 ->
+            Just Index37
+
+        Index37 ->
+            Just Index38
+
+        Index38 ->
+            Just Index39
+
+        Index39 ->
+            Just Index40
+
+        Index40 ->
+            Just Index41
+
+        Index41 ->
+            Just Index42
+
+        Index42 ->
+            Just Index43
+
+        Index43 ->
+            Just Index44
+
+        Index44 ->
+            Just Index45
+
+        Index45 ->
+            Just Index46
+
+        Index46 ->
+            Just Index47
+
+        Index47 ->
+            Just Index48
+
+        Index48 ->
+            Just Index49
+
+        Index49 ->
+            Just Index50
+
+        Index50 ->
+            Just Index51
+
+        Index51 ->
+            Just Index52
+
+        Index52 ->
+            Just Index53
+
+        Index53 ->
+            Just Index54
+
+        Index54 ->
+            Just Index55
+
+        Index55 ->
+            Just Index56
+
+        Index56 ->
+            Just Index57
+
+        Index57 ->
+            Just Index58
+
+        Index58 ->
+            Just Index59
+
+        Index59 ->
+            Just Index60
+
+        Index60 ->
+            Just Index61
+
+        Index61 ->
+            Just Index62
+
+        Index62 ->
+            Just Index63
+
+        Index63 ->
+            Just Index64
+
+        Index64 ->
+            Just Index65
+
+        Index65 ->
+            Just Index66
+
+        Index66 ->
+            Just Index67
+
+        Index67 ->
+            Just Index68
+
+        Index68 ->
+            Just Index69
+
+        Index69 ->
+            Just Index70
+
+        Index70 ->
+            Just Index71
+
+        Index71 ->
+            Just Index72
+
+        Index72 ->
+            Just Index73
+
+        Index73 ->
+            Just Index74
+
+        Index74 ->
+            Just Index75
+
+        Index75 ->
+            Just Index76
+
+        Index76 ->
+            Just Index77
+
+        Index77 ->
+            Just Index78
+
+        Index78 ->
+            Just Index79
+
+        Index79 ->
+            Just Index80
+
+        Index80 ->
+            Just Index81
+
+        Index81 ->
+            Just Index82
+
+        Index82 ->
+            Just Index83
+
+        Index83 ->
+            Just Index84
+
+        Index84 ->
+            Just Index85
+
+        Index85 ->
+            Just Index86
+
+        Index86 ->
+            Just Index87
+
+        Index87 ->
+            Just Index88
+
+        Index88 ->
+            Just Index89
+
+        Index89 ->
+            Just Index90
+
+        Index90 ->
+            Just Index91
+
+        Index91 ->
+            Just Index92
+
+        Index92 ->
+            Just Index93
+
+        Index93 ->
+            Just Index94
+
+        Index94 ->
+            Just Index95
+
+        Index95 ->
+            Just Index96
+
+        Index96 ->
+            Just Index97
+
+        Index97 ->
+            Just Index98
+
+        Index98 ->
+            Just Index99
+
+        Index99 ->
+            Nothing
+
+
+{-| Given an index, get the previous one. Unless its the `0` index in which case there is no previous index (`Nothing`) -}
+previousIndex : Index -> Maybe Index
+previousIndex index =
+    case index of
+        Index0 ->
+            Nothing
+
+        Index1 ->
+            Just Index0
+
+        Index2 ->
+            Just Index1
+
+        Index3 ->
+            Just Index2
+
+        Index4 ->
+            Just Index3
+
+        Index5 ->
+            Just Index4
+
+        Index6 ->
+            Just Index5
+
+        Index7 ->
+            Just Index6
+
+        Index8 ->
+            Just Index7
+
+        Index9 ->
+            Just Index8
+
+        Index10 ->
+            Just Index9
+
+        Index11 ->
+            Just Index10
+
+        Index12 ->
+            Just Index11
+
+        Index13 ->
+            Just Index12
+
+        Index14 ->
+            Just Index13
+
+        Index15 ->
+            Just Index14
+
+        Index16 ->
+            Just Index15
+
+        Index17 ->
+            Just Index16
+
+        Index18 ->
+            Just Index17
+
+        Index19 ->
+            Just Index18
+
+        Index20 ->
+            Just Index19
+
+        Index21 ->
+            Just Index20
+
+        Index22 ->
+            Just Index21
+
+        Index23 ->
+            Just Index22
+
+        Index24 ->
+            Just Index23
+
+        Index25 ->
+            Just Index24
+
+        Index26 ->
+            Just Index25
+
+        Index27 ->
+            Just Index26
+
+        Index28 ->
+            Just Index27
+
+        Index29 ->
+            Just Index28
+
+        Index30 ->
+            Just Index29
+
+        Index31 ->
+            Just Index30
+
+        Index32 ->
+            Just Index31
+
+        Index33 ->
+            Just Index32
+
+        Index34 ->
+            Just Index33
+
+        Index35 ->
+            Just Index34
+
+        Index36 ->
+            Just Index35
+
+        Index37 ->
+            Just Index36
+
+        Index38 ->
+            Just Index37
+
+        Index39 ->
+            Just Index38
+
+        Index40 ->
+            Just Index39
+
+        Index41 ->
+            Just Index40
+
+        Index42 ->
+            Just Index41
+
+        Index43 ->
+            Just Index42
+
+        Index44 ->
+            Just Index43
+
+        Index45 ->
+            Just Index44
+
+        Index46 ->
+            Just Index45
+
+        Index47 ->
+            Just Index46
+
+        Index48 ->
+            Just Index47
+
+        Index49 ->
+            Just Index48
+
+        Index50 ->
+            Just Index49
+
+        Index51 ->
+            Just Index50
+
+        Index52 ->
+            Just Index51
+
+        Index53 ->
+            Just Index52
+
+        Index54 ->
+            Just Index53
+
+        Index55 ->
+            Just Index54
+
+        Index56 ->
+            Just Index55
+
+        Index57 ->
+            Just Index56
+
+        Index58 ->
+            Just Index57
+
+        Index59 ->
+            Just Index58
+
+        Index60 ->
+            Just Index59
+
+        Index61 ->
+            Just Index60
+
+        Index62 ->
+            Just Index61
+
+        Index63 ->
+            Just Index62
+
+        Index64 ->
+            Just Index63
+
+        Index65 ->
+            Just Index64
+
+        Index66 ->
+            Just Index65
+
+        Index67 ->
+            Just Index66
+
+        Index68 ->
+            Just Index67
+
+        Index69 ->
+            Just Index68
+
+        Index70 ->
+            Just Index69
+
+        Index71 ->
+            Just Index70
+
+        Index72 ->
+            Just Index71
+
+        Index73 ->
+            Just Index72
+
+        Index74 ->
+            Just Index73
+
+        Index75 ->
+            Just Index74
+
+        Index76 ->
+            Just Index75
+
+        Index77 ->
+            Just Index76
+
+        Index78 ->
+            Just Index77
+
+        Index79 ->
+            Just Index78
+
+        Index80 ->
+            Just Index79
+
+        Index81 ->
+            Just Index80
+
+        Index82 ->
+            Just Index81
+
+        Index83 ->
+            Just Index82
+
+        Index84 ->
+            Just Index83
+
+        Index85 ->
+            Just Index84
+
+        Index86 ->
+            Just Index85
+
+        Index87 ->
+            Just Index86
+
+        Index88 ->
+            Just Index87
+
+        Index89 ->
+            Just Index88
+
+        Index90 ->
+            Just Index89
+
+        Index91 ->
+            Just Index90
+
+        Index92 ->
+            Just Index91
+
+        Index93 ->
+            Just Index92
+
+        Index94 ->
+            Just Index93
+
+        Index95 ->
+            Just Index94
+
+        Index96 ->
+            Just Index95
+
+        Index97 ->
+            Just Index96
+
+        Index98 ->
+            Just Index97
+
+        Index99 ->
+            Just Index98
+
+
+{-| Get the item at that `Index` in a `Vector100 a` -}
 get : Index -> Vector100 a -> a
 get index (Vector vector) =
     case index of
@@ -463,6 +1095,324 @@ get index (Vector vector) =
             vector.n99
 
 
+{-| Set the item at a specific index in a `Vector100 a` -}
+set : Index -> a -> Vector100 a -> Vector100 a
+set index a (Vector vector) =
+    case index of
+        Index0 ->
+            Vector { vector | n0 = a }
+
+        Index1 ->
+            Vector { vector | n1 = a }
+
+        Index2 ->
+            Vector { vector | n2 = a }
+
+        Index3 ->
+            Vector { vector | n3 = a }
+
+        Index4 ->
+            Vector { vector | n4 = a }
+
+        Index5 ->
+            Vector { vector | n5 = a }
+
+        Index6 ->
+            Vector { vector | n6 = a }
+
+        Index7 ->
+            Vector { vector | n7 = a }
+
+        Index8 ->
+            Vector { vector | n8 = a }
+
+        Index9 ->
+            Vector { vector | n9 = a }
+
+        Index10 ->
+            Vector { vector | n10 = a }
+
+        Index11 ->
+            Vector { vector | n11 = a }
+
+        Index12 ->
+            Vector { vector | n12 = a }
+
+        Index13 ->
+            Vector { vector | n13 = a }
+
+        Index14 ->
+            Vector { vector | n14 = a }
+
+        Index15 ->
+            Vector { vector | n15 = a }
+
+        Index16 ->
+            Vector { vector | n16 = a }
+
+        Index17 ->
+            Vector { vector | n17 = a }
+
+        Index18 ->
+            Vector { vector | n18 = a }
+
+        Index19 ->
+            Vector { vector | n19 = a }
+
+        Index20 ->
+            Vector { vector | n20 = a }
+
+        Index21 ->
+            Vector { vector | n21 = a }
+
+        Index22 ->
+            Vector { vector | n22 = a }
+
+        Index23 ->
+            Vector { vector | n23 = a }
+
+        Index24 ->
+            Vector { vector | n24 = a }
+
+        Index25 ->
+            Vector { vector | n25 = a }
+
+        Index26 ->
+            Vector { vector | n26 = a }
+
+        Index27 ->
+            Vector { vector | n27 = a }
+
+        Index28 ->
+            Vector { vector | n28 = a }
+
+        Index29 ->
+            Vector { vector | n29 = a }
+
+        Index30 ->
+            Vector { vector | n30 = a }
+
+        Index31 ->
+            Vector { vector | n31 = a }
+
+        Index32 ->
+            Vector { vector | n32 = a }
+
+        Index33 ->
+            Vector { vector | n33 = a }
+
+        Index34 ->
+            Vector { vector | n34 = a }
+
+        Index35 ->
+            Vector { vector | n35 = a }
+
+        Index36 ->
+            Vector { vector | n36 = a }
+
+        Index37 ->
+            Vector { vector | n37 = a }
+
+        Index38 ->
+            Vector { vector | n38 = a }
+
+        Index39 ->
+            Vector { vector | n39 = a }
+
+        Index40 ->
+            Vector { vector | n40 = a }
+
+        Index41 ->
+            Vector { vector | n41 = a }
+
+        Index42 ->
+            Vector { vector | n42 = a }
+
+        Index43 ->
+            Vector { vector | n43 = a }
+
+        Index44 ->
+            Vector { vector | n44 = a }
+
+        Index45 ->
+            Vector { vector | n45 = a }
+
+        Index46 ->
+            Vector { vector | n46 = a }
+
+        Index47 ->
+            Vector { vector | n47 = a }
+
+        Index48 ->
+            Vector { vector | n48 = a }
+
+        Index49 ->
+            Vector { vector | n49 = a }
+
+        Index50 ->
+            Vector { vector | n50 = a }
+
+        Index51 ->
+            Vector { vector | n51 = a }
+
+        Index52 ->
+            Vector { vector | n52 = a }
+
+        Index53 ->
+            Vector { vector | n53 = a }
+
+        Index54 ->
+            Vector { vector | n54 = a }
+
+        Index55 ->
+            Vector { vector | n55 = a }
+
+        Index56 ->
+            Vector { vector | n56 = a }
+
+        Index57 ->
+            Vector { vector | n57 = a }
+
+        Index58 ->
+            Vector { vector | n58 = a }
+
+        Index59 ->
+            Vector { vector | n59 = a }
+
+        Index60 ->
+            Vector { vector | n60 = a }
+
+        Index61 ->
+            Vector { vector | n61 = a }
+
+        Index62 ->
+            Vector { vector | n62 = a }
+
+        Index63 ->
+            Vector { vector | n63 = a }
+
+        Index64 ->
+            Vector { vector | n64 = a }
+
+        Index65 ->
+            Vector { vector | n65 = a }
+
+        Index66 ->
+            Vector { vector | n66 = a }
+
+        Index67 ->
+            Vector { vector | n67 = a }
+
+        Index68 ->
+            Vector { vector | n68 = a }
+
+        Index69 ->
+            Vector { vector | n69 = a }
+
+        Index70 ->
+            Vector { vector | n70 = a }
+
+        Index71 ->
+            Vector { vector | n71 = a }
+
+        Index72 ->
+            Vector { vector | n72 = a }
+
+        Index73 ->
+            Vector { vector | n73 = a }
+
+        Index74 ->
+            Vector { vector | n74 = a }
+
+        Index75 ->
+            Vector { vector | n75 = a }
+
+        Index76 ->
+            Vector { vector | n76 = a }
+
+        Index77 ->
+            Vector { vector | n77 = a }
+
+        Index78 ->
+            Vector { vector | n78 = a }
+
+        Index79 ->
+            Vector { vector | n79 = a }
+
+        Index80 ->
+            Vector { vector | n80 = a }
+
+        Index81 ->
+            Vector { vector | n81 = a }
+
+        Index82 ->
+            Vector { vector | n82 = a }
+
+        Index83 ->
+            Vector { vector | n83 = a }
+
+        Index84 ->
+            Vector { vector | n84 = a }
+
+        Index85 ->
+            Vector { vector | n85 = a }
+
+        Index86 ->
+            Vector { vector | n86 = a }
+
+        Index87 ->
+            Vector { vector | n87 = a }
+
+        Index88 ->
+            Vector { vector | n88 = a }
+
+        Index89 ->
+            Vector { vector | n89 = a }
+
+        Index90 ->
+            Vector { vector | n90 = a }
+
+        Index91 ->
+            Vector { vector | n91 = a }
+
+        Index92 ->
+            Vector { vector | n92 = a }
+
+        Index93 ->
+            Vector { vector | n93 = a }
+
+        Index94 ->
+            Vector { vector | n94 = a }
+
+        Index95 ->
+            Vector { vector | n95 = a }
+
+        Index96 ->
+            Vector { vector | n96 = a }
+
+        Index97 ->
+            Vector { vector | n97 = a }
+
+        Index98 ->
+            Vector { vector | n98 = a }
+
+        Index99 ->
+            Vector { vector | n99 = a }
+
+
+{-| Reduce a `Vector100 a` from the right. -}
+foldr : (a -> b -> b) -> b -> Vector100 a -> b
+foldr f start vector =
+    List.foldr f start <| toList vector
+
+
+{-| Reduce a `Vector100 a` from the left. -}
+foldl : (a -> b -> b) -> b -> Vector100 a -> b
+foldl f start vector =
+    List.foldl f start <| toList vector
+
+
+{-| Apply a function to every element in a `Vector100 a`. -}
 map : (a -> b) -> Vector100 a -> Vector100 b
 map f (Vector vector) =
     { n0 = f vector.n0
@@ -569,9 +1519,330 @@ map f (Vector vector) =
         |> Vector
 
 
-{-| -}
+{-| Apply a function on every element with its index as first argument -}
+indexedMap : (Index -> a -> b) -> Vector100 a -> Vector100 b
+indexedMap f (Vector vector) =
+    { n0 = f Index0 vector.n0
+    , n1 = f Index1 vector.n1
+    , n2 = f Index2 vector.n2
+    , n3 = f Index3 vector.n3
+    , n4 = f Index4 vector.n4
+    , n5 = f Index5 vector.n5
+    , n6 = f Index6 vector.n6
+    , n7 = f Index7 vector.n7
+    , n8 = f Index8 vector.n8
+    , n9 = f Index9 vector.n9
+    , n10 = f Index10 vector.n10
+    , n11 = f Index11 vector.n11
+    , n12 = f Index12 vector.n12
+    , n13 = f Index13 vector.n13
+    , n14 = f Index14 vector.n14
+    , n15 = f Index15 vector.n15
+    , n16 = f Index16 vector.n16
+    , n17 = f Index17 vector.n17
+    , n18 = f Index18 vector.n18
+    , n19 = f Index19 vector.n19
+    , n20 = f Index20 vector.n20
+    , n21 = f Index21 vector.n21
+    , n22 = f Index22 vector.n22
+    , n23 = f Index23 vector.n23
+    , n24 = f Index24 vector.n24
+    , n25 = f Index25 vector.n25
+    , n26 = f Index26 vector.n26
+    , n27 = f Index27 vector.n27
+    , n28 = f Index28 vector.n28
+    , n29 = f Index29 vector.n29
+    , n30 = f Index30 vector.n30
+    , n31 = f Index31 vector.n31
+    , n32 = f Index32 vector.n32
+    , n33 = f Index33 vector.n33
+    , n34 = f Index34 vector.n34
+    , n35 = f Index35 vector.n35
+    , n36 = f Index36 vector.n36
+    , n37 = f Index37 vector.n37
+    , n38 = f Index38 vector.n38
+    , n39 = f Index39 vector.n39
+    , n40 = f Index40 vector.n40
+    , n41 = f Index41 vector.n41
+    , n42 = f Index42 vector.n42
+    , n43 = f Index43 vector.n43
+    , n44 = f Index44 vector.n44
+    , n45 = f Index45 vector.n45
+    , n46 = f Index46 vector.n46
+    , n47 = f Index47 vector.n47
+    , n48 = f Index48 vector.n48
+    , n49 = f Index49 vector.n49
+    , n50 = f Index50 vector.n50
+    , n51 = f Index51 vector.n51
+    , n52 = f Index52 vector.n52
+    , n53 = f Index53 vector.n53
+    , n54 = f Index54 vector.n54
+    , n55 = f Index55 vector.n55
+    , n56 = f Index56 vector.n56
+    , n57 = f Index57 vector.n57
+    , n58 = f Index58 vector.n58
+    , n59 = f Index59 vector.n59
+    , n60 = f Index60 vector.n60
+    , n61 = f Index61 vector.n61
+    , n62 = f Index62 vector.n62
+    , n63 = f Index63 vector.n63
+    , n64 = f Index64 vector.n64
+    , n65 = f Index65 vector.n65
+    , n66 = f Index66 vector.n66
+    , n67 = f Index67 vector.n67
+    , n68 = f Index68 vector.n68
+    , n69 = f Index69 vector.n69
+    , n70 = f Index70 vector.n70
+    , n71 = f Index71 vector.n71
+    , n72 = f Index72 vector.n72
+    , n73 = f Index73 vector.n73
+    , n74 = f Index74 vector.n74
+    , n75 = f Index75 vector.n75
+    , n76 = f Index76 vector.n76
+    , n77 = f Index77 vector.n77
+    , n78 = f Index78 vector.n78
+    , n79 = f Index79 vector.n79
+    , n80 = f Index80 vector.n80
+    , n81 = f Index81 vector.n81
+    , n82 = f Index82 vector.n82
+    , n83 = f Index83 vector.n83
+    , n84 = f Index84 vector.n84
+    , n85 = f Index85 vector.n85
+    , n86 = f Index86 vector.n86
+    , n87 = f Index87 vector.n87
+    , n88 = f Index88 vector.n88
+    , n89 = f Index89 vector.n89
+    , n90 = f Index90 vector.n90
+    , n91 = f Index91 vector.n91
+    , n92 = f Index92 vector.n92
+    , n93 = f Index93 vector.n93
+    , n94 = f Index94 vector.n94
+    , n95 = f Index95 vector.n95
+    , n96 = f Index96 vector.n96
+    , n97 = f Index97 vector.n97
+    , n98 = f Index98 vector.n98
+    , n99 = f Index99 vector.n99
+    }
+        |> Vector
+
+
+{-|  -}
+map2 : (a -> b -> c) -> Vector100 a -> Vector100 b -> Vector100 c
+map2 f (Vector va ) (Vector vb ) =
+    { n0 = f va.n0 vb.n0
+    , n1 = f va.n1 vb.n1
+    , n2 = f va.n2 vb.n2
+    , n3 = f va.n3 vb.n3
+    , n4 = f va.n4 vb.n4
+    , n5 = f va.n5 vb.n5
+    , n6 = f va.n6 vb.n6
+    , n7 = f va.n7 vb.n7
+    , n8 = f va.n8 vb.n8
+    , n9 = f va.n9 vb.n9
+    , n10 = f va.n10 vb.n10
+    , n11 = f va.n11 vb.n11
+    , n12 = f va.n12 vb.n12
+    , n13 = f va.n13 vb.n13
+    , n14 = f va.n14 vb.n14
+    , n15 = f va.n15 vb.n15
+    , n16 = f va.n16 vb.n16
+    , n17 = f va.n17 vb.n17
+    , n18 = f va.n18 vb.n18
+    , n19 = f va.n19 vb.n19
+    , n20 = f va.n20 vb.n20
+    , n21 = f va.n21 vb.n21
+    , n22 = f va.n22 vb.n22
+    , n23 = f va.n23 vb.n23
+    , n24 = f va.n24 vb.n24
+    , n25 = f va.n25 vb.n25
+    , n26 = f va.n26 vb.n26
+    , n27 = f va.n27 vb.n27
+    , n28 = f va.n28 vb.n28
+    , n29 = f va.n29 vb.n29
+    , n30 = f va.n30 vb.n30
+    , n31 = f va.n31 vb.n31
+    , n32 = f va.n32 vb.n32
+    , n33 = f va.n33 vb.n33
+    , n34 = f va.n34 vb.n34
+    , n35 = f va.n35 vb.n35
+    , n36 = f va.n36 vb.n36
+    , n37 = f va.n37 vb.n37
+    , n38 = f va.n38 vb.n38
+    , n39 = f va.n39 vb.n39
+    , n40 = f va.n40 vb.n40
+    , n41 = f va.n41 vb.n41
+    , n42 = f va.n42 vb.n42
+    , n43 = f va.n43 vb.n43
+    , n44 = f va.n44 vb.n44
+    , n45 = f va.n45 vb.n45
+    , n46 = f va.n46 vb.n46
+    , n47 = f va.n47 vb.n47
+    , n48 = f va.n48 vb.n48
+    , n49 = f va.n49 vb.n49
+    , n50 = f va.n50 vb.n50
+    , n51 = f va.n51 vb.n51
+    , n52 = f va.n52 vb.n52
+    , n53 = f va.n53 vb.n53
+    , n54 = f va.n54 vb.n54
+    , n55 = f va.n55 vb.n55
+    , n56 = f va.n56 vb.n56
+    , n57 = f va.n57 vb.n57
+    , n58 = f va.n58 vb.n58
+    , n59 = f va.n59 vb.n59
+    , n60 = f va.n60 vb.n60
+    , n61 = f va.n61 vb.n61
+    , n62 = f va.n62 vb.n62
+    , n63 = f va.n63 vb.n63
+    , n64 = f va.n64 vb.n64
+    , n65 = f va.n65 vb.n65
+    , n66 = f va.n66 vb.n66
+    , n67 = f va.n67 vb.n67
+    , n68 = f va.n68 vb.n68
+    , n69 = f va.n69 vb.n69
+    , n70 = f va.n70 vb.n70
+    , n71 = f va.n71 vb.n71
+    , n72 = f va.n72 vb.n72
+    , n73 = f va.n73 vb.n73
+    , n74 = f va.n74 vb.n74
+    , n75 = f va.n75 vb.n75
+    , n76 = f va.n76 vb.n76
+    , n77 = f va.n77 vb.n77
+    , n78 = f va.n78 vb.n78
+    , n79 = f va.n79 vb.n79
+    , n80 = f va.n80 vb.n80
+    , n81 = f va.n81 vb.n81
+    , n82 = f va.n82 vb.n82
+    , n83 = f va.n83 vb.n83
+    , n84 = f va.n84 vb.n84
+    , n85 = f va.n85 vb.n85
+    , n86 = f va.n86 vb.n86
+    , n87 = f va.n87 vb.n87
+    , n88 = f va.n88 vb.n88
+    , n89 = f va.n89 vb.n89
+    , n90 = f va.n90 vb.n90
+    , n91 = f va.n91 vb.n91
+    , n92 = f va.n92 vb.n92
+    , n93 = f va.n93 vb.n93
+    , n94 = f va.n94 vb.n94
+    , n95 = f va.n95 vb.n95
+    , n96 = f va.n96 vb.n96
+    , n97 = f va.n97 vb.n97
+    , n98 = f va.n98 vb.n98
+    , n99 = f va.n99 vb.n99
+    }
+        |> Vector
+
+
+{-|  -}
+map3 : (a -> b -> c -> d) -> Vector100 a -> Vector100 b -> Vector100 c -> Vector100 d
+map3 f (Vector va ) (Vector vb ) (Vector vc ) =
+    { n0 = f va.n0 vb.n0 vc.n0
+    , n1 = f va.n1 vb.n1 vc.n1
+    , n2 = f va.n2 vb.n2 vc.n2
+    , n3 = f va.n3 vb.n3 vc.n3
+    , n4 = f va.n4 vb.n4 vc.n4
+    , n5 = f va.n5 vb.n5 vc.n5
+    , n6 = f va.n6 vb.n6 vc.n6
+    , n7 = f va.n7 vb.n7 vc.n7
+    , n8 = f va.n8 vb.n8 vc.n8
+    , n9 = f va.n9 vb.n9 vc.n9
+    , n10 = f va.n10 vb.n10 vc.n10
+    , n11 = f va.n11 vb.n11 vc.n11
+    , n12 = f va.n12 vb.n12 vc.n12
+    , n13 = f va.n13 vb.n13 vc.n13
+    , n14 = f va.n14 vb.n14 vc.n14
+    , n15 = f va.n15 vb.n15 vc.n15
+    , n16 = f va.n16 vb.n16 vc.n16
+    , n17 = f va.n17 vb.n17 vc.n17
+    , n18 = f va.n18 vb.n18 vc.n18
+    , n19 = f va.n19 vb.n19 vc.n19
+    , n20 = f va.n20 vb.n20 vc.n20
+    , n21 = f va.n21 vb.n21 vc.n21
+    , n22 = f va.n22 vb.n22 vc.n22
+    , n23 = f va.n23 vb.n23 vc.n23
+    , n24 = f va.n24 vb.n24 vc.n24
+    , n25 = f va.n25 vb.n25 vc.n25
+    , n26 = f va.n26 vb.n26 vc.n26
+    , n27 = f va.n27 vb.n27 vc.n27
+    , n28 = f va.n28 vb.n28 vc.n28
+    , n29 = f va.n29 vb.n29 vc.n29
+    , n30 = f va.n30 vb.n30 vc.n30
+    , n31 = f va.n31 vb.n31 vc.n31
+    , n32 = f va.n32 vb.n32 vc.n32
+    , n33 = f va.n33 vb.n33 vc.n33
+    , n34 = f va.n34 vb.n34 vc.n34
+    , n35 = f va.n35 vb.n35 vc.n35
+    , n36 = f va.n36 vb.n36 vc.n36
+    , n37 = f va.n37 vb.n37 vc.n37
+    , n38 = f va.n38 vb.n38 vc.n38
+    , n39 = f va.n39 vb.n39 vc.n39
+    , n40 = f va.n40 vb.n40 vc.n40
+    , n41 = f va.n41 vb.n41 vc.n41
+    , n42 = f va.n42 vb.n42 vc.n42
+    , n43 = f va.n43 vb.n43 vc.n43
+    , n44 = f va.n44 vb.n44 vc.n44
+    , n45 = f va.n45 vb.n45 vc.n45
+    , n46 = f va.n46 vb.n46 vc.n46
+    , n47 = f va.n47 vb.n47 vc.n47
+    , n48 = f va.n48 vb.n48 vc.n48
+    , n49 = f va.n49 vb.n49 vc.n49
+    , n50 = f va.n50 vb.n50 vc.n50
+    , n51 = f va.n51 vb.n51 vc.n51
+    , n52 = f va.n52 vb.n52 vc.n52
+    , n53 = f va.n53 vb.n53 vc.n53
+    , n54 = f va.n54 vb.n54 vc.n54
+    , n55 = f va.n55 vb.n55 vc.n55
+    , n56 = f va.n56 vb.n56 vc.n56
+    , n57 = f va.n57 vb.n57 vc.n57
+    , n58 = f va.n58 vb.n58 vc.n58
+    , n59 = f va.n59 vb.n59 vc.n59
+    , n60 = f va.n60 vb.n60 vc.n60
+    , n61 = f va.n61 vb.n61 vc.n61
+    , n62 = f va.n62 vb.n62 vc.n62
+    , n63 = f va.n63 vb.n63 vc.n63
+    , n64 = f va.n64 vb.n64 vc.n64
+    , n65 = f va.n65 vb.n65 vc.n65
+    , n66 = f va.n66 vb.n66 vc.n66
+    , n67 = f va.n67 vb.n67 vc.n67
+    , n68 = f va.n68 vb.n68 vc.n68
+    , n69 = f va.n69 vb.n69 vc.n69
+    , n70 = f va.n70 vb.n70 vc.n70
+    , n71 = f va.n71 vb.n71 vc.n71
+    , n72 = f va.n72 vb.n72 vc.n72
+    , n73 = f va.n73 vb.n73 vc.n73
+    , n74 = f va.n74 vb.n74 vc.n74
+    , n75 = f va.n75 vb.n75 vc.n75
+    , n76 = f va.n76 vb.n76 vc.n76
+    , n77 = f va.n77 vb.n77 vc.n77
+    , n78 = f va.n78 vb.n78 vc.n78
+    , n79 = f va.n79 vb.n79 vc.n79
+    , n80 = f va.n80 vb.n80 vc.n80
+    , n81 = f va.n81 vb.n81 vc.n81
+    , n82 = f va.n82 vb.n82 vc.n82
+    , n83 = f va.n83 vb.n83 vc.n83
+    , n84 = f va.n84 vb.n84 vc.n84
+    , n85 = f va.n85 vb.n85 vc.n85
+    , n86 = f va.n86 vb.n86 vc.n86
+    , n87 = f va.n87 vb.n87 vc.n87
+    , n88 = f va.n88 vb.n88 vc.n88
+    , n89 = f va.n89 vb.n89 vc.n89
+    , n90 = f va.n90 vb.n90 vc.n90
+    , n91 = f va.n91 vb.n91 vc.n91
+    , n92 = f va.n92 vb.n92 vc.n92
+    , n93 = f va.n93 vb.n93 vc.n93
+    , n94 = f va.n94 vb.n94 vc.n94
+    , n95 = f va.n95 vb.n95 vc.n95
+    , n96 = f va.n96 vb.n96 vc.n96
+    , n97 = f va.n97 vb.n97 vc.n97
+    , n98 = f va.n98 vb.n98 vc.n98
+    , n99 = f va.n99 vb.n99 vc.n99
+    }
+        |> Vector
+
+
+{-|  -}
 map4 : (a -> b -> c -> d -> e) -> Vector100 a -> Vector100 b -> Vector100 c -> Vector100 d -> Vector100 e
-map4 f va vb vc vd =
+map4 f (Vector va ) (Vector vb ) (Vector vc ) (Vector vd ) =
     { n0 = f va.n0 vb.n0 vc.n0 vd.n0
     , n1 = f va.n1 vb.n1 vc.n1 vd.n1
     , n2 = f va.n2 vb.n2 vc.n2 vd.n2
@@ -676,9 +1947,9 @@ map4 f va vb vc vd =
         |> Vector
 
 
-{-| -}
+{-|  -}
 map5 : (a -> b -> c -> d -> e -> f) -> Vector100 a -> Vector100 b -> Vector100 c -> Vector100 d -> Vector100 e -> Vector100 f
-map5 f va vb vc vd ve =
+map5 f (Vector va ) (Vector vb ) (Vector vc ) (Vector vd ) (Vector ve ) =
     { n0 = f va.n0 vb.n0 vc.n0 vd.n0 ve.n0
     , n1 = f va.n1 vb.n1 vc.n1 vd.n1 ve.n1
     , n2 = f va.n2 vb.n2 vc.n2 vd.n2 ve.n2
@@ -783,6 +2054,7 @@ map5 f va vb vc vd ve =
         |> Vector
 
 
+{-| Transform just one particular item at a particular `Index` -}
 mapItem : Index -> (a -> a) -> Vector100 a -> Vector100 a
 mapItem index mapper (Vector vector) =
     case index of
@@ -1087,8 +2359,7 @@ mapItem index mapper (Vector vector) =
             Vector { vector | n99 = mapper vector.n99 }
 
 
-{-| Convert a `Vector100 a` into a `List a` of length 100
--}
+{-| Convert a `Vector100 a` into a `List a` of length 100 -}
 toList : Vector100 a -> List a
 toList (Vector vector) =
     [ vector.n0
@@ -1194,9 +2465,21 @@ toList (Vector vector) =
     ]
 
 
-fromList : List a -> Maybe ( List a, Vector100 a )
+{-| Turn a `List a` into a `Vector100 a`. If there are not enough items in the `List a`, then this function returns `Nothing`. The extra items in the input list, if there are any, is returned as the first element in the output tuple.
+
+    Vector3.fromList []
+    --> Nothing
+
+    Vector3.fromList [ 1 ]
+    --> Nothing
+
+    Vector3.fromList [ 5, 6, 7, 8 ]
+    --> Just ([ 8 ], Vector3.from3 5 6 7)
+
+ -}
+fromList : List a -> Maybe (List a, Vector100 a)
 fromList items =
-    Just ( items, VectorModel )
+    Just (items, VectorModel)
         |> andAnother
         |> andAnother
         |> andAnother
@@ -1297,12 +2580,25 @@ fromList items =
         |> andAnother
         |> andAnother
         |> andAnother
+
         |> Maybe.map (Tuple.mapSecond Vector)
 
 
-fromListWithDefault : a -> List a -> ( List a, Vector100 a )
+{-| Turn a `List a` into a `Vector100 a`. If there are not enough items in the `List a`, then fill in the remaining spots with a default value. The extra items in the input list, if there are any, is returned as the first element in the output tuple.
+
+    Vector3.fromListWithDefault 1 []
+    --> ([] ,Vector3.from3 1 1 1)
+
+    Vector3.fromListWithDefault 2 [ 1 ]
+    --> ([], Vector3.from3 1 2 2)
+
+    Vector3.fromListWithDefault 2 [ 5, 6, 7, 8 ]
+    --> ([ 8 ], Vector3.from3 5 6 7)
+
+ -}
+fromListWithDefault : a -> List a -> ( List a,Vector100 a)
 fromListWithDefault default items =
-    ( default, items, VectorModel )
+    (default, items, VectorModel)
         |> andAnotherSafe
         |> andAnotherSafe
         |> andAnotherSafe
@@ -1403,115 +2699,118 @@ fromListWithDefault default items =
         |> andAnotherSafe
         |> andAnotherSafe
         |> andAnotherSafe
+
         |> finishOffAndAnotherSafe
         |> Tuple.mapSecond Vector
 
 
-toIndexedList : Vector100 a -> List ( Index, a )
+{-| Turn a `Vector100 a` elm into a list, where each element is paired with its `Index` -}
+toIndexedList : Vector100 a -> List (Index, a)
 toIndexedList (Vector vector) =
-    [ ( Index0, vector.n0 )
-    , ( Index1, vector.n1 )
-    , ( Index2, vector.n2 )
-    , ( Index3, vector.n3 )
-    , ( Index4, vector.n4 )
-    , ( Index5, vector.n5 )
-    , ( Index6, vector.n6 )
-    , ( Index7, vector.n7 )
-    , ( Index8, vector.n8 )
-    , ( Index9, vector.n9 )
-    , ( Index10, vector.n10 )
-    , ( Index11, vector.n11 )
-    , ( Index12, vector.n12 )
-    , ( Index13, vector.n13 )
-    , ( Index14, vector.n14 )
-    , ( Index15, vector.n15 )
-    , ( Index16, vector.n16 )
-    , ( Index17, vector.n17 )
-    , ( Index18, vector.n18 )
-    , ( Index19, vector.n19 )
-    , ( Index20, vector.n20 )
-    , ( Index21, vector.n21 )
-    , ( Index22, vector.n22 )
-    , ( Index23, vector.n23 )
-    , ( Index24, vector.n24 )
-    , ( Index25, vector.n25 )
-    , ( Index26, vector.n26 )
-    , ( Index27, vector.n27 )
-    , ( Index28, vector.n28 )
-    , ( Index29, vector.n29 )
-    , ( Index30, vector.n30 )
-    , ( Index31, vector.n31 )
-    , ( Index32, vector.n32 )
-    , ( Index33, vector.n33 )
-    , ( Index34, vector.n34 )
-    , ( Index35, vector.n35 )
-    , ( Index36, vector.n36 )
-    , ( Index37, vector.n37 )
-    , ( Index38, vector.n38 )
-    , ( Index39, vector.n39 )
-    , ( Index40, vector.n40 )
-    , ( Index41, vector.n41 )
-    , ( Index42, vector.n42 )
-    , ( Index43, vector.n43 )
-    , ( Index44, vector.n44 )
-    , ( Index45, vector.n45 )
-    , ( Index46, vector.n46 )
-    , ( Index47, vector.n47 )
-    , ( Index48, vector.n48 )
-    , ( Index49, vector.n49 )
-    , ( Index50, vector.n50 )
-    , ( Index51, vector.n51 )
-    , ( Index52, vector.n52 )
-    , ( Index53, vector.n53 )
-    , ( Index54, vector.n54 )
-    , ( Index55, vector.n55 )
-    , ( Index56, vector.n56 )
-    , ( Index57, vector.n57 )
-    , ( Index58, vector.n58 )
-    , ( Index59, vector.n59 )
-    , ( Index60, vector.n60 )
-    , ( Index61, vector.n61 )
-    , ( Index62, vector.n62 )
-    , ( Index63, vector.n63 )
-    , ( Index64, vector.n64 )
-    , ( Index65, vector.n65 )
-    , ( Index66, vector.n66 )
-    , ( Index67, vector.n67 )
-    , ( Index68, vector.n68 )
-    , ( Index69, vector.n69 )
-    , ( Index70, vector.n70 )
-    , ( Index71, vector.n71 )
-    , ( Index72, vector.n72 )
-    , ( Index73, vector.n73 )
-    , ( Index74, vector.n74 )
-    , ( Index75, vector.n75 )
-    , ( Index76, vector.n76 )
-    , ( Index77, vector.n77 )
-    , ( Index78, vector.n78 )
-    , ( Index79, vector.n79 )
-    , ( Index80, vector.n80 )
-    , ( Index81, vector.n81 )
-    , ( Index82, vector.n82 )
-    , ( Index83, vector.n83 )
-    , ( Index84, vector.n84 )
-    , ( Index85, vector.n85 )
-    , ( Index86, vector.n86 )
-    , ( Index87, vector.n87 )
-    , ( Index88, vector.n88 )
-    , ( Index89, vector.n89 )
-    , ( Index90, vector.n90 )
-    , ( Index91, vector.n91 )
-    , ( Index92, vector.n92 )
-    , ( Index93, vector.n93 )
-    , ( Index94, vector.n94 )
-    , ( Index95, vector.n95 )
-    , ( Index96, vector.n96 )
-    , ( Index97, vector.n97 )
-    , ( Index98, vector.n98 )
-    , ( Index99, vector.n99 )
+    [ ( Index0, vector.n0)
+    , ( Index1, vector.n1)
+    , ( Index2, vector.n2)
+    , ( Index3, vector.n3)
+    , ( Index4, vector.n4)
+    , ( Index5, vector.n5)
+    , ( Index6, vector.n6)
+    , ( Index7, vector.n7)
+    , ( Index8, vector.n8)
+    , ( Index9, vector.n9)
+    , ( Index10, vector.n10)
+    , ( Index11, vector.n11)
+    , ( Index12, vector.n12)
+    , ( Index13, vector.n13)
+    , ( Index14, vector.n14)
+    , ( Index15, vector.n15)
+    , ( Index16, vector.n16)
+    , ( Index17, vector.n17)
+    , ( Index18, vector.n18)
+    , ( Index19, vector.n19)
+    , ( Index20, vector.n20)
+    , ( Index21, vector.n21)
+    , ( Index22, vector.n22)
+    , ( Index23, vector.n23)
+    , ( Index24, vector.n24)
+    , ( Index25, vector.n25)
+    , ( Index26, vector.n26)
+    , ( Index27, vector.n27)
+    , ( Index28, vector.n28)
+    , ( Index29, vector.n29)
+    , ( Index30, vector.n30)
+    , ( Index31, vector.n31)
+    , ( Index32, vector.n32)
+    , ( Index33, vector.n33)
+    , ( Index34, vector.n34)
+    , ( Index35, vector.n35)
+    , ( Index36, vector.n36)
+    , ( Index37, vector.n37)
+    , ( Index38, vector.n38)
+    , ( Index39, vector.n39)
+    , ( Index40, vector.n40)
+    , ( Index41, vector.n41)
+    , ( Index42, vector.n42)
+    , ( Index43, vector.n43)
+    , ( Index44, vector.n44)
+    , ( Index45, vector.n45)
+    , ( Index46, vector.n46)
+    , ( Index47, vector.n47)
+    , ( Index48, vector.n48)
+    , ( Index49, vector.n49)
+    , ( Index50, vector.n50)
+    , ( Index51, vector.n51)
+    , ( Index52, vector.n52)
+    , ( Index53, vector.n53)
+    , ( Index54, vector.n54)
+    , ( Index55, vector.n55)
+    , ( Index56, vector.n56)
+    , ( Index57, vector.n57)
+    , ( Index58, vector.n58)
+    , ( Index59, vector.n59)
+    , ( Index60, vector.n60)
+    , ( Index61, vector.n61)
+    , ( Index62, vector.n62)
+    , ( Index63, vector.n63)
+    , ( Index64, vector.n64)
+    , ( Index65, vector.n65)
+    , ( Index66, vector.n66)
+    , ( Index67, vector.n67)
+    , ( Index68, vector.n68)
+    , ( Index69, vector.n69)
+    , ( Index70, vector.n70)
+    , ( Index71, vector.n71)
+    , ( Index72, vector.n72)
+    , ( Index73, vector.n73)
+    , ( Index74, vector.n74)
+    , ( Index75, vector.n75)
+    , ( Index76, vector.n76)
+    , ( Index77, vector.n77)
+    , ( Index78, vector.n78)
+    , ( Index79, vector.n79)
+    , ( Index80, vector.n80)
+    , ( Index81, vector.n81)
+    , ( Index82, vector.n82)
+    , ( Index83, vector.n83)
+    , ( Index84, vector.n84)
+    , ( Index85, vector.n85)
+    , ( Index86, vector.n86)
+    , ( Index87, vector.n87)
+    , ( Index88, vector.n88)
+    , ( Index89, vector.n89)
+    , ( Index90, vector.n90)
+    , ( Index91, vector.n91)
+    , ( Index92, vector.n92)
+    , ( Index93, vector.n93)
+    , ( Index94, vector.n94)
+    , ( Index95, vector.n95)
+    , ( Index96, vector.n96)
+    , ( Index97, vector.n97)
+    , ( Index98, vector.n98)
+    , ( Index99, vector.n99)
     ]
 
 
+{-| Make a `Vector100 a` using a function that takes an `Int`, representing the index -}
 initializeFromInt : (Int -> a) -> Vector100 a
 initializeFromInt f =
     { n0 = f 0
@@ -1618,6 +2917,7 @@ initializeFromInt f =
         |> Vector
 
 
+{-| Make a `Vector100 a` using a function that takes an `Index` -}
 initializeFromIndex : (Index -> a) -> Vector100 a
 initializeFromIndex f =
     { n0 = f Index0
@@ -1724,6 +3024,7 @@ initializeFromIndex f =
         |> Vector
 
 
+{-| Make a `Vector100 a` filled with just one item repeated over and over again. -}
 repeat : a -> Vector100 a
 repeat a =
     { n0 = a
@@ -1830,6 +3131,7 @@ repeat a =
         |> Vector
 
 
+{-| Turn the `Index` into an `Int` -}
 indexToInt : Index -> Int
 indexToInt index =
     case index of
@@ -2134,6 +3436,7 @@ indexToInt index =
             99
 
 
+{-| Try and turn an `Int` into an `Index`, returning `Nothing` if the `Int` is above the maximum index of this `Vector100 a` -}
 intToIndex : Int -> Maybe Index
 intToIndex int =
     case int of
@@ -2441,6 +3744,7 @@ intToIndex int =
             Nothing
 
 
+{-| Make a `Vector100 a` from 100elements -}
 from100 : a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> Vector100 a
 from100 a0 a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 a18 a19 a20 a21 a22 a23 a24 a25 a26 a27 a28 a29 a30 a31 a32 a33 a34 a35 a36 a37 a38 a39 a40 a41 a42 a43 a44 a45 a46 a47 a48 a49 a50 a51 a52 a53 a54 a55 a56 a57 a58 a59 a60 a61 a62 a63 a64 a65 a66 a67 a68 a69 a70 a71 a72 a73 a74 a75 a76 a77 a78 a79 a80 a81 a82 a83 a84 a85 a86 a87 a88 a89 a90 a91 a92 a93 a94 a95 a96 a97 a98 a99 =
     { n0 = a0
@@ -2547,423 +3851,464 @@ from100 a0 a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 a18 a19 a2
         |> Vector
 
 
-{-| See if a Vector100 a contains a value
--}
+{-| See if a Vector100 a contains a value -}
 member : a -> Vector100 a -> Bool
 member a (Vector vector) =
-    a
-        == vector.n0
-        || a
-        == vector.n1
-        || a
-        == vector.n2
-        || a
-        == vector.n3
-        || a
-        == vector.n4
-        || a
-        == vector.n5
-        || a
-        == vector.n6
-        || a
-        == vector.n7
-        || a
-        == vector.n8
-        || a
-        == vector.n9
-        || a
-        == vector.n10
-        || a
-        == vector.n11
-        || a
-        == vector.n12
-        || a
-        == vector.n13
-        || a
-        == vector.n14
-        || a
-        == vector.n15
-        || a
-        == vector.n16
-        || a
-        == vector.n17
-        || a
-        == vector.n18
-        || a
-        == vector.n19
-        || a
-        == vector.n20
-        || a
-        == vector.n21
-        || a
-        == vector.n22
-        || a
-        == vector.n23
-        || a
-        == vector.n24
-        || a
-        == vector.n25
-        || a
-        == vector.n26
-        || a
-        == vector.n27
-        || a
-        == vector.n28
-        || a
-        == vector.n29
-        || a
-        == vector.n30
-        || a
-        == vector.n31
-        || a
-        == vector.n32
-        || a
-        == vector.n33
-        || a
-        == vector.n34
-        || a
-        == vector.n35
-        || a
-        == vector.n36
-        || a
-        == vector.n37
-        || a
-        == vector.n38
-        || a
-        == vector.n39
-        || a
-        == vector.n40
-        || a
-        == vector.n41
-        || a
-        == vector.n42
-        || a
-        == vector.n43
-        || a
-        == vector.n44
-        || a
-        == vector.n45
-        || a
-        == vector.n46
-        || a
-        == vector.n47
-        || a
-        == vector.n48
-        || a
-        == vector.n49
-        || a
-        == vector.n50
-        || a
-        == vector.n51
-        || a
-        == vector.n52
-        || a
-        == vector.n53
-        || a
-        == vector.n54
-        || a
-        == vector.n55
-        || a
-        == vector.n56
-        || a
-        == vector.n57
-        || a
-        == vector.n58
-        || a
-        == vector.n59
-        || a
-        == vector.n60
-        || a
-        == vector.n61
-        || a
-        == vector.n62
-        || a
-        == vector.n63
-        || a
-        == vector.n64
-        || a
-        == vector.n65
-        || a
-        == vector.n66
-        || a
-        == vector.n67
-        || a
-        == vector.n68
-        || a
-        == vector.n69
-        || a
-        == vector.n70
-        || a
-        == vector.n71
-        || a
-        == vector.n72
-        || a
-        == vector.n73
-        || a
-        == vector.n74
-        || a
-        == vector.n75
-        || a
-        == vector.n76
-        || a
-        == vector.n77
-        || a
-        == vector.n78
-        || a
-        == vector.n79
-        || a
-        == vector.n80
-        || a
-        == vector.n81
-        || a
-        == vector.n82
-        || a
-        == vector.n83
-        || a
-        == vector.n84
-        || a
-        == vector.n85
-        || a
-        == vector.n86
-        || a
-        == vector.n87
-        || a
-        == vector.n88
-        || a
-        == vector.n89
-        || a
-        == vector.n90
-        || a
-        == vector.n91
-        || a
-        == vector.n92
-        || a
-        == vector.n93
-        || a
-        == vector.n94
-        || a
-        == vector.n95
-        || a
-        == vector.n96
-        || a
-        == vector.n97
-        || a
-        == vector.n98
-        || a
-        == vector.n99
+    a == vector.n0
+    ||     a == vector.n1
+    ||     a == vector.n2
+    ||     a == vector.n3
+    ||     a == vector.n4
+    ||     a == vector.n5
+    ||     a == vector.n6
+    ||     a == vector.n7
+    ||     a == vector.n8
+    ||     a == vector.n9
+    ||     a == vector.n10
+    ||     a == vector.n11
+    ||     a == vector.n12
+    ||     a == vector.n13
+    ||     a == vector.n14
+    ||     a == vector.n15
+    ||     a == vector.n16
+    ||     a == vector.n17
+    ||     a == vector.n18
+    ||     a == vector.n19
+    ||     a == vector.n20
+    ||     a == vector.n21
+    ||     a == vector.n22
+    ||     a == vector.n23
+    ||     a == vector.n24
+    ||     a == vector.n25
+    ||     a == vector.n26
+    ||     a == vector.n27
+    ||     a == vector.n28
+    ||     a == vector.n29
+    ||     a == vector.n30
+    ||     a == vector.n31
+    ||     a == vector.n32
+    ||     a == vector.n33
+    ||     a == vector.n34
+    ||     a == vector.n35
+    ||     a == vector.n36
+    ||     a == vector.n37
+    ||     a == vector.n38
+    ||     a == vector.n39
+    ||     a == vector.n40
+    ||     a == vector.n41
+    ||     a == vector.n42
+    ||     a == vector.n43
+    ||     a == vector.n44
+    ||     a == vector.n45
+    ||     a == vector.n46
+    ||     a == vector.n47
+    ||     a == vector.n48
+    ||     a == vector.n49
+    ||     a == vector.n50
+    ||     a == vector.n51
+    ||     a == vector.n52
+    ||     a == vector.n53
+    ||     a == vector.n54
+    ||     a == vector.n55
+    ||     a == vector.n56
+    ||     a == vector.n57
+    ||     a == vector.n58
+    ||     a == vector.n59
+    ||     a == vector.n60
+    ||     a == vector.n61
+    ||     a == vector.n62
+    ||     a == vector.n63
+    ||     a == vector.n64
+    ||     a == vector.n65
+    ||     a == vector.n66
+    ||     a == vector.n67
+    ||     a == vector.n68
+    ||     a == vector.n69
+    ||     a == vector.n70
+    ||     a == vector.n71
+    ||     a == vector.n72
+    ||     a == vector.n73
+    ||     a == vector.n74
+    ||     a == vector.n75
+    ||     a == vector.n76
+    ||     a == vector.n77
+    ||     a == vector.n78
+    ||     a == vector.n79
+    ||     a == vector.n80
+    ||     a == vector.n81
+    ||     a == vector.n82
+    ||     a == vector.n83
+    ||     a == vector.n84
+    ||     a == vector.n85
+    ||     a == vector.n86
+    ||     a == vector.n87
+    ||     a == vector.n88
+    ||     a == vector.n89
+    ||     a == vector.n90
+    ||     a == vector.n91
+    ||     a == vector.n92
+    ||     a == vector.n93
+    ||     a == vector.n94
+    ||     a == vector.n95
+    ||     a == vector.n96
+    ||     a == vector.n97
+    ||     a == vector.n98
+    ||     a == vector.n99
 
 
+{-| Reverse the order of the items in a `Vector100 a` -}
+reverse : Vector100 a -> Vector100 a
+reverse (Vector vector) =
+    { n0 = vector.n99
+    , n1 = vector.n98
+    , n2 = vector.n97
+    , n3 = vector.n96
+    , n4 = vector.n95
+    , n5 = vector.n94
+    , n6 = vector.n93
+    , n7 = vector.n92
+    , n8 = vector.n91
+    , n9 = vector.n90
+    , n10 = vector.n89
+    , n11 = vector.n88
+    , n12 = vector.n87
+    , n13 = vector.n86
+    , n14 = vector.n85
+    , n15 = vector.n84
+    , n16 = vector.n83
+    , n17 = vector.n82
+    , n18 = vector.n81
+    , n19 = vector.n80
+    , n20 = vector.n79
+    , n21 = vector.n78
+    , n22 = vector.n77
+    , n23 = vector.n76
+    , n24 = vector.n75
+    , n25 = vector.n74
+    , n26 = vector.n73
+    , n27 = vector.n72
+    , n28 = vector.n71
+    , n29 = vector.n70
+    , n30 = vector.n69
+    , n31 = vector.n68
+    , n32 = vector.n67
+    , n33 = vector.n66
+    , n34 = vector.n65
+    , n35 = vector.n64
+    , n36 = vector.n63
+    , n37 = vector.n62
+    , n38 = vector.n61
+    , n39 = vector.n60
+    , n40 = vector.n59
+    , n41 = vector.n58
+    , n42 = vector.n57
+    , n43 = vector.n56
+    , n44 = vector.n55
+    , n45 = vector.n54
+    , n46 = vector.n53
+    , n47 = vector.n52
+    , n48 = vector.n51
+    , n49 = vector.n50
+    , n50 = vector.n49
+    , n51 = vector.n48
+    , n52 = vector.n47
+    , n53 = vector.n46
+    , n54 = vector.n45
+    , n55 = vector.n44
+    , n56 = vector.n43
+    , n57 = vector.n42
+    , n58 = vector.n41
+    , n59 = vector.n40
+    , n60 = vector.n39
+    , n61 = vector.n38
+    , n62 = vector.n37
+    , n63 = vector.n36
+    , n64 = vector.n35
+    , n65 = vector.n34
+    , n66 = vector.n33
+    , n67 = vector.n32
+    , n68 = vector.n31
+    , n69 = vector.n30
+    , n70 = vector.n29
+    , n71 = vector.n28
+    , n72 = vector.n27
+    , n73 = vector.n26
+    , n74 = vector.n25
+    , n75 = vector.n24
+    , n76 = vector.n23
+    , n77 = vector.n22
+    , n78 = vector.n21
+    , n79 = vector.n20
+    , n80 = vector.n19
+    , n81 = vector.n18
+    , n82 = vector.n17
+    , n83 = vector.n16
+    , n84 = vector.n15
+    , n85 = vector.n14
+    , n86 = vector.n13
+    , n87 = vector.n12
+    , n88 = vector.n11
+    , n89 = vector.n10
+    , n90 = vector.n9
+    , n91 = vector.n8
+    , n92 = vector.n7
+    , n93 = vector.n6
+    , n94 = vector.n5
+    , n95 = vector.n4
+    , n96 = vector.n3
+    , n97 = vector.n2
+    , n98 = vector.n1
+    , n99 = vector.n0
+    }
+        |> Vector
+
+
+{-| The length of this vector type, which is 100 -}
+length : Int
+length =
+    100
+
+
+{-| Break a `List a` down into groups of `Vector100 a`. The output is a tuple, where the left side is a list of the remainder.
+
+    Vector3.group [ 1, 2, 3 ]
+    --> ([] , [ Vector3.from3 1 2 3 ])
+
+    Vector3.group [ 1, 2, 3, 4 ]
+    --> ([ 4 ] , [ Vector3.from3 1 2 3 ])
+
+    Vector3.group [ 1, 2, 3, 4, 5 ]
+    --> ([ 4, 5 ] , [ Vector3.from3 1 2 3 ])
+
+    Vector3.group [ 1, 2, 3, 4, 5, 6 ]
+    --> ([] , [ Vector3.from3 1 2 3, Vector3.from3 4 5 6 ])
+ -}
+group : List a -> (List a, List ( Vector100 a ) )
+group items =
+    groupHelp items []
+
+
+groupHelp : List a -> List ( Vector100 a ) -> (List a, List ( Vector100 a ) )
+groupHelp remainingItems output =
+    case remainingItems of
+        i0 :: i1 :: i2 :: i3 :: i4 :: i5 :: i6 :: i7 :: i8 :: i9 :: i10 :: i11 :: i12 :: i13 :: i14 :: i15 :: i16 :: i17 :: i18 :: i19 :: i20 :: i21 :: i22 :: i23 :: i24 :: i25 :: i26 :: i27 :: i28 :: i29 :: i30 :: i31 :: i32 :: i33 :: i34 :: i35 :: i36 :: i37 :: i38 :: i39 :: i40 :: i41 :: i42 :: i43 :: i44 :: i45 :: i46 :: i47 :: i48 :: i49 :: i50 :: i51 :: i52 :: i53 :: i54 :: i55 :: i56 :: i57 :: i58 :: i59 :: i60 :: i61 :: i62 :: i63 :: i64 :: i65 :: i66 :: i67 :: i68 :: i69 :: i70 :: i71 :: i72 :: i73 :: i74 :: i75 :: i76 :: i77 :: i78 :: i79 :: i80 :: i81 :: i82 :: i83 :: i84 :: i85 :: i86 :: i87 :: i88 :: i89 :: i90 :: i91 :: i92 :: i93 :: i94 :: i95 :: i96 :: i97 :: i98 :: i99 :: rest ->
+            groupHelp rest (from100 i0 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 i22 i23 i24 i25 i26 i27 i28 i29 i30 i31 i32 i33 i34 i35 i36 i37 i38 i39 i40 i41 i42 i43 i44 i45 i46 i47 i48 i49 i50 i51 i52 i53 i54 i55 i56 i57 i58 i59 i60 i61 i62 i63 i64 i65 i66 i67 i68 i69 i70 i71 i72 i73 i74 i75 i76 i77 i78 i79 i80 i81 i82 i83 i84 i85 i86 i87 i88 i89 i90 i91 i92 i93 i94 i95 i96 i97 i98 i99 :: output)
+
+        _ ->
+            (remainingItems, List.reverse output)
+
+
+{-| Separate a `Vector100 a` into its last element and everything else. -}
 pop : Vector100 a -> ( Vector99.Vector a, a )
 pop (Vector vector) =
-    ( { n0 = vector.n0
-      , n1 = vector.n1
-      , n2 = vector.n2
-      , n3 = vector.n3
-      , n4 = vector.n4
-      , n5 = vector.n5
-      , n6 = vector.n6
-      , n7 = vector.n7
-      , n8 = vector.n8
-      , n9 = vector.n9
-      , n10 = vector.n10
-      , n11 = vector.n11
-      , n12 = vector.n12
-      , n13 = vector.n13
-      , n14 = vector.n14
-      , n15 = vector.n15
-      , n16 = vector.n16
-      , n17 = vector.n17
-      , n18 = vector.n18
-      , n19 = vector.n19
-      , n20 = vector.n20
-      , n21 = vector.n21
-      , n22 = vector.n22
-      , n23 = vector.n23
-      , n24 = vector.n24
-      , n25 = vector.n25
-      , n26 = vector.n26
-      , n27 = vector.n27
-      , n28 = vector.n28
-      , n29 = vector.n29
-      , n30 = vector.n30
-      , n31 = vector.n31
-      , n32 = vector.n32
-      , n33 = vector.n33
-      , n34 = vector.n34
-      , n35 = vector.n35
-      , n36 = vector.n36
-      , n37 = vector.n37
-      , n38 = vector.n38
-      , n39 = vector.n39
-      , n40 = vector.n40
-      , n41 = vector.n41
-      , n42 = vector.n42
-      , n43 = vector.n43
-      , n44 = vector.n44
-      , n45 = vector.n45
-      , n46 = vector.n46
-      , n47 = vector.n47
-      , n48 = vector.n48
-      , n49 = vector.n49
-      , n50 = vector.n50
-      , n51 = vector.n51
-      , n52 = vector.n52
-      , n53 = vector.n53
-      , n54 = vector.n54
-      , n55 = vector.n55
-      , n56 = vector.n56
-      , n57 = vector.n57
-      , n58 = vector.n58
-      , n59 = vector.n59
-      , n60 = vector.n60
-      , n61 = vector.n61
-      , n62 = vector.n62
-      , n63 = vector.n63
-      , n64 = vector.n64
-      , n65 = vector.n65
-      , n66 = vector.n66
-      , n67 = vector.n67
-      , n68 = vector.n68
-      , n69 = vector.n69
-      , n70 = vector.n70
-      , n71 = vector.n71
-      , n72 = vector.n72
-      , n73 = vector.n73
-      , n74 = vector.n74
-      , n75 = vector.n75
-      , n76 = vector.n76
-      , n77 = vector.n77
-      , n78 = vector.n78
-      , n79 = vector.n79
-      , n80 = vector.n80
-      , n81 = vector.n81
-      , n82 = vector.n82
-      , n83 = vector.n83
-      , n84 = vector.n84
-      , n85 = vector.n85
-      , n86 = vector.n86
-      , n87 = vector.n87
-      , n88 = vector.n88
-      , n89 = vector.n89
-      , n90 = vector.n90
-      , n91 = vector.n91
-      , n92 = vector.n92
-      , n93 = vector.n93
-      , n94 = vector.n94
-      , n95 = vector.n95
-      , n96 = vector.n96
-      , n97 = vector.n97
-      , n98 = vector.n98
-      }
+    (
+    { n0 = vector.n0
+    , n1 = vector.n1
+    , n2 = vector.n2
+    , n3 = vector.n3
+    , n4 = vector.n4
+    , n5 = vector.n5
+    , n6 = vector.n6
+    , n7 = vector.n7
+    , n8 = vector.n8
+    , n9 = vector.n9
+    , n10 = vector.n10
+    , n11 = vector.n11
+    , n12 = vector.n12
+    , n13 = vector.n13
+    , n14 = vector.n14
+    , n15 = vector.n15
+    , n16 = vector.n16
+    , n17 = vector.n17
+    , n18 = vector.n18
+    , n19 = vector.n19
+    , n20 = vector.n20
+    , n21 = vector.n21
+    , n22 = vector.n22
+    , n23 = vector.n23
+    , n24 = vector.n24
+    , n25 = vector.n25
+    , n26 = vector.n26
+    , n27 = vector.n27
+    , n28 = vector.n28
+    , n29 = vector.n29
+    , n30 = vector.n30
+    , n31 = vector.n31
+    , n32 = vector.n32
+    , n33 = vector.n33
+    , n34 = vector.n34
+    , n35 = vector.n35
+    , n36 = vector.n36
+    , n37 = vector.n37
+    , n38 = vector.n38
+    , n39 = vector.n39
+    , n40 = vector.n40
+    , n41 = vector.n41
+    , n42 = vector.n42
+    , n43 = vector.n43
+    , n44 = vector.n44
+    , n45 = vector.n45
+    , n46 = vector.n46
+    , n47 = vector.n47
+    , n48 = vector.n48
+    , n49 = vector.n49
+    , n50 = vector.n50
+    , n51 = vector.n51
+    , n52 = vector.n52
+    , n53 = vector.n53
+    , n54 = vector.n54
+    , n55 = vector.n55
+    , n56 = vector.n56
+    , n57 = vector.n57
+    , n58 = vector.n58
+    , n59 = vector.n59
+    , n60 = vector.n60
+    , n61 = vector.n61
+    , n62 = vector.n62
+    , n63 = vector.n63
+    , n64 = vector.n64
+    , n65 = vector.n65
+    , n66 = vector.n66
+    , n67 = vector.n67
+    , n68 = vector.n68
+    , n69 = vector.n69
+    , n70 = vector.n70
+    , n71 = vector.n71
+    , n72 = vector.n72
+    , n73 = vector.n73
+    , n74 = vector.n74
+    , n75 = vector.n75
+    , n76 = vector.n76
+    , n77 = vector.n77
+    , n78 = vector.n78
+    , n79 = vector.n79
+    , n80 = vector.n80
+    , n81 = vector.n81
+    , n82 = vector.n82
+    , n83 = vector.n83
+    , n84 = vector.n84
+    , n85 = vector.n85
+    , n86 = vector.n86
+    , n87 = vector.n87
+    , n88 = vector.n88
+    , n89 = vector.n89
+    , n90 = vector.n90
+    , n91 = vector.n91
+    , n92 = vector.n92
+    , n93 = vector.n93
+    , n94 = vector.n94
+    , n95 = vector.n95
+    , n96 = vector.n96
+    , n97 = vector.n97
+    , n98 = vector.n98
+    }
         |> Vector99.Vector
     , vector.n99
     )
 
 
-{-| Split a `Vector100 a` into its first element and the rest
--}
+{-| Split a `Vector100 a` into its first element and the rest -}
 uncons : Vector100 a -> ( a, Vector99.Vector a )
 uncons (Vector vector) =
-    ( vector.n0
-    , { n0 = vector.n1
-      , n1 = vector.n2
-      , n2 = vector.n3
-      , n3 = vector.n4
-      , n4 = vector.n5
-      , n5 = vector.n6
-      , n6 = vector.n7
-      , n7 = vector.n8
-      , n8 = vector.n9
-      , n9 = vector.n10
-      , n10 = vector.n11
-      , n11 = vector.n12
-      , n12 = vector.n13
-      , n13 = vector.n14
-      , n14 = vector.n15
-      , n15 = vector.n16
-      , n16 = vector.n17
-      , n17 = vector.n18
-      , n18 = vector.n19
-      , n19 = vector.n20
-      , n20 = vector.n21
-      , n21 = vector.n22
-      , n22 = vector.n23
-      , n23 = vector.n24
-      , n24 = vector.n25
-      , n25 = vector.n26
-      , n26 = vector.n27
-      , n27 = vector.n28
-      , n28 = vector.n29
-      , n29 = vector.n30
-      , n30 = vector.n31
-      , n31 = vector.n32
-      , n32 = vector.n33
-      , n33 = vector.n34
-      , n34 = vector.n35
-      , n35 = vector.n36
-      , n36 = vector.n37
-      , n37 = vector.n38
-      , n38 = vector.n39
-      , n39 = vector.n40
-      , n40 = vector.n41
-      , n41 = vector.n42
-      , n42 = vector.n43
-      , n43 = vector.n44
-      , n44 = vector.n45
-      , n45 = vector.n46
-      , n46 = vector.n47
-      , n47 = vector.n48
-      , n48 = vector.n49
-      , n49 = vector.n50
-      , n50 = vector.n51
-      , n51 = vector.n52
-      , n52 = vector.n53
-      , n53 = vector.n54
-      , n54 = vector.n55
-      , n55 = vector.n56
-      , n56 = vector.n57
-      , n57 = vector.n58
-      , n58 = vector.n59
-      , n59 = vector.n60
-      , n60 = vector.n61
-      , n61 = vector.n62
-      , n62 = vector.n63
-      , n63 = vector.n64
-      , n64 = vector.n65
-      , n65 = vector.n66
-      , n66 = vector.n67
-      , n67 = vector.n68
-      , n68 = vector.n69
-      , n69 = vector.n70
-      , n70 = vector.n71
-      , n71 = vector.n72
-      , n72 = vector.n73
-      , n73 = vector.n74
-      , n74 = vector.n75
-      , n75 = vector.n76
-      , n76 = vector.n77
-      , n77 = vector.n78
-      , n78 = vector.n79
-      , n79 = vector.n80
-      , n80 = vector.n81
-      , n81 = vector.n82
-      , n82 = vector.n83
-      , n83 = vector.n84
-      , n84 = vector.n85
-      , n85 = vector.n86
-      , n86 = vector.n87
-      , n87 = vector.n88
-      , n88 = vector.n89
-      , n89 = vector.n90
-      , n90 = vector.n91
-      , n91 = vector.n92
-      , n92 = vector.n93
-      , n93 = vector.n94
-      , n94 = vector.n95
-      , n95 = vector.n96
-      , n96 = vector.n97
-      , n97 = vector.n98
-      , n98 = vector.n99
-      }
-        |> Vector99.Vector
-    )
+    (vector.n0
+    ,    { n0 = vector.n1
+    , n1 = vector.n2
+    , n2 = vector.n3
+    , n3 = vector.n4
+    , n4 = vector.n5
+    , n5 = vector.n6
+    , n6 = vector.n7
+    , n7 = vector.n8
+    , n8 = vector.n9
+    , n9 = vector.n10
+    , n10 = vector.n11
+    , n11 = vector.n12
+    , n12 = vector.n13
+    , n13 = vector.n14
+    , n14 = vector.n15
+    , n15 = vector.n16
+    , n16 = vector.n17
+    , n17 = vector.n18
+    , n18 = vector.n19
+    , n19 = vector.n20
+    , n20 = vector.n21
+    , n21 = vector.n22
+    , n22 = vector.n23
+    , n23 = vector.n24
+    , n24 = vector.n25
+    , n25 = vector.n26
+    , n26 = vector.n27
+    , n27 = vector.n28
+    , n28 = vector.n29
+    , n29 = vector.n30
+    , n30 = vector.n31
+    , n31 = vector.n32
+    , n32 = vector.n33
+    , n33 = vector.n34
+    , n34 = vector.n35
+    , n35 = vector.n36
+    , n36 = vector.n37
+    , n37 = vector.n38
+    , n38 = vector.n39
+    , n39 = vector.n40
+    , n40 = vector.n41
+    , n41 = vector.n42
+    , n42 = vector.n43
+    , n43 = vector.n44
+    , n44 = vector.n45
+    , n45 = vector.n46
+    , n46 = vector.n47
+    , n47 = vector.n48
+    , n48 = vector.n49
+    , n49 = vector.n50
+    , n50 = vector.n51
+    , n51 = vector.n52
+    , n52 = vector.n53
+    , n53 = vector.n54
+    , n54 = vector.n55
+    , n55 = vector.n56
+    , n56 = vector.n57
+    , n57 = vector.n58
+    , n58 = vector.n59
+    , n59 = vector.n60
+    , n60 = vector.n61
+    , n61 = vector.n62
+    , n62 = vector.n63
+    , n63 = vector.n64
+    , n64 = vector.n65
+    , n65 = vector.n66
+    , n66 = vector.n67
+    , n67 = vector.n68
+    , n68 = vector.n69
+    , n69 = vector.n70
+    , n70 = vector.n71
+    , n71 = vector.n72
+    , n72 = vector.n73
+    , n73 = vector.n74
+    , n74 = vector.n75
+    , n75 = vector.n76
+    , n76 = vector.n77
+    , n77 = vector.n78
+    , n78 = vector.n79
+    , n79 = vector.n80
+    , n80 = vector.n81
+    , n81 = vector.n82
+    , n82 = vector.n83
+    , n83 = vector.n84
+    , n84 = vector.n85
+    , n85 = vector.n86
+    , n86 = vector.n87
+    , n87 = vector.n88
+    , n88 = vector.n89
+    , n89 = vector.n90
+    , n90 = vector.n91
+    , n91 = vector.n92
+    , n92 = vector.n93
+    , n93 = vector.n94
+    , n94 = vector.n95
+    , n95 = vector.n96
+    , n96 = vector.n97
+    , n97 = vector.n98
+    , n98 = vector.n99
+    }
+        |> Vector99.Vector    )

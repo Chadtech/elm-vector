@@ -6,7 +6,11 @@ module Vector57 exposing
     , pop
     , uncons
     , cons
+    , foldr
+    , foldl
     , map
+    , indexedMap
+    , set
     , mapItem
     , toList
     , fromList
@@ -20,7 +24,13 @@ module Vector57 exposing
     , reverse
     , member
     , map5
+    , nextIndex
+    , previousIndex
     , map4
+    , map3
+    , map2
+    , length
+    , group
     , from57
     )
 
@@ -37,7 +47,7 @@ module Vector57 exposing
 
 # Index
 
-@docs Index, get, indexToInt, intToIndex
+@docs Index, get, set, indexToInt, intToIndex, nextIndex, previousIndex
 
 # Transform
 
@@ -64,10 +74,12 @@ import Vector56.Internal as Vector56
 import Util exposing (andAnother, andAnotherSafe, finishOffAndAnotherSafe)
 
 
+{-| A vector that contains exactly 57 elements -}
 type alias Vector57 a = 
     Vector57.Internal.Vector a
 
 
+{-| All the indices to a `Vector57 a`. There are exactly 57 of them. Its kind of like an `Int` except there is a finite amount of them. -}
 type Index
     = Index0
     | Index1
@@ -128,6 +140,359 @@ type Index
     | Index56
 
 
+{-| Given an index, get the next one. Unless its the last index in which case there is no next index (`Nothing`) -}
+nextIndex : Index -> Maybe Index
+nextIndex index =
+    case index of
+        Index0 ->
+            Just Index1
+
+        Index1 ->
+            Just Index2
+
+        Index2 ->
+            Just Index3
+
+        Index3 ->
+            Just Index4
+
+        Index4 ->
+            Just Index5
+
+        Index5 ->
+            Just Index6
+
+        Index6 ->
+            Just Index7
+
+        Index7 ->
+            Just Index8
+
+        Index8 ->
+            Just Index9
+
+        Index9 ->
+            Just Index10
+
+        Index10 ->
+            Just Index11
+
+        Index11 ->
+            Just Index12
+
+        Index12 ->
+            Just Index13
+
+        Index13 ->
+            Just Index14
+
+        Index14 ->
+            Just Index15
+
+        Index15 ->
+            Just Index16
+
+        Index16 ->
+            Just Index17
+
+        Index17 ->
+            Just Index18
+
+        Index18 ->
+            Just Index19
+
+        Index19 ->
+            Just Index20
+
+        Index20 ->
+            Just Index21
+
+        Index21 ->
+            Just Index22
+
+        Index22 ->
+            Just Index23
+
+        Index23 ->
+            Just Index24
+
+        Index24 ->
+            Just Index25
+
+        Index25 ->
+            Just Index26
+
+        Index26 ->
+            Just Index27
+
+        Index27 ->
+            Just Index28
+
+        Index28 ->
+            Just Index29
+
+        Index29 ->
+            Just Index30
+
+        Index30 ->
+            Just Index31
+
+        Index31 ->
+            Just Index32
+
+        Index32 ->
+            Just Index33
+
+        Index33 ->
+            Just Index34
+
+        Index34 ->
+            Just Index35
+
+        Index35 ->
+            Just Index36
+
+        Index36 ->
+            Just Index37
+
+        Index37 ->
+            Just Index38
+
+        Index38 ->
+            Just Index39
+
+        Index39 ->
+            Just Index40
+
+        Index40 ->
+            Just Index41
+
+        Index41 ->
+            Just Index42
+
+        Index42 ->
+            Just Index43
+
+        Index43 ->
+            Just Index44
+
+        Index44 ->
+            Just Index45
+
+        Index45 ->
+            Just Index46
+
+        Index46 ->
+            Just Index47
+
+        Index47 ->
+            Just Index48
+
+        Index48 ->
+            Just Index49
+
+        Index49 ->
+            Just Index50
+
+        Index50 ->
+            Just Index51
+
+        Index51 ->
+            Just Index52
+
+        Index52 ->
+            Just Index53
+
+        Index53 ->
+            Just Index54
+
+        Index54 ->
+            Just Index55
+
+        Index55 ->
+            Just Index56
+
+        Index56 ->
+            Nothing
+
+
+{-| Given an index, get the previous one. Unless its the `0` index in which case there is no previous index (`Nothing`) -}
+previousIndex : Index -> Maybe Index
+previousIndex index =
+    case index of
+        Index0 ->
+            Nothing
+
+        Index1 ->
+            Just Index0
+
+        Index2 ->
+            Just Index1
+
+        Index3 ->
+            Just Index2
+
+        Index4 ->
+            Just Index3
+
+        Index5 ->
+            Just Index4
+
+        Index6 ->
+            Just Index5
+
+        Index7 ->
+            Just Index6
+
+        Index8 ->
+            Just Index7
+
+        Index9 ->
+            Just Index8
+
+        Index10 ->
+            Just Index9
+
+        Index11 ->
+            Just Index10
+
+        Index12 ->
+            Just Index11
+
+        Index13 ->
+            Just Index12
+
+        Index14 ->
+            Just Index13
+
+        Index15 ->
+            Just Index14
+
+        Index16 ->
+            Just Index15
+
+        Index17 ->
+            Just Index16
+
+        Index18 ->
+            Just Index17
+
+        Index19 ->
+            Just Index18
+
+        Index20 ->
+            Just Index19
+
+        Index21 ->
+            Just Index20
+
+        Index22 ->
+            Just Index21
+
+        Index23 ->
+            Just Index22
+
+        Index24 ->
+            Just Index23
+
+        Index25 ->
+            Just Index24
+
+        Index26 ->
+            Just Index25
+
+        Index27 ->
+            Just Index26
+
+        Index28 ->
+            Just Index27
+
+        Index29 ->
+            Just Index28
+
+        Index30 ->
+            Just Index29
+
+        Index31 ->
+            Just Index30
+
+        Index32 ->
+            Just Index31
+
+        Index33 ->
+            Just Index32
+
+        Index34 ->
+            Just Index33
+
+        Index35 ->
+            Just Index34
+
+        Index36 ->
+            Just Index35
+
+        Index37 ->
+            Just Index36
+
+        Index38 ->
+            Just Index37
+
+        Index39 ->
+            Just Index38
+
+        Index40 ->
+            Just Index39
+
+        Index41 ->
+            Just Index40
+
+        Index42 ->
+            Just Index41
+
+        Index43 ->
+            Just Index42
+
+        Index44 ->
+            Just Index43
+
+        Index45 ->
+            Just Index44
+
+        Index46 ->
+            Just Index45
+
+        Index47 ->
+            Just Index46
+
+        Index48 ->
+            Just Index47
+
+        Index49 ->
+            Just Index48
+
+        Index50 ->
+            Just Index49
+
+        Index51 ->
+            Just Index50
+
+        Index52 ->
+            Just Index51
+
+        Index53 ->
+            Just Index52
+
+        Index54 ->
+            Just Index53
+
+        Index55 ->
+            Just Index54
+
+        Index56 ->
+            Just Index55
+
+
+{-| Get the item at that `Index` in a `Vector57 a` -}
 get : Index -> Vector57 a -> a
 get index (Vector vector) =
     case index of
@@ -303,6 +668,195 @@ get index (Vector vector) =
             vector.n56
 
 
+{-| Set the item at a specific index in a `Vector57 a` -}
+set : Index -> a -> Vector57 a -> Vector57 a
+set index a (Vector vector) =
+    case index of
+        Index0 ->
+            Vector { vector | n0 = a }
+
+        Index1 ->
+            Vector { vector | n1 = a }
+
+        Index2 ->
+            Vector { vector | n2 = a }
+
+        Index3 ->
+            Vector { vector | n3 = a }
+
+        Index4 ->
+            Vector { vector | n4 = a }
+
+        Index5 ->
+            Vector { vector | n5 = a }
+
+        Index6 ->
+            Vector { vector | n6 = a }
+
+        Index7 ->
+            Vector { vector | n7 = a }
+
+        Index8 ->
+            Vector { vector | n8 = a }
+
+        Index9 ->
+            Vector { vector | n9 = a }
+
+        Index10 ->
+            Vector { vector | n10 = a }
+
+        Index11 ->
+            Vector { vector | n11 = a }
+
+        Index12 ->
+            Vector { vector | n12 = a }
+
+        Index13 ->
+            Vector { vector | n13 = a }
+
+        Index14 ->
+            Vector { vector | n14 = a }
+
+        Index15 ->
+            Vector { vector | n15 = a }
+
+        Index16 ->
+            Vector { vector | n16 = a }
+
+        Index17 ->
+            Vector { vector | n17 = a }
+
+        Index18 ->
+            Vector { vector | n18 = a }
+
+        Index19 ->
+            Vector { vector | n19 = a }
+
+        Index20 ->
+            Vector { vector | n20 = a }
+
+        Index21 ->
+            Vector { vector | n21 = a }
+
+        Index22 ->
+            Vector { vector | n22 = a }
+
+        Index23 ->
+            Vector { vector | n23 = a }
+
+        Index24 ->
+            Vector { vector | n24 = a }
+
+        Index25 ->
+            Vector { vector | n25 = a }
+
+        Index26 ->
+            Vector { vector | n26 = a }
+
+        Index27 ->
+            Vector { vector | n27 = a }
+
+        Index28 ->
+            Vector { vector | n28 = a }
+
+        Index29 ->
+            Vector { vector | n29 = a }
+
+        Index30 ->
+            Vector { vector | n30 = a }
+
+        Index31 ->
+            Vector { vector | n31 = a }
+
+        Index32 ->
+            Vector { vector | n32 = a }
+
+        Index33 ->
+            Vector { vector | n33 = a }
+
+        Index34 ->
+            Vector { vector | n34 = a }
+
+        Index35 ->
+            Vector { vector | n35 = a }
+
+        Index36 ->
+            Vector { vector | n36 = a }
+
+        Index37 ->
+            Vector { vector | n37 = a }
+
+        Index38 ->
+            Vector { vector | n38 = a }
+
+        Index39 ->
+            Vector { vector | n39 = a }
+
+        Index40 ->
+            Vector { vector | n40 = a }
+
+        Index41 ->
+            Vector { vector | n41 = a }
+
+        Index42 ->
+            Vector { vector | n42 = a }
+
+        Index43 ->
+            Vector { vector | n43 = a }
+
+        Index44 ->
+            Vector { vector | n44 = a }
+
+        Index45 ->
+            Vector { vector | n45 = a }
+
+        Index46 ->
+            Vector { vector | n46 = a }
+
+        Index47 ->
+            Vector { vector | n47 = a }
+
+        Index48 ->
+            Vector { vector | n48 = a }
+
+        Index49 ->
+            Vector { vector | n49 = a }
+
+        Index50 ->
+            Vector { vector | n50 = a }
+
+        Index51 ->
+            Vector { vector | n51 = a }
+
+        Index52 ->
+            Vector { vector | n52 = a }
+
+        Index53 ->
+            Vector { vector | n53 = a }
+
+        Index54 ->
+            Vector { vector | n54 = a }
+
+        Index55 ->
+            Vector { vector | n55 = a }
+
+        Index56 ->
+            Vector { vector | n56 = a }
+
+
+{-| Reduce a `Vector57 a` from the right. -}
+foldr : (a -> b -> b) -> b -> Vector57 a -> b
+foldr f start vector =
+    List.foldr f start <| toList vector
+
+
+{-| Reduce a `Vector57 a` from the left. -}
+foldl : (a -> b -> b) -> b -> Vector57 a -> b
+foldl f start vector =
+    List.foldl f start <| toList vector
+
+
+{-| Apply a function to every element in a `Vector57 a`. -}
 map : (a -> b) -> Vector57 a -> Vector57 b
 map f (Vector vector) =
     { n0 = f vector.n0
@@ -366,9 +920,201 @@ map f (Vector vector) =
         |> Vector
 
 
-{-| -}
+{-| Apply a function on every element with its index as first argument -}
+indexedMap : (Index -> a -> b) -> Vector57 a -> Vector57 b
+indexedMap f (Vector vector) =
+    { n0 = f Index0 vector.n0
+    , n1 = f Index1 vector.n1
+    , n2 = f Index2 vector.n2
+    , n3 = f Index3 vector.n3
+    , n4 = f Index4 vector.n4
+    , n5 = f Index5 vector.n5
+    , n6 = f Index6 vector.n6
+    , n7 = f Index7 vector.n7
+    , n8 = f Index8 vector.n8
+    , n9 = f Index9 vector.n9
+    , n10 = f Index10 vector.n10
+    , n11 = f Index11 vector.n11
+    , n12 = f Index12 vector.n12
+    , n13 = f Index13 vector.n13
+    , n14 = f Index14 vector.n14
+    , n15 = f Index15 vector.n15
+    , n16 = f Index16 vector.n16
+    , n17 = f Index17 vector.n17
+    , n18 = f Index18 vector.n18
+    , n19 = f Index19 vector.n19
+    , n20 = f Index20 vector.n20
+    , n21 = f Index21 vector.n21
+    , n22 = f Index22 vector.n22
+    , n23 = f Index23 vector.n23
+    , n24 = f Index24 vector.n24
+    , n25 = f Index25 vector.n25
+    , n26 = f Index26 vector.n26
+    , n27 = f Index27 vector.n27
+    , n28 = f Index28 vector.n28
+    , n29 = f Index29 vector.n29
+    , n30 = f Index30 vector.n30
+    , n31 = f Index31 vector.n31
+    , n32 = f Index32 vector.n32
+    , n33 = f Index33 vector.n33
+    , n34 = f Index34 vector.n34
+    , n35 = f Index35 vector.n35
+    , n36 = f Index36 vector.n36
+    , n37 = f Index37 vector.n37
+    , n38 = f Index38 vector.n38
+    , n39 = f Index39 vector.n39
+    , n40 = f Index40 vector.n40
+    , n41 = f Index41 vector.n41
+    , n42 = f Index42 vector.n42
+    , n43 = f Index43 vector.n43
+    , n44 = f Index44 vector.n44
+    , n45 = f Index45 vector.n45
+    , n46 = f Index46 vector.n46
+    , n47 = f Index47 vector.n47
+    , n48 = f Index48 vector.n48
+    , n49 = f Index49 vector.n49
+    , n50 = f Index50 vector.n50
+    , n51 = f Index51 vector.n51
+    , n52 = f Index52 vector.n52
+    , n53 = f Index53 vector.n53
+    , n54 = f Index54 vector.n54
+    , n55 = f Index55 vector.n55
+    , n56 = f Index56 vector.n56
+    }
+        |> Vector
+
+
+{-|  -}
+map2 : (a -> b -> c) -> Vector57 a -> Vector57 b -> Vector57 c
+map2 f (Vector va ) (Vector vb ) =
+    { n0 = f va.n0 vb.n0
+    , n1 = f va.n1 vb.n1
+    , n2 = f va.n2 vb.n2
+    , n3 = f va.n3 vb.n3
+    , n4 = f va.n4 vb.n4
+    , n5 = f va.n5 vb.n5
+    , n6 = f va.n6 vb.n6
+    , n7 = f va.n7 vb.n7
+    , n8 = f va.n8 vb.n8
+    , n9 = f va.n9 vb.n9
+    , n10 = f va.n10 vb.n10
+    , n11 = f va.n11 vb.n11
+    , n12 = f va.n12 vb.n12
+    , n13 = f va.n13 vb.n13
+    , n14 = f va.n14 vb.n14
+    , n15 = f va.n15 vb.n15
+    , n16 = f va.n16 vb.n16
+    , n17 = f va.n17 vb.n17
+    , n18 = f va.n18 vb.n18
+    , n19 = f va.n19 vb.n19
+    , n20 = f va.n20 vb.n20
+    , n21 = f va.n21 vb.n21
+    , n22 = f va.n22 vb.n22
+    , n23 = f va.n23 vb.n23
+    , n24 = f va.n24 vb.n24
+    , n25 = f va.n25 vb.n25
+    , n26 = f va.n26 vb.n26
+    , n27 = f va.n27 vb.n27
+    , n28 = f va.n28 vb.n28
+    , n29 = f va.n29 vb.n29
+    , n30 = f va.n30 vb.n30
+    , n31 = f va.n31 vb.n31
+    , n32 = f va.n32 vb.n32
+    , n33 = f va.n33 vb.n33
+    , n34 = f va.n34 vb.n34
+    , n35 = f va.n35 vb.n35
+    , n36 = f va.n36 vb.n36
+    , n37 = f va.n37 vb.n37
+    , n38 = f va.n38 vb.n38
+    , n39 = f va.n39 vb.n39
+    , n40 = f va.n40 vb.n40
+    , n41 = f va.n41 vb.n41
+    , n42 = f va.n42 vb.n42
+    , n43 = f va.n43 vb.n43
+    , n44 = f va.n44 vb.n44
+    , n45 = f va.n45 vb.n45
+    , n46 = f va.n46 vb.n46
+    , n47 = f va.n47 vb.n47
+    , n48 = f va.n48 vb.n48
+    , n49 = f va.n49 vb.n49
+    , n50 = f va.n50 vb.n50
+    , n51 = f va.n51 vb.n51
+    , n52 = f va.n52 vb.n52
+    , n53 = f va.n53 vb.n53
+    , n54 = f va.n54 vb.n54
+    , n55 = f va.n55 vb.n55
+    , n56 = f va.n56 vb.n56
+    }
+        |> Vector
+
+
+{-|  -}
+map3 : (a -> b -> c -> d) -> Vector57 a -> Vector57 b -> Vector57 c -> Vector57 d
+map3 f (Vector va ) (Vector vb ) (Vector vc ) =
+    { n0 = f va.n0 vb.n0 vc.n0
+    , n1 = f va.n1 vb.n1 vc.n1
+    , n2 = f va.n2 vb.n2 vc.n2
+    , n3 = f va.n3 vb.n3 vc.n3
+    , n4 = f va.n4 vb.n4 vc.n4
+    , n5 = f va.n5 vb.n5 vc.n5
+    , n6 = f va.n6 vb.n6 vc.n6
+    , n7 = f va.n7 vb.n7 vc.n7
+    , n8 = f va.n8 vb.n8 vc.n8
+    , n9 = f va.n9 vb.n9 vc.n9
+    , n10 = f va.n10 vb.n10 vc.n10
+    , n11 = f va.n11 vb.n11 vc.n11
+    , n12 = f va.n12 vb.n12 vc.n12
+    , n13 = f va.n13 vb.n13 vc.n13
+    , n14 = f va.n14 vb.n14 vc.n14
+    , n15 = f va.n15 vb.n15 vc.n15
+    , n16 = f va.n16 vb.n16 vc.n16
+    , n17 = f va.n17 vb.n17 vc.n17
+    , n18 = f va.n18 vb.n18 vc.n18
+    , n19 = f va.n19 vb.n19 vc.n19
+    , n20 = f va.n20 vb.n20 vc.n20
+    , n21 = f va.n21 vb.n21 vc.n21
+    , n22 = f va.n22 vb.n22 vc.n22
+    , n23 = f va.n23 vb.n23 vc.n23
+    , n24 = f va.n24 vb.n24 vc.n24
+    , n25 = f va.n25 vb.n25 vc.n25
+    , n26 = f va.n26 vb.n26 vc.n26
+    , n27 = f va.n27 vb.n27 vc.n27
+    , n28 = f va.n28 vb.n28 vc.n28
+    , n29 = f va.n29 vb.n29 vc.n29
+    , n30 = f va.n30 vb.n30 vc.n30
+    , n31 = f va.n31 vb.n31 vc.n31
+    , n32 = f va.n32 vb.n32 vc.n32
+    , n33 = f va.n33 vb.n33 vc.n33
+    , n34 = f va.n34 vb.n34 vc.n34
+    , n35 = f va.n35 vb.n35 vc.n35
+    , n36 = f va.n36 vb.n36 vc.n36
+    , n37 = f va.n37 vb.n37 vc.n37
+    , n38 = f va.n38 vb.n38 vc.n38
+    , n39 = f va.n39 vb.n39 vc.n39
+    , n40 = f va.n40 vb.n40 vc.n40
+    , n41 = f va.n41 vb.n41 vc.n41
+    , n42 = f va.n42 vb.n42 vc.n42
+    , n43 = f va.n43 vb.n43 vc.n43
+    , n44 = f va.n44 vb.n44 vc.n44
+    , n45 = f va.n45 vb.n45 vc.n45
+    , n46 = f va.n46 vb.n46 vc.n46
+    , n47 = f va.n47 vb.n47 vc.n47
+    , n48 = f va.n48 vb.n48 vc.n48
+    , n49 = f va.n49 vb.n49 vc.n49
+    , n50 = f va.n50 vb.n50 vc.n50
+    , n51 = f va.n51 vb.n51 vc.n51
+    , n52 = f va.n52 vb.n52 vc.n52
+    , n53 = f va.n53 vb.n53 vc.n53
+    , n54 = f va.n54 vb.n54 vc.n54
+    , n55 = f va.n55 vb.n55 vc.n55
+    , n56 = f va.n56 vb.n56 vc.n56
+    }
+        |> Vector
+
+
+{-|  -}
 map4 : (a -> b -> c -> d -> e) -> Vector57 a -> Vector57 b -> Vector57 c -> Vector57 d -> Vector57 e
-map4 f va vb vc vd =
+map4 f (Vector va ) (Vector vb ) (Vector vc ) (Vector vd ) =
     { n0 = f va.n0 vb.n0 vc.n0 vd.n0
     , n1 = f va.n1 vb.n1 vc.n1 vd.n1
     , n2 = f va.n2 vb.n2 vc.n2 vd.n2
@@ -430,9 +1176,9 @@ map4 f va vb vc vd =
         |> Vector
 
 
-{-| -}
+{-|  -}
 map5 : (a -> b -> c -> d -> e -> f) -> Vector57 a -> Vector57 b -> Vector57 c -> Vector57 d -> Vector57 e -> Vector57 f
-map5 f va vb vc vd ve =
+map5 f (Vector va ) (Vector vb ) (Vector vc ) (Vector vd ) (Vector ve ) =
     { n0 = f va.n0 vb.n0 vc.n0 vd.n0 ve.n0
     , n1 = f va.n1 vb.n1 vc.n1 vd.n1 ve.n1
     , n2 = f va.n2 vb.n2 vc.n2 vd.n2 ve.n2
@@ -494,6 +1240,7 @@ map5 f va vb vc vd ve =
         |> Vector
 
 
+{-| Transform just one particular item at a particular `Index` -}
 mapItem : Index -> (a -> a) -> Vector57 a -> Vector57 a
 mapItem index mapper (Vector vector) =
     case index of
@@ -669,7 +1416,7 @@ mapItem index mapper (Vector vector) =
             Vector { vector | n56 = mapper vector.n56 }
 
 
-{-| Convert a `Vector57 a` into a `List a` of length 57-}
+{-| Convert a `Vector57 a` into a `List a` of length 57 -}
 toList : Vector57 a -> List a
 toList (Vector vector) =
     [ vector.n0
@@ -732,6 +1479,18 @@ toList (Vector vector) =
     ]
 
 
+{-| Turn a `List a` into a `Vector57 a`. If there are not enough items in the `List a`, then this function returns `Nothing`. The extra items in the input list, if there are any, is returned as the first element in the output tuple.
+
+    Vector3.fromList []
+    --> Nothing
+
+    Vector3.fromList [ 1 ]
+    --> Nothing
+
+    Vector3.fromList [ 5, 6, 7, 8 ]
+    --> Just ([ 8 ], Vector3.from3 5 6 7)
+
+ -}
 fromList : List a -> Maybe (List a, Vector57 a)
 fromList items =
     Just (items, VectorModel)
@@ -796,6 +1555,18 @@ fromList items =
         |> Maybe.map (Tuple.mapSecond Vector)
 
 
+{-| Turn a `List a` into a `Vector57 a`. If there are not enough items in the `List a`, then fill in the remaining spots with a default value. The extra items in the input list, if there are any, is returned as the first element in the output tuple.
+
+    Vector3.fromListWithDefault 1 []
+    --> ([] ,Vector3.from3 1 1 1)
+
+    Vector3.fromListWithDefault 2 [ 1 ]
+    --> ([], Vector3.from3 1 2 2)
+
+    Vector3.fromListWithDefault 2 [ 5, 6, 7, 8 ]
+    --> ([ 8 ], Vector3.from3 5 6 7)
+
+ -}
 fromListWithDefault : a -> List a -> ( List a,Vector57 a)
 fromListWithDefault default items =
     (default, items, VectorModel)
@@ -861,6 +1632,7 @@ fromListWithDefault default items =
         |> Tuple.mapSecond Vector
 
 
+{-| Turn a `Vector57 a` elm into a list, where each element is paired with its `Index` -}
 toIndexedList : Vector57 a -> List (Index, a)
 toIndexedList (Vector vector) =
     [ ( Index0, vector.n0)
@@ -923,6 +1695,7 @@ toIndexedList (Vector vector) =
     ]
 
 
+{-| Make a `Vector57 a` using a function that takes an `Int`, representing the index -}
 initializeFromInt : (Int -> a) -> Vector57 a
 initializeFromInt f =
     { n0 = f 0
@@ -986,6 +1759,7 @@ initializeFromInt f =
         |> Vector
 
 
+{-| Make a `Vector57 a` using a function that takes an `Index` -}
 initializeFromIndex : (Index -> a) -> Vector57 a
 initializeFromIndex f =
     { n0 = f Index0
@@ -1049,6 +1823,7 @@ initializeFromIndex f =
         |> Vector
 
 
+{-| Make a `Vector57 a` filled with just one item repeated over and over again. -}
 repeat : a -> Vector57 a
 repeat a =
     { n0 = a
@@ -1112,6 +1887,7 @@ repeat a =
         |> Vector
 
 
+{-| Turn the `Index` into an `Int` -}
 indexToInt : Index -> Int
 indexToInt index =
     case index of
@@ -1287,6 +2063,7 @@ indexToInt index =
             56
 
 
+{-| Try and turn an `Int` into an `Index`, returning `Nothing` if the `Int` is above the maximum index of this `Vector57 a` -}
 intToIndex : Int -> Maybe Index
 intToIndex int =
     case int of
@@ -1465,6 +2242,7 @@ intToIndex int =
             Nothing
 
 
+{-| Make a `Vector57 a` from 57elements -}
 from57 : a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> Vector57 a
 from57 a0 a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 a18 a19 a20 a21 a22 a23 a24 a25 a26 a27 a28 a29 a30 a31 a32 a33 a34 a35 a36 a37 a38 a39 a40 a41 a42 a43 a44 a45 a46 a47 a48 a49 a50 a51 a52 a53 a54 a55 a56 =
     { n0 = a0
@@ -1528,7 +2306,7 @@ from57 a0 a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 a18 a19 a20
         |> Vector
 
 
-{-| See if a Vector57 a contains a value-}
+{-| See if a Vector57 a contains a value -}
 member : a -> Vector57 a -> Bool
 member a (Vector vector) =
     a == vector.n0
@@ -1590,6 +2368,106 @@ member a (Vector vector) =
     ||     a == vector.n56
 
 
+{-| Reverse the order of the items in a `Vector57 a` -}
+reverse : Vector57 a -> Vector57 a
+reverse (Vector vector) =
+    { n0 = vector.n56
+    , n1 = vector.n55
+    , n2 = vector.n54
+    , n3 = vector.n53
+    , n4 = vector.n52
+    , n5 = vector.n51
+    , n6 = vector.n50
+    , n7 = vector.n49
+    , n8 = vector.n48
+    , n9 = vector.n47
+    , n10 = vector.n46
+    , n11 = vector.n45
+    , n12 = vector.n44
+    , n13 = vector.n43
+    , n14 = vector.n42
+    , n15 = vector.n41
+    , n16 = vector.n40
+    , n17 = vector.n39
+    , n18 = vector.n38
+    , n19 = vector.n37
+    , n20 = vector.n36
+    , n21 = vector.n35
+    , n22 = vector.n34
+    , n23 = vector.n33
+    , n24 = vector.n32
+    , n25 = vector.n31
+    , n26 = vector.n30
+    , n27 = vector.n29
+    , n28 = vector.n28
+    , n29 = vector.n27
+    , n30 = vector.n26
+    , n31 = vector.n25
+    , n32 = vector.n24
+    , n33 = vector.n23
+    , n34 = vector.n22
+    , n35 = vector.n21
+    , n36 = vector.n20
+    , n37 = vector.n19
+    , n38 = vector.n18
+    , n39 = vector.n17
+    , n40 = vector.n16
+    , n41 = vector.n15
+    , n42 = vector.n14
+    , n43 = vector.n13
+    , n44 = vector.n12
+    , n45 = vector.n11
+    , n46 = vector.n10
+    , n47 = vector.n9
+    , n48 = vector.n8
+    , n49 = vector.n7
+    , n50 = vector.n6
+    , n51 = vector.n5
+    , n52 = vector.n4
+    , n53 = vector.n3
+    , n54 = vector.n2
+    , n55 = vector.n1
+    , n56 = vector.n0
+    }
+        |> Vector
+
+
+{-| The length of this vector type, which is 57 -}
+length : Int
+length =
+    57
+
+
+{-| Break a `List a` down into groups of `Vector57 a`. The output is a tuple, where the left side is a list of the remainder.
+
+    Vector3.group [ 1, 2, 3 ]
+    --> ([] , [ Vector3.from3 1 2 3 ])
+
+    Vector3.group [ 1, 2, 3, 4 ]
+    --> ([ 4 ] , [ Vector3.from3 1 2 3 ])
+
+    Vector3.group [ 1, 2, 3, 4, 5 ]
+    --> ([ 4, 5 ] , [ Vector3.from3 1 2 3 ])
+
+    Vector3.group [ 1, 2, 3, 4, 5, 6 ]
+    --> ([] , [ Vector3.from3 1 2 3, Vector3.from3 4 5 6 ])
+ -}
+group : List a -> (List a, List ( Vector57 a ) )
+group items =
+    groupHelp items []
+
+
+groupHelp : List a -> List ( Vector57 a ) -> (List a, List ( Vector57 a ) )
+groupHelp remainingItems output =
+    case remainingItems of
+        i0 :: i1 :: i2 :: i3 :: i4 :: i5 :: i6 :: i7 :: i8 :: i9 :: i10 :: i11 :: i12 :: i13 :: i14 :: i15 :: i16 :: i17 :: i18 :: i19 :: i20 :: i21 :: i22 :: i23 :: i24 :: i25 :: i26 :: i27 :: i28 :: i29 :: i30 :: i31 :: i32 :: i33 :: i34 :: i35 :: i36 :: i37 :: i38 :: i39 :: i40 :: i41 :: i42 :: i43 :: i44 :: i45 :: i46 :: i47 :: i48 :: i49 :: i50 :: i51 :: i52 :: i53 :: i54 :: i55 :: i56 :: rest ->
+            groupHelp rest (from57 i0 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 i22 i23 i24 i25 i26 i27 i28 i29 i30 i31 i32 i33 i34 i35 i36 i37 i38 i39 i40 i41 i42 i43 i44 i45 i46 i47 i48 i49 i50 i51 i52 i53 i54 i55 i56 :: output)
+
+        _ ->
+            (remainingItems, List.reverse output)
+
+
+{-| Add an element to the end of a `Vector57 a`, incrementing its size by 1 -}
 push : a -> Vector57 a -> Vector58.Vector a
 push a (Vector vector) =
     { n0 = vector.n0
@@ -1654,6 +2532,7 @@ push a (Vector vector) =
         |> Vector58.Vector
 
 
+{-| Separate a `Vector57 a` into its last element and everything else. -}
 pop : Vector57 a -> ( Vector56.Vector a, a )
 pop (Vector vector) =
     (
@@ -1719,7 +2598,7 @@ pop (Vector vector) =
     )
 
 
-{-| Split a `Vector57 a` into its first element and the rest-}
+{-| Split a `Vector57 a` into its first element and the rest -}
 uncons : Vector57 a -> ( a, Vector56.Vector a )
 uncons (Vector vector) =
     (vector.n0
@@ -1783,7 +2662,7 @@ uncons (Vector vector) =
         |> Vector56.Vector    )
 
 
-{-| Add an element to the front of a vector, incrementing the vector size by 1-}
+{-| Add an element to the front of a vector, incrementing the vector size by 1 -}
 cons : a -> Vector57 a -> Vector58.Vector a
 cons a (Vector vector) =
     { n0 = a

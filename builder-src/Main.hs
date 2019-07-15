@@ -90,8 +90,16 @@ makeModule n =
         , makeImports n
         , makeVectorDefinition n
         , makeIndexDefinition n
+        , makeNextIndexDefinition n
+        , makePreviousIndexDefinition n
         , makeGetDefinition n
+        , makeSetDefinition n
+        , makeFoldrDefinition n
+        , makeFoldlDefinition n
         , makeMapDefinition n
+        , makeIndexedMapDefinition n
+        , makeMap2Definition n
+        , makeMap3Definition n
         , makeMap4Definition n
         , makeMap5Definition n
         , makeMapItemDefinition n
@@ -106,6 +114,9 @@ makeModule n =
         , makeIntToIndex n
         , makeFrom n
         , makeMemberDefinition n
+        , makeReverseDefinition n
+        , makeLengthDefinition n
+        , makeGroupDefinition n
         ]
      |> List.map Just
      )
@@ -148,7 +159,10 @@ makeModuleHeader n =
             , popImport n
             , unconsImport n
             , consImport n
+            , Just "foldr"
+            , Just "foldl"
             , Just "map"
+            , Just "indexedMap"
             , Just "set"
             , Just "mapItem"
             , Just "toList"
@@ -163,7 +177,13 @@ makeModuleHeader n =
             , Just "reverse"
             , Just "member"
             , Just "map5"
+            , Just "nextIndex"
+            , Just "previousIndex"
             , Just "map4"
+            , Just "map3"
+            , Just "map2"
+            , Just "length"
+            , Just "group"
             , Just <| T.append "from" <| intToText n
             ]
          |> onlyValues
@@ -202,7 +222,7 @@ makeModuleDocs n =
       , ", fromListWithDefault, initializeFromInt, initializeFromIndex"
       ]
     , "# Index"
-    , "@docs Index, get, indexToInt, intToIndex"
+    , "@docs Index, get, set, indexToInt, intToIndex, nextIndex, previousIndex"
     , "# Transform"
     , "@docs map, mapItem, indexedMap, foldr, foldl, map2, map3, map4, map5"
     , "# Lists"
@@ -267,7 +287,13 @@ previousVectorImport n = if 1 < n
 
 makeVectorDefinition :: Int -> Text
 makeVectorDefinition n =
-  [ "type alias "
+  [ [ "A vector that contains exactly "
+    , intToText n
+    , " elements"
+    ]
+      |> T.concat
+      |> docBrackets
+  , "\ntype alias "
     , vectorOf n "a"
     , " = "
     , "\n"
@@ -296,7 +322,15 @@ makeInternalVectorDefinition n =
 
 makeIndexDefinition :: Int -> Text
 makeIndexDefinition n =
-  [ "type Index\n"
+  [ [ "All the indices to a `"
+    , vectorOf n "a"
+    , "`. There are exactly "
+    , intToText n
+    , " of them. Its kind of like an `Int` except there is a finite amount of them."
+    ]
+      |> T.concat
+      |> docBrackets
+  , "\ntype Index\n"
     , indent 1 "= Index0\n"
     , List.map (indent 1 <. T.append "| " <. indexOf) (range 1 (n - 1))
       |> T.intercalate "\n"
@@ -304,11 +338,65 @@ makeIndexDefinition n =
     |> T.concat
 
 
+makeNextIndexDefinition :: Int -> Text
+makeNextIndexDefinition n =
+  let
+    makeIndexCase :: Int -> (Text, Text)
+    makeIndexCase i =
+      (indexOf i
+      , if i == (n - 1) then
+          "Nothing"
+        else
+          T.append "Just " <| indexOf (i + 1)
+      
+      )
+  in
+  [ "Given an index, get the next one. Unless its the last index in which case there is no next index (`Nothing`)"
+    |> docBrackets
+  , funcDef "nextIndex"
+      [("Index", "index")]
+      "Maybe Index"
+  , caseStatement "index"
+    (List.map makeIndexCase (range 0 (n - 1)))
+  ]
+    |> T.intercalate "\n"
+
+
+makePreviousIndexDefinition :: Int -> Text
+makePreviousIndexDefinition n =
+  let
+    makeIndexCase :: Int -> (Text, Text)
+    makeIndexCase i =
+      (indexOf i
+      , if i == 0 then
+          "Nothing"
+        else
+          T.append "Just " <| indexOf (i - 1)
+      
+      )
+  in
+  [ "Given an index, get the previous one. Unless its the `0` index in which case there is no previous index (`Nothing`)"
+      |> docBrackets
+  , funcDef "previousIndex"
+      [("Index", "index")]
+      "Maybe Index"
+  , caseStatement "index"
+    (List.map makeIndexCase (range 0 (n - 1)))
+  ]
+    |> T.intercalate "\n"
+
 makeGetDefinition :: Int -> Text
 makeGetDefinition n =
   let toCase :: Int -> (Text, Text)
       toCase i = (indexOf i, fieldGetter i)
-  in  [ funcDef "get"
+  in  [ [ "Get the item at that `Index` in a `"
+        , vectorOf n "a"
+        , "`"
+        ]
+          |> T.concat
+          |> docBrackets
+
+      , funcDef "get"
                 [("Index", "index"), (vectorOf n "a", "(Vector vector)")]
                 "a"
       , caseStatement "index" (List.map toCase (range 0 (n - 1)))
@@ -330,12 +418,30 @@ makeMapItemDefinition n =
             ]
             |> T.concat
           )
-  in  [ funcDef
+  in  [ "Transform just one particular item at a particular `Index`"
+        |> docBrackets
+      , funcDef
         "mapItem"
         [ ("Index"       , "index")
         , ("(a -> a)"    , "mapper")
         , (vectorOf n "a", "(Vector vector)")
         ]
+        (vectorOf n "a")
+      , caseStatement "index" (List.map toCase (range 0 (n - 1)))
+      ]
+        |> T.intercalate "\n"
+
+makeSetDefinition :: Int -> Text
+makeSetDefinition n =
+  let toCase :: Int -> (Text, Text)
+      toCase i =
+          (indexOf i, ["Vector { vector | ", fieldName i, " = a }"] |> T.concat)
+  in  [ ["Set the item at a specific index in a `", vectorOf n "a", "`"]
+      |> T.concat
+      |> docBrackets
+      , funcDef
+        "set"
+        [("Index", "index"), ("a", "a"), (vectorOf n "a", "(Vector vector)")]
         (vectorOf n "a")
       , caseStatement "index" (List.map toCase (range 0 (n - 1)))
       ]
@@ -347,7 +453,13 @@ makePush n = if n < totalVectors
   then
     let makeField :: Int -> (Text, Text)
         makeField i = (fieldName i, if i == n then "a" else fieldGetter i)
-    in  [ funcDef "push"
+    in  [ [ "Add an element to the end of a `"
+          , vectorOf n "a"
+          , "`, incrementing its size by 1"
+          ]
+            |> T.concat
+            |> docBrackets
+        ,  funcDef "push"
                   [("a", "a"), (vectorOf n "a", "(Vector vector)")]
                   (["Vector", intToText (n + 1), ".Vector", " a"] |> T.concat)
         , recordAllocation (List.map makeField (range 0 n))
@@ -383,7 +495,13 @@ makePop n = if 1 < n
   then
     let makeField :: Int -> (Text, Text)
         makeField i = (fieldName i, fieldGetter i)
-    in  [ funcDef
+    in  [ [ "Separate a `"
+          , vectorOf n "a"
+          , "` into its last element and everything else."
+          ]
+            |> T.concat
+            |> docBrackets
+        , funcDef
           "pop"
           [(vectorOf n "a", "(Vector vector)")]
           (["( Vector", intToText (n - 1), ".Vector a", ", ", "a )"] |> T.concat
@@ -438,7 +556,9 @@ makeIndexToInt :: Int -> Text
 makeIndexToInt n =
   let toCase :: Int -> (Text, Text)
       toCase i = (indexOf i, intToText i)
-  in  [ funcDef "indexToInt" [("Index", "index")] "Int"
+  in  [ "Turn the `Index` into an `Int`"
+          |> docBrackets
+      , funcDef "indexToInt" [("Index", "index")] "Int"
       , caseStatement "index" (List.map toCase (range 0 (n - 1)))
       ]
         |> T.intercalate "\n"
@@ -448,7 +568,13 @@ makeIntToIndex :: Int -> Text
 makeIntToIndex n =
   let indexCase :: Int -> (Text, Text)
       indexCase i = (intToText i, T.append "Just " <| indexOf i)
-  in  [ funcDef "intToIndex" [("Int", "int")] "Maybe Index"
+  in  [ [ "Try and turn an `Int` into an `Index`, returning `Nothing` if the `Int` is above the maximum index of this `"
+        , vectorOf n "a"
+        , "`"
+        ]
+          |> T.concat
+          |> docBrackets
+      , funcDef "intToIndex" [("Int", "int")] "Maybe Index"
       , caseStatement "int" (List.map indexCase (range 0 (n - 1)))
       , ""
       , toCase ("_", "Nothing")
@@ -469,7 +595,24 @@ makeToListDefinition n =
 
 makeFromListDefinition :: Int -> Text
 makeFromListDefinition n =
-  [ funcDef "fromList"
+  [ ["Turn a `List a` into a `"
+    , vectorOf n  "a"
+    , "`. If there are not enough items in the `List a`, then this function returns `Nothing`. The extra items in the input list, if there are any, is returned as the first element in the output tuple."
+    , "\n"
+    , "\n    Vector3.fromList []"
+    , "\n    --> Nothing"
+    , "\n"
+    , "\n    Vector3.fromList [ 1 ]"
+    , "\n    --> Nothing"
+    , "\n"
+    , "\n    Vector3.fromList [ 5, 6, 7, 8 ]"
+    , "\n    --> Just ([ 8 ], Vector3.from3 5 6 7)"
+    , "\n"
+    , "\n"
+    ]
+    |> T.concat
+    |> docBrackets
+  , funcDef "fromList"
             [("List a", "items")]
             (["Maybe (List a, ", vectorOf n "a", ")"] |> T.concat)
     , indent 1 "Just (items, VectorModel)"
@@ -480,7 +623,24 @@ makeFromListDefinition n =
 
 makeFromListWithDefaultDefinition :: Int -> Text
 makeFromListWithDefaultDefinition n =
-  [ funcDef "fromListWithDefault"
+  [ ["Turn a `List a` into a `"
+    , vectorOf n  "a"
+    , "`. If there are not enough items in the `List a`, then fill in the remaining spots with a default value. The extra items in the input list, if there are any, is returned as the first element in the output tuple."
+    , "\n"
+    , "\n    Vector3.fromListWithDefault 1 []"
+    , "\n    --> ([] ,Vector3.from3 1 1 1)"
+    , "\n"
+    , "\n    Vector3.fromListWithDefault 2 [ 1 ]"
+    , "\n    --> ([], Vector3.from3 1 2 2)"
+    , "\n"
+    , "\n    Vector3.fromListWithDefault 2 [ 5, 6, 7, 8 ]"
+    , "\n    --> ([ 8 ], Vector3.from3 5 6 7)"
+    , "\n"
+    , "\n"
+    ]
+    |> T.concat
+    |> docBrackets
+  , funcDef "fromListWithDefault"
             [("a", "default"), ("List a", "items")]
             (["( List a,", (vectorOf n "a"), ")"] |> T.concat)
     , indent 1 "(default, items, VectorModel)"
@@ -497,7 +657,15 @@ makeFrom n =
 
       makeField :: Int -> (Text, Text)
       makeField i = (fieldName i, T.append "a" <| intToText i)
-  in  [ funcDef (T.append "from" <| intToText n)
+  in  [ [ "Make a `"
+        , vectorOf n "a"
+        , "` from "
+        , intToText n
+        , "elements"
+        ]
+          |> T.concat
+          |> docBrackets
+      , funcDef (T.append "from" <| intToText n)
                 (List.map toParam (range 0 (n - 1)))
                 (vectorOf n "a")
       , recordAllocation (List.map makeField (range 0 (n - 1)))
@@ -509,7 +677,13 @@ makeToIndexedListDefinition :: Int -> Text
 makeToIndexedListDefinition n =
   let toIndexTuple :: Int -> Text
       toIndexTuple i = ["( ", indexOf i, ", ", fieldGetter i, ")"] |> T.concat
-  in  [ funcDef "toIndexedList"
+  in  [ [ "Turn a `"
+        , vectorOf n "a"
+        , "` elm into a list, where each element is paired with its `Index`"
+        ]
+        |> T.concat
+        |> docBrackets
+      , funcDef "toIndexedList"
                 [(vectorOf n "a", "(Vector vector)")]
                 "List (Index, a)"
       , list (range 0 (n - 1) |> List.map toIndexTuple)
@@ -521,7 +695,13 @@ makeRepeatDefinition :: Int -> Text
 makeRepeatDefinition n =
   let makeField :: Int -> (Text, Text)
       makeField i = (fieldName i, "a")
-  in  [ funcDef "repeat" [("a", "a")] (vectorOf n "a")
+  in  [ [ "Make a `"
+        , vectorOf n "a"
+        , "` filled with just one item repeated over and over again."
+        ]
+          |> T.concat
+          |> docBrackets
+      , funcDef "repeat" [("a", "a")] (vectorOf n "a")
       , recordAllocation (List.map makeField (range 0 (n - 1)))
       , pipeIntoVector
       ]
@@ -531,7 +711,13 @@ makeInitializeDefinition :: Int -> Text
 makeInitializeDefinition n =
   let makeField :: Int -> (Text, Text)
       makeField i = (fieldName i, T.append "f " (intToText i))
-  in  [ funcDef "initializeFromInt" [("(Int -> a)", "f")] (vectorOf n "a")
+  in  [ ["Make a `"
+        , vectorOf n "a"
+        , "` using a function that takes an `Int`, representing the index"
+        ]
+          |> T.concat
+          |> docBrackets
+      , funcDef "initializeFromInt" [("(Int -> a)", "f")] (vectorOf n "a")
       , recordAllocation (List.map makeField (range 0 (n - 1)))
       , pipeIntoVector
       ]
@@ -541,7 +727,13 @@ makeInitializeFromIndexDefinition :: Int -> Text
 makeInitializeFromIndexDefinition n =
   let makeField :: Int -> (Text, Text)
       makeField i = (fieldName i, T.append "f " (indexOf i))
-  in  [ funcDef "initializeFromIndex" [("(Index -> a)", "f")] (vectorOf n "a")
+  in  [ ["Make a `"
+        , vectorOf n "a"
+        , "` using a function that takes an `Index`"
+        ]
+          |> T.concat
+          |> docBrackets
+      , funcDef "initializeFromIndex" [("(Index -> a)", "f")] (vectorOf n "a")
       , recordAllocation (List.map makeField (range 0 (n - 1)))
       , pipeIntoVector
       ]
@@ -553,9 +745,63 @@ makeMapDefinition :: Int -> Text
 makeMapDefinition n =
   let makeField :: Int -> (Text, Text)
       makeField i = (fieldName i, T.append "f " (fieldGetter i))
-  in  [ funcDef "map"
+  in  [ [ "Apply a function to every element in a `"
+        , vectorOf n "a"
+        , "`."
+        ]
+          |> T.concat
+          |> docBrackets
+      , funcDef "map"
                 [("(a -> b)", "f"), (vectorOf n "a", "(Vector vector)")]
                 (vectorOf n "b")
+      , recordAllocation (List.map makeField (range 0 (n - 1)))
+      , pipeIntoVector
+      ]
+        |> T.intercalate "\n"
+
+makeFoldrDefinition :: Int -> Text
+makeFoldrDefinition n =
+  [ [ "Reduce a `"
+    , vectorOf n "a"
+    , "` from the right."
+    ]
+      |> T.concat
+      |> docBrackets
+  , funcDef 
+    "foldr"
+    [ ("(a -> b -> b)", "f"), ("b", "start"), (vectorOf n "a", "vector") ]
+    "b"
+  , indent 1 "List.foldr f start <| toList vector"
+  ]
+    |> T.intercalate "\n"
+
+makeFoldlDefinition :: Int -> Text
+makeFoldlDefinition n =
+  [ [ "Reduce a `"
+  , vectorOf n "a"
+  , "` from the left."
+  ]
+    |> T.concat
+    |> docBrackets
+  , funcDef 
+    "foldl"
+    [ ("(a -> b -> b)", "f"), ("b", "start"), (vectorOf n "a", "vector") ]
+    "b"
+  , indent 1 "List.foldl f start <| toList vector"
+  ]
+    |> T.intercalate "\n"
+
+
+makeIndexedMapDefinition :: Int -> Text
+makeIndexedMapDefinition n =
+  let makeField :: Int -> (Text, Text)
+      makeField i =
+          (fieldName i, ["f", indexOf i, fieldGetter i] |> T.intercalate " ")
+  in  [ docBrackets "Apply a function on every element with its index as first argument"
+      ,  funcDef
+        "indexedMap"
+        [("(Index -> a -> b)", "f"), (vectorOf n "a", "(Vector vector)")]
+        (vectorOf n "b")
       , recordAllocation (List.map makeField (range 0 (n - 1)))
       , pipeIntoVector
       ]
@@ -576,6 +822,136 @@ makeMemberDefinition n =
       ]
 
       |> T.intercalate "\n"
+
+makeReverseDefinition :: Int -> Text
+makeReverseDefinition n =
+  let makeField :: Int -> (Text, Text)
+      makeField i = (fieldName i, fieldGetter (n - i - 1))
+  in  [ ["Reverse the order of the items in a `", vectorOf n "a", "`"]
+      |> T.concat
+      |> docBrackets
+      , funcDef "reverse" [(vectorOf n "a", "(Vector vector)")] (vectorOf n "a")
+      , recordAllocation (List.map makeField (range 0 (n - 1)))
+      , pipeIntoVector
+      ]
+        |> T.intercalate "\n"
+
+makeLengthDefinition :: Int -> Text
+makeLengthDefinition n =
+  [ ["The length of this vector type, which is", intToText n]
+    |> T.intercalate " "
+    |> docBrackets
+    , funcDef "length" [] "Int"
+    , indent 1 <| intToText n
+    ]
+    |> T.intercalate "\n"
+
+
+makeGroupDefinition :: Int -> Text
+makeGroupDefinition n =
+  let
+      makeCaseItem :: Int -> Text
+      makeCaseItem i =
+        T.append (makeDeconstructedItem i) ":: "
+
+      makeDeconstructedItem :: Int -> Text
+      makeDeconstructedItem i =
+        T.concat ["i", intToText i, " "]
+  in
+  [ [ [ "Break a `List a` down into groups of `"
+     , vectorOf n "a"
+     , "`. The output is a tuple, where the left side is a list of the remainder."
+  ] |> T.concat
+     , ""
+     , "    Vector3.group [ 1, 2, 3 ]"
+     , "    --> ([] , [ Vector3.from3 1 2 3 ])"
+     , ""
+     , "    Vector3.group [ 1, 2, 3, 4 ]"
+     , "    --> ([ 4 ] , [ Vector3.from3 1 2 3 ])"
+     , ""
+     , "    Vector3.group [ 1, 2, 3, 4, 5 ]"
+     , "    --> ([ 4, 5 ] , [ Vector3.from3 1 2 3 ])"
+     , ""
+     , "    Vector3.group [ 1, 2, 3, 4, 5, 6 ]"
+     , "    --> ([] , [ Vector3.from3 1 2 3, Vector3.from3 4 5 6 ])"
+     , ""
+    ]
+      |> T.intercalate "\n"
+      |> docBrackets
+  , funcDef 
+    "group"
+    [ ("List a", "items")]
+    (T.concat [ "(List a, List ( ", vectorOf n "a", " ) )" ])
+  , indent 1 "groupHelp items []"
+  , "\n"
+  , funcDef
+    "groupHelp"
+    [ ("List a", "remainingItems"), (T.concat [ "List ( ", vectorOf n "a", " )"], "output") ]
+    (T.concat [ "(List a, List ( ", vectorOf n "a", " ) )" ])
+  , caseStatement "remainingItems"
+    [ (
+       [ List.map makeCaseItem (range 0 (n - 1))
+        |> T.concat
+      , "rest"
+      ]
+        |> T.concat
+      , [ "groupHelp rest (from"
+        , intToText n
+        , " "
+        , List.map makeDeconstructedItem (range 0 (n - 1)) 
+            |> T.concat
+        , ":: output)"
+        ] 
+        |> T.concat 
+      )
+      , ("_", "(remainingItems, List.reverse output)")
+    ]
+  ]
+    |> T.intercalate "\n"
+
+makeMap2Definition :: Int -> Text
+makeMap2Definition n =
+  let makeField :: Int -> (Text, Text)
+      makeField i =
+          ( fieldName i
+          , [fieldOf i "va", fieldOf i "vb"] |> T.intercalate " " |> T.append "f "
+          )
+  in  [ blankDocs
+      , funcDef
+        "map2"
+        [ ("(a -> b -> c)", "f")
+        , (vectorOf n "a" , unwrappedVector "va")
+        , (vectorOf n "b" , unwrappedVector "vb")
+        ]
+        (vectorOf n "c")
+      , recordAllocation (List.map makeField (range 0 (n - 1)))
+      , pipeIntoVector
+      ]
+        |> T.intercalate "\n"
+
+makeMap3Definition :: Int -> Text
+makeMap3Definition n =
+  let makeField :: Int -> (Text, Text)
+      makeField i =
+          ( fieldName i
+          , [fieldOf i "va", fieldOf i "vb", fieldOf i "vc"]
+            |> T.intercalate " "
+            |> T.append "f "
+          )
+  in  [ blankDocs
+      , funcDef
+        "map3"
+        [ ("(a -> b -> c -> d)", "f")
+        , (vectorOf n "a"      , unwrappedVector "va")
+        , (vectorOf n "b"      , unwrappedVector "vb")
+        , (vectorOf n "c"      , unwrappedVector "vc")
+        ]
+        (vectorOf n "d")
+      , recordAllocation (List.map makeField (range 0 (n - 1)))
+      , pipeIntoVector
+      ]
+        |> T.intercalate "\n"
+
 makeMap4Definition :: Int -> Text
 makeMap4Definition n =
   let makeField :: Int -> (Text, Text)
@@ -589,10 +965,10 @@ makeMap4Definition n =
       , funcDef
         "map4"
         [ ("(a -> b -> c -> d -> e)", "f")
-        , (vectorOf n "a"           , "va")
-        , (vectorOf n "b"           , "vb")
-        , (vectorOf n "c"           , "vc")
-        , (vectorOf n "d"           , "vd")
+        , (vectorOf n "a"           , unwrappedVector "va")
+        , (vectorOf n "b"           , unwrappedVector "vb")
+        , (vectorOf n "c"           , unwrappedVector "vc")
+        , (vectorOf n "d"           , unwrappedVector "vd")
         ]
         (vectorOf n "e")
       , recordAllocation (List.map makeField (range 0 (n - 1)))
@@ -618,11 +994,11 @@ makeMap5Definition n =
       , funcDef
         "map5"
         [ ("(a -> b -> c -> d -> e -> f)", "f")
-        , (vectorOf n "a"                , "va")
-        , (vectorOf n "b"                , "vb")
-        , (vectorOf n "c"                , "vc")
-        , (vectorOf n "d"                , "vd")
-        , (vectorOf n "e"                , "ve")
+        , (vectorOf n "a"                , unwrappedVector "va")
+        , (vectorOf n "b"                , unwrappedVector "vb")
+        , (vectorOf n "c"                , unwrappedVector "vc")
+        , (vectorOf n "d"                , unwrappedVector "vd")
+        , (vectorOf n "e"                , unwrappedVector "ve")
         ]
         (vectorOf n "f")
       , recordAllocation (List.map makeField (range 0 (n - 1)))
@@ -632,6 +1008,9 @@ makeMap5Definition n =
 
 -- HELPERS --
 
+unwrappedVector :: Text -> Text
+unwrappedVector vectorName = ["(Vector", vectorName, ")"] |> T.intercalate " "
+
 pipeIntoVector :: Text
 pipeIntoVector = indent 2 "|> Vector"
 
@@ -639,7 +1018,7 @@ blankDocs :: Text
 blankDocs = docBrackets ""
 
 docBrackets :: Text -> Text
-docBrackets docs = ["{-| ", docs, "-}"] |> T.concat
+docBrackets docs = ["{-| ", docs, " -}"] |> T.concat
 
 indexOf :: Int -> Text
 indexOf = T.append "Index" <. intToText

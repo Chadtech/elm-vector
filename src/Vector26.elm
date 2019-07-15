@@ -6,7 +6,11 @@ module Vector26 exposing
     , pop
     , uncons
     , cons
+    , foldr
+    , foldl
     , map
+    , indexedMap
+    , set
     , mapItem
     , toList
     , fromList
@@ -20,7 +24,13 @@ module Vector26 exposing
     , reverse
     , member
     , map5
+    , nextIndex
+    , previousIndex
     , map4
+    , map3
+    , map2
+    , length
+    , group
     , from26
     )
 
@@ -37,7 +47,7 @@ module Vector26 exposing
 
 # Index
 
-@docs Index, get, indexToInt, intToIndex
+@docs Index, get, set, indexToInt, intToIndex, nextIndex, previousIndex
 
 # Transform
 
@@ -64,10 +74,12 @@ import Vector25.Internal as Vector25
 import Util exposing (andAnother, andAnotherSafe, finishOffAndAnotherSafe)
 
 
+{-| A vector that contains exactly 26 elements -}
 type alias Vector26 a = 
     Vector26.Internal.Vector a
 
 
+{-| All the indices to a `Vector26 a`. There are exactly 26 of them. Its kind of like an `Int` except there is a finite amount of them. -}
 type Index
     = Index0
     | Index1
@@ -97,6 +109,173 @@ type Index
     | Index25
 
 
+{-| Given an index, get the next one. Unless its the last index in which case there is no next index (`Nothing`) -}
+nextIndex : Index -> Maybe Index
+nextIndex index =
+    case index of
+        Index0 ->
+            Just Index1
+
+        Index1 ->
+            Just Index2
+
+        Index2 ->
+            Just Index3
+
+        Index3 ->
+            Just Index4
+
+        Index4 ->
+            Just Index5
+
+        Index5 ->
+            Just Index6
+
+        Index6 ->
+            Just Index7
+
+        Index7 ->
+            Just Index8
+
+        Index8 ->
+            Just Index9
+
+        Index9 ->
+            Just Index10
+
+        Index10 ->
+            Just Index11
+
+        Index11 ->
+            Just Index12
+
+        Index12 ->
+            Just Index13
+
+        Index13 ->
+            Just Index14
+
+        Index14 ->
+            Just Index15
+
+        Index15 ->
+            Just Index16
+
+        Index16 ->
+            Just Index17
+
+        Index17 ->
+            Just Index18
+
+        Index18 ->
+            Just Index19
+
+        Index19 ->
+            Just Index20
+
+        Index20 ->
+            Just Index21
+
+        Index21 ->
+            Just Index22
+
+        Index22 ->
+            Just Index23
+
+        Index23 ->
+            Just Index24
+
+        Index24 ->
+            Just Index25
+
+        Index25 ->
+            Nothing
+
+
+{-| Given an index, get the previous one. Unless its the `0` index in which case there is no previous index (`Nothing`) -}
+previousIndex : Index -> Maybe Index
+previousIndex index =
+    case index of
+        Index0 ->
+            Nothing
+
+        Index1 ->
+            Just Index0
+
+        Index2 ->
+            Just Index1
+
+        Index3 ->
+            Just Index2
+
+        Index4 ->
+            Just Index3
+
+        Index5 ->
+            Just Index4
+
+        Index6 ->
+            Just Index5
+
+        Index7 ->
+            Just Index6
+
+        Index8 ->
+            Just Index7
+
+        Index9 ->
+            Just Index8
+
+        Index10 ->
+            Just Index9
+
+        Index11 ->
+            Just Index10
+
+        Index12 ->
+            Just Index11
+
+        Index13 ->
+            Just Index12
+
+        Index14 ->
+            Just Index13
+
+        Index15 ->
+            Just Index14
+
+        Index16 ->
+            Just Index15
+
+        Index17 ->
+            Just Index16
+
+        Index18 ->
+            Just Index17
+
+        Index19 ->
+            Just Index18
+
+        Index20 ->
+            Just Index19
+
+        Index21 ->
+            Just Index20
+
+        Index22 ->
+            Just Index21
+
+        Index23 ->
+            Just Index22
+
+        Index24 ->
+            Just Index23
+
+        Index25 ->
+            Just Index24
+
+
+{-| Get the item at that `Index` in a `Vector26 a` -}
 get : Index -> Vector26 a -> a
 get index (Vector vector) =
     case index of
@@ -179,6 +358,102 @@ get index (Vector vector) =
             vector.n25
 
 
+{-| Set the item at a specific index in a `Vector26 a` -}
+set : Index -> a -> Vector26 a -> Vector26 a
+set index a (Vector vector) =
+    case index of
+        Index0 ->
+            Vector { vector | n0 = a }
+
+        Index1 ->
+            Vector { vector | n1 = a }
+
+        Index2 ->
+            Vector { vector | n2 = a }
+
+        Index3 ->
+            Vector { vector | n3 = a }
+
+        Index4 ->
+            Vector { vector | n4 = a }
+
+        Index5 ->
+            Vector { vector | n5 = a }
+
+        Index6 ->
+            Vector { vector | n6 = a }
+
+        Index7 ->
+            Vector { vector | n7 = a }
+
+        Index8 ->
+            Vector { vector | n8 = a }
+
+        Index9 ->
+            Vector { vector | n9 = a }
+
+        Index10 ->
+            Vector { vector | n10 = a }
+
+        Index11 ->
+            Vector { vector | n11 = a }
+
+        Index12 ->
+            Vector { vector | n12 = a }
+
+        Index13 ->
+            Vector { vector | n13 = a }
+
+        Index14 ->
+            Vector { vector | n14 = a }
+
+        Index15 ->
+            Vector { vector | n15 = a }
+
+        Index16 ->
+            Vector { vector | n16 = a }
+
+        Index17 ->
+            Vector { vector | n17 = a }
+
+        Index18 ->
+            Vector { vector | n18 = a }
+
+        Index19 ->
+            Vector { vector | n19 = a }
+
+        Index20 ->
+            Vector { vector | n20 = a }
+
+        Index21 ->
+            Vector { vector | n21 = a }
+
+        Index22 ->
+            Vector { vector | n22 = a }
+
+        Index23 ->
+            Vector { vector | n23 = a }
+
+        Index24 ->
+            Vector { vector | n24 = a }
+
+        Index25 ->
+            Vector { vector | n25 = a }
+
+
+{-| Reduce a `Vector26 a` from the right. -}
+foldr : (a -> b -> b) -> b -> Vector26 a -> b
+foldr f start vector =
+    List.foldr f start <| toList vector
+
+
+{-| Reduce a `Vector26 a` from the left. -}
+foldl : (a -> b -> b) -> b -> Vector26 a -> b
+foldl f start vector =
+    List.foldl f start <| toList vector
+
+
+{-| Apply a function to every element in a `Vector26 a`. -}
 map : (a -> b) -> Vector26 a -> Vector26 b
 map f (Vector vector) =
     { n0 = f vector.n0
@@ -211,9 +486,108 @@ map f (Vector vector) =
         |> Vector
 
 
-{-| -}
+{-| Apply a function on every element with its index as first argument -}
+indexedMap : (Index -> a -> b) -> Vector26 a -> Vector26 b
+indexedMap f (Vector vector) =
+    { n0 = f Index0 vector.n0
+    , n1 = f Index1 vector.n1
+    , n2 = f Index2 vector.n2
+    , n3 = f Index3 vector.n3
+    , n4 = f Index4 vector.n4
+    , n5 = f Index5 vector.n5
+    , n6 = f Index6 vector.n6
+    , n7 = f Index7 vector.n7
+    , n8 = f Index8 vector.n8
+    , n9 = f Index9 vector.n9
+    , n10 = f Index10 vector.n10
+    , n11 = f Index11 vector.n11
+    , n12 = f Index12 vector.n12
+    , n13 = f Index13 vector.n13
+    , n14 = f Index14 vector.n14
+    , n15 = f Index15 vector.n15
+    , n16 = f Index16 vector.n16
+    , n17 = f Index17 vector.n17
+    , n18 = f Index18 vector.n18
+    , n19 = f Index19 vector.n19
+    , n20 = f Index20 vector.n20
+    , n21 = f Index21 vector.n21
+    , n22 = f Index22 vector.n22
+    , n23 = f Index23 vector.n23
+    , n24 = f Index24 vector.n24
+    , n25 = f Index25 vector.n25
+    }
+        |> Vector
+
+
+{-|  -}
+map2 : (a -> b -> c) -> Vector26 a -> Vector26 b -> Vector26 c
+map2 f (Vector va ) (Vector vb ) =
+    { n0 = f va.n0 vb.n0
+    , n1 = f va.n1 vb.n1
+    , n2 = f va.n2 vb.n2
+    , n3 = f va.n3 vb.n3
+    , n4 = f va.n4 vb.n4
+    , n5 = f va.n5 vb.n5
+    , n6 = f va.n6 vb.n6
+    , n7 = f va.n7 vb.n7
+    , n8 = f va.n8 vb.n8
+    , n9 = f va.n9 vb.n9
+    , n10 = f va.n10 vb.n10
+    , n11 = f va.n11 vb.n11
+    , n12 = f va.n12 vb.n12
+    , n13 = f va.n13 vb.n13
+    , n14 = f va.n14 vb.n14
+    , n15 = f va.n15 vb.n15
+    , n16 = f va.n16 vb.n16
+    , n17 = f va.n17 vb.n17
+    , n18 = f va.n18 vb.n18
+    , n19 = f va.n19 vb.n19
+    , n20 = f va.n20 vb.n20
+    , n21 = f va.n21 vb.n21
+    , n22 = f va.n22 vb.n22
+    , n23 = f va.n23 vb.n23
+    , n24 = f va.n24 vb.n24
+    , n25 = f va.n25 vb.n25
+    }
+        |> Vector
+
+
+{-|  -}
+map3 : (a -> b -> c -> d) -> Vector26 a -> Vector26 b -> Vector26 c -> Vector26 d
+map3 f (Vector va ) (Vector vb ) (Vector vc ) =
+    { n0 = f va.n0 vb.n0 vc.n0
+    , n1 = f va.n1 vb.n1 vc.n1
+    , n2 = f va.n2 vb.n2 vc.n2
+    , n3 = f va.n3 vb.n3 vc.n3
+    , n4 = f va.n4 vb.n4 vc.n4
+    , n5 = f va.n5 vb.n5 vc.n5
+    , n6 = f va.n6 vb.n6 vc.n6
+    , n7 = f va.n7 vb.n7 vc.n7
+    , n8 = f va.n8 vb.n8 vc.n8
+    , n9 = f va.n9 vb.n9 vc.n9
+    , n10 = f va.n10 vb.n10 vc.n10
+    , n11 = f va.n11 vb.n11 vc.n11
+    , n12 = f va.n12 vb.n12 vc.n12
+    , n13 = f va.n13 vb.n13 vc.n13
+    , n14 = f va.n14 vb.n14 vc.n14
+    , n15 = f va.n15 vb.n15 vc.n15
+    , n16 = f va.n16 vb.n16 vc.n16
+    , n17 = f va.n17 vb.n17 vc.n17
+    , n18 = f va.n18 vb.n18 vc.n18
+    , n19 = f va.n19 vb.n19 vc.n19
+    , n20 = f va.n20 vb.n20 vc.n20
+    , n21 = f va.n21 vb.n21 vc.n21
+    , n22 = f va.n22 vb.n22 vc.n22
+    , n23 = f va.n23 vb.n23 vc.n23
+    , n24 = f va.n24 vb.n24 vc.n24
+    , n25 = f va.n25 vb.n25 vc.n25
+    }
+        |> Vector
+
+
+{-|  -}
 map4 : (a -> b -> c -> d -> e) -> Vector26 a -> Vector26 b -> Vector26 c -> Vector26 d -> Vector26 e
-map4 f va vb vc vd =
+map4 f (Vector va ) (Vector vb ) (Vector vc ) (Vector vd ) =
     { n0 = f va.n0 vb.n0 vc.n0 vd.n0
     , n1 = f va.n1 vb.n1 vc.n1 vd.n1
     , n2 = f va.n2 vb.n2 vc.n2 vd.n2
@@ -244,9 +618,9 @@ map4 f va vb vc vd =
         |> Vector
 
 
-{-| -}
+{-|  -}
 map5 : (a -> b -> c -> d -> e -> f) -> Vector26 a -> Vector26 b -> Vector26 c -> Vector26 d -> Vector26 e -> Vector26 f
-map5 f va vb vc vd ve =
+map5 f (Vector va ) (Vector vb ) (Vector vc ) (Vector vd ) (Vector ve ) =
     { n0 = f va.n0 vb.n0 vc.n0 vd.n0 ve.n0
     , n1 = f va.n1 vb.n1 vc.n1 vd.n1 ve.n1
     , n2 = f va.n2 vb.n2 vc.n2 vd.n2 ve.n2
@@ -277,6 +651,7 @@ map5 f va vb vc vd ve =
         |> Vector
 
 
+{-| Transform just one particular item at a particular `Index` -}
 mapItem : Index -> (a -> a) -> Vector26 a -> Vector26 a
 mapItem index mapper (Vector vector) =
     case index of
@@ -359,7 +734,7 @@ mapItem index mapper (Vector vector) =
             Vector { vector | n25 = mapper vector.n25 }
 
 
-{-| Convert a `Vector26 a` into a `List a` of length 26-}
+{-| Convert a `Vector26 a` into a `List a` of length 26 -}
 toList : Vector26 a -> List a
 toList (Vector vector) =
     [ vector.n0
@@ -391,6 +766,18 @@ toList (Vector vector) =
     ]
 
 
+{-| Turn a `List a` into a `Vector26 a`. If there are not enough items in the `List a`, then this function returns `Nothing`. The extra items in the input list, if there are any, is returned as the first element in the output tuple.
+
+    Vector3.fromList []
+    --> Nothing
+
+    Vector3.fromList [ 1 ]
+    --> Nothing
+
+    Vector3.fromList [ 5, 6, 7, 8 ]
+    --> Just ([ 8 ], Vector3.from3 5 6 7)
+
+ -}
 fromList : List a -> Maybe (List a, Vector26 a)
 fromList items =
     Just (items, VectorModel)
@@ -424,6 +811,18 @@ fromList items =
         |> Maybe.map (Tuple.mapSecond Vector)
 
 
+{-| Turn a `List a` into a `Vector26 a`. If there are not enough items in the `List a`, then fill in the remaining spots with a default value. The extra items in the input list, if there are any, is returned as the first element in the output tuple.
+
+    Vector3.fromListWithDefault 1 []
+    --> ([] ,Vector3.from3 1 1 1)
+
+    Vector3.fromListWithDefault 2 [ 1 ]
+    --> ([], Vector3.from3 1 2 2)
+
+    Vector3.fromListWithDefault 2 [ 5, 6, 7, 8 ]
+    --> ([ 8 ], Vector3.from3 5 6 7)
+
+ -}
 fromListWithDefault : a -> List a -> ( List a,Vector26 a)
 fromListWithDefault default items =
     (default, items, VectorModel)
@@ -458,6 +857,7 @@ fromListWithDefault default items =
         |> Tuple.mapSecond Vector
 
 
+{-| Turn a `Vector26 a` elm into a list, where each element is paired with its `Index` -}
 toIndexedList : Vector26 a -> List (Index, a)
 toIndexedList (Vector vector) =
     [ ( Index0, vector.n0)
@@ -489,6 +889,7 @@ toIndexedList (Vector vector) =
     ]
 
 
+{-| Make a `Vector26 a` using a function that takes an `Int`, representing the index -}
 initializeFromInt : (Int -> a) -> Vector26 a
 initializeFromInt f =
     { n0 = f 0
@@ -521,6 +922,7 @@ initializeFromInt f =
         |> Vector
 
 
+{-| Make a `Vector26 a` using a function that takes an `Index` -}
 initializeFromIndex : (Index -> a) -> Vector26 a
 initializeFromIndex f =
     { n0 = f Index0
@@ -553,6 +955,7 @@ initializeFromIndex f =
         |> Vector
 
 
+{-| Make a `Vector26 a` filled with just one item repeated over and over again. -}
 repeat : a -> Vector26 a
 repeat a =
     { n0 = a
@@ -585,6 +988,7 @@ repeat a =
         |> Vector
 
 
+{-| Turn the `Index` into an `Int` -}
 indexToInt : Index -> Int
 indexToInt index =
     case index of
@@ -667,6 +1071,7 @@ indexToInt index =
             25
 
 
+{-| Try and turn an `Int` into an `Index`, returning `Nothing` if the `Int` is above the maximum index of this `Vector26 a` -}
 intToIndex : Int -> Maybe Index
 intToIndex int =
     case int of
@@ -752,6 +1157,7 @@ intToIndex int =
             Nothing
 
 
+{-| Make a `Vector26 a` from 26elements -}
 from26 : a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> Vector26 a
 from26 a0 a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 a18 a19 a20 a21 a22 a23 a24 a25 =
     { n0 = a0
@@ -784,7 +1190,7 @@ from26 a0 a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 a18 a19 a20
         |> Vector
 
 
-{-| See if a Vector26 a contains a value-}
+{-| See if a Vector26 a contains a value -}
 member : a -> Vector26 a -> Bool
 member a (Vector vector) =
     a == vector.n0
@@ -815,6 +1221,75 @@ member a (Vector vector) =
     ||     a == vector.n25
 
 
+{-| Reverse the order of the items in a `Vector26 a` -}
+reverse : Vector26 a -> Vector26 a
+reverse (Vector vector) =
+    { n0 = vector.n25
+    , n1 = vector.n24
+    , n2 = vector.n23
+    , n3 = vector.n22
+    , n4 = vector.n21
+    , n5 = vector.n20
+    , n6 = vector.n19
+    , n7 = vector.n18
+    , n8 = vector.n17
+    , n9 = vector.n16
+    , n10 = vector.n15
+    , n11 = vector.n14
+    , n12 = vector.n13
+    , n13 = vector.n12
+    , n14 = vector.n11
+    , n15 = vector.n10
+    , n16 = vector.n9
+    , n17 = vector.n8
+    , n18 = vector.n7
+    , n19 = vector.n6
+    , n20 = vector.n5
+    , n21 = vector.n4
+    , n22 = vector.n3
+    , n23 = vector.n2
+    , n24 = vector.n1
+    , n25 = vector.n0
+    }
+        |> Vector
+
+
+{-| The length of this vector type, which is 26 -}
+length : Int
+length =
+    26
+
+
+{-| Break a `List a` down into groups of `Vector26 a`. The output is a tuple, where the left side is a list of the remainder.
+
+    Vector3.group [ 1, 2, 3 ]
+    --> ([] , [ Vector3.from3 1 2 3 ])
+
+    Vector3.group [ 1, 2, 3, 4 ]
+    --> ([ 4 ] , [ Vector3.from3 1 2 3 ])
+
+    Vector3.group [ 1, 2, 3, 4, 5 ]
+    --> ([ 4, 5 ] , [ Vector3.from3 1 2 3 ])
+
+    Vector3.group [ 1, 2, 3, 4, 5, 6 ]
+    --> ([] , [ Vector3.from3 1 2 3, Vector3.from3 4 5 6 ])
+ -}
+group : List a -> (List a, List ( Vector26 a ) )
+group items =
+    groupHelp items []
+
+
+groupHelp : List a -> List ( Vector26 a ) -> (List a, List ( Vector26 a ) )
+groupHelp remainingItems output =
+    case remainingItems of
+        i0 :: i1 :: i2 :: i3 :: i4 :: i5 :: i6 :: i7 :: i8 :: i9 :: i10 :: i11 :: i12 :: i13 :: i14 :: i15 :: i16 :: i17 :: i18 :: i19 :: i20 :: i21 :: i22 :: i23 :: i24 :: i25 :: rest ->
+            groupHelp rest (from26 i0 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 i22 i23 i24 i25 :: output)
+
+        _ ->
+            (remainingItems, List.reverse output)
+
+
+{-| Add an element to the end of a `Vector26 a`, incrementing its size by 1 -}
 push : a -> Vector26 a -> Vector27.Vector a
 push a (Vector vector) =
     { n0 = vector.n0
@@ -848,6 +1323,7 @@ push a (Vector vector) =
         |> Vector27.Vector
 
 
+{-| Separate a `Vector26 a` into its last element and everything else. -}
 pop : Vector26 a -> ( Vector25.Vector a, a )
 pop (Vector vector) =
     (
@@ -882,7 +1358,7 @@ pop (Vector vector) =
     )
 
 
-{-| Split a `Vector26 a` into its first element and the rest-}
+{-| Split a `Vector26 a` into its first element and the rest -}
 uncons : Vector26 a -> ( a, Vector25.Vector a )
 uncons (Vector vector) =
     (vector.n0
@@ -915,7 +1391,7 @@ uncons (Vector vector) =
         |> Vector25.Vector    )
 
 
-{-| Add an element to the front of a vector, incrementing the vector size by 1-}
+{-| Add an element to the front of a vector, incrementing the vector size by 1 -}
 cons : a -> Vector26 a -> Vector27.Vector a
 cons a (Vector vector) =
     { n0 = a
