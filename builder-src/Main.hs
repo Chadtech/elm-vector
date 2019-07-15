@@ -149,6 +149,7 @@ makeModuleHeader n =
             , unconsImport n
             , consImport n
             , Just "map"
+            , Just "set"
             , Just "mapItem"
             , Just "toList"
             , Just "fromList"
