@@ -230,8 +230,8 @@ makeModuleDocs n =
     , "# Methods"
     , [ "@docs"
       , if 1 < n then " pop, uncons" else ""
-      , if 1 < n && n < 100 then ", " else ""
-      , if n < 100 then " push, cons" else ""
+      , if 1 < n && n < totalVectors then ", " else ""
+      , if n < totalVectors then " push, cons" else ""
       ]
       |> T.concat
     , "# Util"

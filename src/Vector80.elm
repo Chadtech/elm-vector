@@ -57,7 +57,7 @@ module Vector80 exposing
 
 # Methods
 
-@docs pop, uncons,  push, cons
+@docs pop, uncons
 
 # Util
 
