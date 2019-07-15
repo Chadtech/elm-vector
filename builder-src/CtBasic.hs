@@ -7,6 +7,7 @@ module CtBasic
   , (+)
   , (==)
   , (<)
+  , (&&)
   , require
   , Maybe(..)
   , Bool(..)
@@ -55,6 +56,7 @@ import           Prelude                        ( (-)
                                                 , (>>=)
                                                 , (++)
                                                 , (<)
+                                                , (&&)
                                                 , Maybe(..)
                                                 , Bool
                                                 , Int

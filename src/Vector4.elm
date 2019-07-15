@@ -4,8 +4,8 @@ module Vector4 exposing
     , get
     , push
     , pop
-    , shift
-    , unshift
+    , uncons
+    , cons
     , map
     , mapItem
     , toList
@@ -17,7 +17,45 @@ module Vector4 exposing
     , initializeFromIndex
     , indexToInt
     , intToIndex
+    , reverse
+    , member
+    , map5
+    , map4
+    , from4
     )
+
+
+{-| A vector of length 4
+
+# Vector4
+
+@docs Vector4
+
+# Creation
+
+@docs fromList, repeat, from4, fromListWithDefault, initializeFromInt, initializeFromIndex
+
+# Index
+
+@docs Index, get, indexToInt, intToIndex
+
+# Transform
+
+@docs map, mapItem, indexedMap, foldr, foldl, map2, map3, map4, map5
+
+# Lists
+
+@docs toList, toIndexedList
+
+# Methods
+
+@docs pop, uncons,  push, cons
+
+# Util
+
+@docs length, reverse, member, group
+
+-}
 
 
 import Vector4.Internal exposing (Vector(..), VectorModel)
@@ -63,6 +101,28 @@ map f (Vector vector) =
         |> Vector
 
 
+{-| -}
+map4 : (a -> b -> c -> d -> e) -> Vector4 a -> Vector4 b -> Vector4 c -> Vector4 d -> Vector4 e
+map4 f va vb vc vd =
+    { n0 = f va.n0 vb.n0 vc.n0 vd.n0
+    , n1 = f va.n1 vb.n1 vc.n1 vd.n1
+    , n2 = f va.n2 vb.n2 vc.n2 vd.n2
+    , n3 = f va.n3 vb.n3 vc.n3 vd.n3
+    }
+        |> Vector
+
+
+{-| -}
+map5 : (a -> b -> c -> d -> e -> f) -> Vector4 a -> Vector4 b -> Vector4 c -> Vector4 d -> Vector4 e -> Vector4 f
+map5 f va vb vc vd ve =
+    { n0 = f va.n0 vb.n0 vc.n0 vd.n0 ve.n0
+    , n1 = f va.n1 vb.n1 vc.n1 vd.n1 ve.n1
+    , n2 = f va.n2 vb.n2 vc.n2 vd.n2 ve.n2
+    , n3 = f va.n3 vb.n3 vc.n3 vd.n3 ve.n3
+    }
+        |> Vector
+
+
 mapItem : Index -> (a -> a) -> Vector4 a -> Vector4 a
 mapItem index mapper (Vector vector) =
     case index of
@@ -79,6 +139,7 @@ mapItem index mapper (Vector vector) =
             Vector { vector | n3 = mapper vector.n3 }
 
 
+{-| Convert a `Vector4 a` into a `List a` of length 4-}
 toList : Vector4 a -> List a
 toList (Vector vector) =
     [ vector.n0
@@ -185,6 +246,25 @@ intToIndex int =
             Nothing
 
 
+from4 : a -> a -> a -> a -> Vector4 a
+from4 a0 a1 a2 a3 =
+    { n0 = a0
+    , n1 = a1
+    , n2 = a2
+    , n3 = a3
+    }
+        |> Vector
+
+
+{-| See if a Vector4 a contains a value-}
+member : a -> Vector4 a -> Bool
+member a (Vector vector) =
+    a == vector.n0
+    ||     a == vector.n1
+    ||     a == vector.n2
+    ||     a == vector.n3
+
+
 push : a -> Vector4 a -> Vector5.Vector a
 push a (Vector vector) =
     { n0 = vector.n0
@@ -208,8 +288,9 @@ pop (Vector vector) =
     )
 
 
-shift : Vector4 a -> ( a, Vector3.Vector a )
-shift (Vector vector) =
+{-| Split a `Vector4 a` into its first element and the rest-}
+uncons : Vector4 a -> ( a, Vector3.Vector a )
+uncons (Vector vector) =
     (vector.n0
     ,    { n0 = vector.n1
     , n1 = vector.n2
@@ -218,8 +299,9 @@ shift (Vector vector) =
         |> Vector3.Vector    )
 
 
-unshift : a -> Vector4 a -> Vector5.Vector a
-unshift a (Vector vector) =
+{-| Add an element to the front of a vector, incrementing the vector size by 1-}
+cons : a -> Vector4 a -> Vector5.Vector a
+cons a (Vector vector) =
     { n0 = a
     , n1 = vector.n0
     , n2 = vector.n1

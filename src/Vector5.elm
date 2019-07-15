@@ -4,8 +4,8 @@ module Vector5 exposing
     , get
     , push
     , pop
-    , shift
-    , unshift
+    , uncons
+    , cons
     , map
     , mapItem
     , toList
@@ -17,7 +17,45 @@ module Vector5 exposing
     , initializeFromIndex
     , indexToInt
     , intToIndex
+    , reverse
+    , member
+    , map5
+    , map4
+    , from5
     )
+
+
+{-| A vector of length 5
+
+# Vector5
+
+@docs Vector5
+
+# Creation
+
+@docs fromList, repeat, from5, fromListWithDefault, initializeFromInt, initializeFromIndex
+
+# Index
+
+@docs Index, get, indexToInt, intToIndex
+
+# Transform
+
+@docs map, mapItem, indexedMap, foldr, foldl, map2, map3, map4, map5
+
+# Lists
+
+@docs toList, toIndexedList
+
+# Methods
+
+@docs pop, uncons,  push, cons
+
+# Util
+
+@docs length, reverse, member, group
+
+-}
 
 
 import Vector5.Internal exposing (Vector(..), VectorModel)
@@ -68,6 +106,30 @@ map f (Vector vector) =
         |> Vector
 
 
+{-| -}
+map4 : (a -> b -> c -> d -> e) -> Vector5 a -> Vector5 b -> Vector5 c -> Vector5 d -> Vector5 e
+map4 f va vb vc vd =
+    { n0 = f va.n0 vb.n0 vc.n0 vd.n0
+    , n1 = f va.n1 vb.n1 vc.n1 vd.n1
+    , n2 = f va.n2 vb.n2 vc.n2 vd.n2
+    , n3 = f va.n3 vb.n3 vc.n3 vd.n3
+    , n4 = f va.n4 vb.n4 vc.n4 vd.n4
+    }
+        |> Vector
+
+
+{-| -}
+map5 : (a -> b -> c -> d -> e -> f) -> Vector5 a -> Vector5 b -> Vector5 c -> Vector5 d -> Vector5 e -> Vector5 f
+map5 f va vb vc vd ve =
+    { n0 = f va.n0 vb.n0 vc.n0 vd.n0 ve.n0
+    , n1 = f va.n1 vb.n1 vc.n1 vd.n1 ve.n1
+    , n2 = f va.n2 vb.n2 vc.n2 vd.n2 ve.n2
+    , n3 = f va.n3 vb.n3 vc.n3 vd.n3 ve.n3
+    , n4 = f va.n4 vb.n4 vc.n4 vd.n4 ve.n4
+    }
+        |> Vector
+
+
 mapItem : Index -> (a -> a) -> Vector5 a -> Vector5 a
 mapItem index mapper (Vector vector) =
     case index of
@@ -87,6 +149,7 @@ mapItem index mapper (Vector vector) =
             Vector { vector | n4 = mapper vector.n4 }
 
 
+{-| Convert a `Vector5 a` into a `List a` of length 5-}
 toList : Vector5 a -> List a
 toList (Vector vector) =
     [ vector.n0
@@ -206,6 +269,27 @@ intToIndex int =
             Nothing
 
 
+from5 : a -> a -> a -> a -> a -> Vector5 a
+from5 a0 a1 a2 a3 a4 =
+    { n0 = a0
+    , n1 = a1
+    , n2 = a2
+    , n3 = a3
+    , n4 = a4
+    }
+        |> Vector
+
+
+{-| See if a Vector5 a contains a value-}
+member : a -> Vector5 a -> Bool
+member a (Vector vector) =
+    a == vector.n0
+    ||     a == vector.n1
+    ||     a == vector.n2
+    ||     a == vector.n3
+    ||     a == vector.n4
+
+
 push : a -> Vector5 a -> Vector6.Vector a
 push a (Vector vector) =
     { n0 = vector.n0
@@ -231,8 +315,9 @@ pop (Vector vector) =
     )
 
 
-shift : Vector5 a -> ( a, Vector4.Vector a )
-shift (Vector vector) =
+{-| Split a `Vector5 a` into its first element and the rest-}
+uncons : Vector5 a -> ( a, Vector4.Vector a )
+uncons (Vector vector) =
     (vector.n0
     ,    { n0 = vector.n1
     , n1 = vector.n2
@@ -242,8 +327,9 @@ shift (Vector vector) =
         |> Vector4.Vector    )
 
 
-unshift : a -> Vector5 a -> Vector6.Vector a
-unshift a (Vector vector) =
+{-| Add an element to the front of a vector, incrementing the vector size by 1-}
+cons : a -> Vector5 a -> Vector6.Vector a
+cons a (Vector vector) =
     { n0 = a
     , n1 = vector.n0
     , n2 = vector.n1

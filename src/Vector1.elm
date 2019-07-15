@@ -3,7 +3,7 @@ module Vector1 exposing
     , Index(..)
     , get
     , push
-    , unshift
+    , cons
     , map
     , mapItem
     , toList
@@ -15,7 +15,45 @@ module Vector1 exposing
     , initializeFromIndex
     , indexToInt
     , intToIndex
+    , reverse
+    , member
+    , map5
+    , map4
+    , from1
     )
+
+
+{-| A vector of length 1
+
+# Vector1
+
+@docs Vector1
+
+# Creation
+
+@docs fromList, repeat, from1, fromListWithDefault, initializeFromInt, initializeFromIndex
+
+# Index
+
+@docs Index, get, indexToInt, intToIndex
+
+# Transform
+
+@docs map, mapItem, indexedMap, foldr, foldl, map2, map3, map4, map5
+
+# Lists
+
+@docs toList, toIndexedList
+
+# Methods
+
+@docs push, cons
+
+# Util
+
+@docs length, reverse, member, group
+
+-}
 
 
 import Vector1.Internal exposing (Vector(..), VectorModel)
@@ -46,6 +84,22 @@ map f (Vector vector) =
         |> Vector
 
 
+{-| -}
+map4 : (a -> b -> c -> d -> e) -> Vector1 a -> Vector1 b -> Vector1 c -> Vector1 d -> Vector1 e
+map4 f va vb vc vd =
+    { n0 = f va.n0 vb.n0 vc.n0 vd.n0
+    }
+        |> Vector
+
+
+{-| -}
+map5 : (a -> b -> c -> d -> e -> f) -> Vector1 a -> Vector1 b -> Vector1 c -> Vector1 d -> Vector1 e -> Vector1 f
+map5 f va vb vc vd ve =
+    { n0 = f va.n0 vb.n0 vc.n0 vd.n0 ve.n0
+    }
+        |> Vector
+
+
 mapItem : Index -> (a -> a) -> Vector1 a -> Vector1 a
 mapItem index mapper (Vector vector) =
     case index of
@@ -53,6 +107,7 @@ mapItem index mapper (Vector vector) =
             Vector { vector | n0 = mapper vector.n0 }
 
 
+{-| Convert a `Vector1 a` into a `List a` of length 1-}
 toList : Vector1 a -> List a
 toList (Vector vector) =
     [ vector.n0
@@ -120,6 +175,19 @@ intToIndex int =
             Nothing
 
 
+from1 : a -> Vector1 a
+from1 a0 =
+    { n0 = a0
+    }
+        |> Vector
+
+
+{-| See if a Vector1 a contains a value-}
+member : a -> Vector1 a -> Bool
+member a (Vector vector) =
+    a == vector.n0
+
+
 push : a -> Vector1 a -> Vector2.Vector a
 push a (Vector vector) =
     { n0 = vector.n0
@@ -128,8 +196,9 @@ push a (Vector vector) =
         |> Vector2.Vector
 
 
-unshift : a -> Vector1 a -> Vector2.Vector a
-unshift a (Vector vector) =
+{-| Add an element to the front of a vector, incrementing the vector size by 1-}
+cons : a -> Vector1 a -> Vector2.Vector a
+cons a (Vector vector) =
     { n0 = a
     , n1 = vector.n0
     }

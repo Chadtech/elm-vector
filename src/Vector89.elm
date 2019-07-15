@@ -4,8 +4,8 @@ module Vector89 exposing
     , get
     , push
     , pop
-    , shift
-    , unshift
+    , uncons
+    , cons
     , map
     , mapItem
     , toList
@@ -17,7 +17,45 @@ module Vector89 exposing
     , initializeFromIndex
     , indexToInt
     , intToIndex
+    , reverse
+    , member
+    , map5
+    , map4
+    , from89
     )
+
+
+{-| A vector of length 89
+
+# Vector89
+
+@docs Vector89
+
+# Creation
+
+@docs fromList, repeat, from89, fromListWithDefault, initializeFromInt, initializeFromIndex
+
+# Index
+
+@docs Index, get, indexToInt, intToIndex
+
+# Transform
+
+@docs map, mapItem, indexedMap, foldr, foldl, map2, map3, map4, map5
+
+# Lists
+
+@docs toList, toIndexedList
+
+# Methods
+
+@docs pop, uncons,  push, cons
+
+# Util
+
+@docs length, reverse, member, group
+
+-}
 
 
 import Vector89.Internal exposing (Vector(..), VectorModel)
@@ -488,6 +526,198 @@ map f (Vector vector) =
         |> Vector
 
 
+{-| -}
+map4 : (a -> b -> c -> d -> e) -> Vector89 a -> Vector89 b -> Vector89 c -> Vector89 d -> Vector89 e
+map4 f va vb vc vd =
+    { n0 = f va.n0 vb.n0 vc.n0 vd.n0
+    , n1 = f va.n1 vb.n1 vc.n1 vd.n1
+    , n2 = f va.n2 vb.n2 vc.n2 vd.n2
+    , n3 = f va.n3 vb.n3 vc.n3 vd.n3
+    , n4 = f va.n4 vb.n4 vc.n4 vd.n4
+    , n5 = f va.n5 vb.n5 vc.n5 vd.n5
+    , n6 = f va.n6 vb.n6 vc.n6 vd.n6
+    , n7 = f va.n7 vb.n7 vc.n7 vd.n7
+    , n8 = f va.n8 vb.n8 vc.n8 vd.n8
+    , n9 = f va.n9 vb.n9 vc.n9 vd.n9
+    , n10 = f va.n10 vb.n10 vc.n10 vd.n10
+    , n11 = f va.n11 vb.n11 vc.n11 vd.n11
+    , n12 = f va.n12 vb.n12 vc.n12 vd.n12
+    , n13 = f va.n13 vb.n13 vc.n13 vd.n13
+    , n14 = f va.n14 vb.n14 vc.n14 vd.n14
+    , n15 = f va.n15 vb.n15 vc.n15 vd.n15
+    , n16 = f va.n16 vb.n16 vc.n16 vd.n16
+    , n17 = f va.n17 vb.n17 vc.n17 vd.n17
+    , n18 = f va.n18 vb.n18 vc.n18 vd.n18
+    , n19 = f va.n19 vb.n19 vc.n19 vd.n19
+    , n20 = f va.n20 vb.n20 vc.n20 vd.n20
+    , n21 = f va.n21 vb.n21 vc.n21 vd.n21
+    , n22 = f va.n22 vb.n22 vc.n22 vd.n22
+    , n23 = f va.n23 vb.n23 vc.n23 vd.n23
+    , n24 = f va.n24 vb.n24 vc.n24 vd.n24
+    , n25 = f va.n25 vb.n25 vc.n25 vd.n25
+    , n26 = f va.n26 vb.n26 vc.n26 vd.n26
+    , n27 = f va.n27 vb.n27 vc.n27 vd.n27
+    , n28 = f va.n28 vb.n28 vc.n28 vd.n28
+    , n29 = f va.n29 vb.n29 vc.n29 vd.n29
+    , n30 = f va.n30 vb.n30 vc.n30 vd.n30
+    , n31 = f va.n31 vb.n31 vc.n31 vd.n31
+    , n32 = f va.n32 vb.n32 vc.n32 vd.n32
+    , n33 = f va.n33 vb.n33 vc.n33 vd.n33
+    , n34 = f va.n34 vb.n34 vc.n34 vd.n34
+    , n35 = f va.n35 vb.n35 vc.n35 vd.n35
+    , n36 = f va.n36 vb.n36 vc.n36 vd.n36
+    , n37 = f va.n37 vb.n37 vc.n37 vd.n37
+    , n38 = f va.n38 vb.n38 vc.n38 vd.n38
+    , n39 = f va.n39 vb.n39 vc.n39 vd.n39
+    , n40 = f va.n40 vb.n40 vc.n40 vd.n40
+    , n41 = f va.n41 vb.n41 vc.n41 vd.n41
+    , n42 = f va.n42 vb.n42 vc.n42 vd.n42
+    , n43 = f va.n43 vb.n43 vc.n43 vd.n43
+    , n44 = f va.n44 vb.n44 vc.n44 vd.n44
+    , n45 = f va.n45 vb.n45 vc.n45 vd.n45
+    , n46 = f va.n46 vb.n46 vc.n46 vd.n46
+    , n47 = f va.n47 vb.n47 vc.n47 vd.n47
+    , n48 = f va.n48 vb.n48 vc.n48 vd.n48
+    , n49 = f va.n49 vb.n49 vc.n49 vd.n49
+    , n50 = f va.n50 vb.n50 vc.n50 vd.n50
+    , n51 = f va.n51 vb.n51 vc.n51 vd.n51
+    , n52 = f va.n52 vb.n52 vc.n52 vd.n52
+    , n53 = f va.n53 vb.n53 vc.n53 vd.n53
+    , n54 = f va.n54 vb.n54 vc.n54 vd.n54
+    , n55 = f va.n55 vb.n55 vc.n55 vd.n55
+    , n56 = f va.n56 vb.n56 vc.n56 vd.n56
+    , n57 = f va.n57 vb.n57 vc.n57 vd.n57
+    , n58 = f va.n58 vb.n58 vc.n58 vd.n58
+    , n59 = f va.n59 vb.n59 vc.n59 vd.n59
+    , n60 = f va.n60 vb.n60 vc.n60 vd.n60
+    , n61 = f va.n61 vb.n61 vc.n61 vd.n61
+    , n62 = f va.n62 vb.n62 vc.n62 vd.n62
+    , n63 = f va.n63 vb.n63 vc.n63 vd.n63
+    , n64 = f va.n64 vb.n64 vc.n64 vd.n64
+    , n65 = f va.n65 vb.n65 vc.n65 vd.n65
+    , n66 = f va.n66 vb.n66 vc.n66 vd.n66
+    , n67 = f va.n67 vb.n67 vc.n67 vd.n67
+    , n68 = f va.n68 vb.n68 vc.n68 vd.n68
+    , n69 = f va.n69 vb.n69 vc.n69 vd.n69
+    , n70 = f va.n70 vb.n70 vc.n70 vd.n70
+    , n71 = f va.n71 vb.n71 vc.n71 vd.n71
+    , n72 = f va.n72 vb.n72 vc.n72 vd.n72
+    , n73 = f va.n73 vb.n73 vc.n73 vd.n73
+    , n74 = f va.n74 vb.n74 vc.n74 vd.n74
+    , n75 = f va.n75 vb.n75 vc.n75 vd.n75
+    , n76 = f va.n76 vb.n76 vc.n76 vd.n76
+    , n77 = f va.n77 vb.n77 vc.n77 vd.n77
+    , n78 = f va.n78 vb.n78 vc.n78 vd.n78
+    , n79 = f va.n79 vb.n79 vc.n79 vd.n79
+    , n80 = f va.n80 vb.n80 vc.n80 vd.n80
+    , n81 = f va.n81 vb.n81 vc.n81 vd.n81
+    , n82 = f va.n82 vb.n82 vc.n82 vd.n82
+    , n83 = f va.n83 vb.n83 vc.n83 vd.n83
+    , n84 = f va.n84 vb.n84 vc.n84 vd.n84
+    , n85 = f va.n85 vb.n85 vc.n85 vd.n85
+    , n86 = f va.n86 vb.n86 vc.n86 vd.n86
+    , n87 = f va.n87 vb.n87 vc.n87 vd.n87
+    , n88 = f va.n88 vb.n88 vc.n88 vd.n88
+    }
+        |> Vector
+
+
+{-| -}
+map5 : (a -> b -> c -> d -> e -> f) -> Vector89 a -> Vector89 b -> Vector89 c -> Vector89 d -> Vector89 e -> Vector89 f
+map5 f va vb vc vd ve =
+    { n0 = f va.n0 vb.n0 vc.n0 vd.n0 ve.n0
+    , n1 = f va.n1 vb.n1 vc.n1 vd.n1 ve.n1
+    , n2 = f va.n2 vb.n2 vc.n2 vd.n2 ve.n2
+    , n3 = f va.n3 vb.n3 vc.n3 vd.n3 ve.n3
+    , n4 = f va.n4 vb.n4 vc.n4 vd.n4 ve.n4
+    , n5 = f va.n5 vb.n5 vc.n5 vd.n5 ve.n5
+    , n6 = f va.n6 vb.n6 vc.n6 vd.n6 ve.n6
+    , n7 = f va.n7 vb.n7 vc.n7 vd.n7 ve.n7
+    , n8 = f va.n8 vb.n8 vc.n8 vd.n8 ve.n8
+    , n9 = f va.n9 vb.n9 vc.n9 vd.n9 ve.n9
+    , n10 = f va.n10 vb.n10 vc.n10 vd.n10 ve.n10
+    , n11 = f va.n11 vb.n11 vc.n11 vd.n11 ve.n11
+    , n12 = f va.n12 vb.n12 vc.n12 vd.n12 ve.n12
+    , n13 = f va.n13 vb.n13 vc.n13 vd.n13 ve.n13
+    , n14 = f va.n14 vb.n14 vc.n14 vd.n14 ve.n14
+    , n15 = f va.n15 vb.n15 vc.n15 vd.n15 ve.n15
+    , n16 = f va.n16 vb.n16 vc.n16 vd.n16 ve.n16
+    , n17 = f va.n17 vb.n17 vc.n17 vd.n17 ve.n17
+    , n18 = f va.n18 vb.n18 vc.n18 vd.n18 ve.n18
+    , n19 = f va.n19 vb.n19 vc.n19 vd.n19 ve.n19
+    , n20 = f va.n20 vb.n20 vc.n20 vd.n20 ve.n20
+    , n21 = f va.n21 vb.n21 vc.n21 vd.n21 ve.n21
+    , n22 = f va.n22 vb.n22 vc.n22 vd.n22 ve.n22
+    , n23 = f va.n23 vb.n23 vc.n23 vd.n23 ve.n23
+    , n24 = f va.n24 vb.n24 vc.n24 vd.n24 ve.n24
+    , n25 = f va.n25 vb.n25 vc.n25 vd.n25 ve.n25
+    , n26 = f va.n26 vb.n26 vc.n26 vd.n26 ve.n26
+    , n27 = f va.n27 vb.n27 vc.n27 vd.n27 ve.n27
+    , n28 = f va.n28 vb.n28 vc.n28 vd.n28 ve.n28
+    , n29 = f va.n29 vb.n29 vc.n29 vd.n29 ve.n29
+    , n30 = f va.n30 vb.n30 vc.n30 vd.n30 ve.n30
+    , n31 = f va.n31 vb.n31 vc.n31 vd.n31 ve.n31
+    , n32 = f va.n32 vb.n32 vc.n32 vd.n32 ve.n32
+    , n33 = f va.n33 vb.n33 vc.n33 vd.n33 ve.n33
+    , n34 = f va.n34 vb.n34 vc.n34 vd.n34 ve.n34
+    , n35 = f va.n35 vb.n35 vc.n35 vd.n35 ve.n35
+    , n36 = f va.n36 vb.n36 vc.n36 vd.n36 ve.n36
+    , n37 = f va.n37 vb.n37 vc.n37 vd.n37 ve.n37
+    , n38 = f va.n38 vb.n38 vc.n38 vd.n38 ve.n38
+    , n39 = f va.n39 vb.n39 vc.n39 vd.n39 ve.n39
+    , n40 = f va.n40 vb.n40 vc.n40 vd.n40 ve.n40
+    , n41 = f va.n41 vb.n41 vc.n41 vd.n41 ve.n41
+    , n42 = f va.n42 vb.n42 vc.n42 vd.n42 ve.n42
+    , n43 = f va.n43 vb.n43 vc.n43 vd.n43 ve.n43
+    , n44 = f va.n44 vb.n44 vc.n44 vd.n44 ve.n44
+    , n45 = f va.n45 vb.n45 vc.n45 vd.n45 ve.n45
+    , n46 = f va.n46 vb.n46 vc.n46 vd.n46 ve.n46
+    , n47 = f va.n47 vb.n47 vc.n47 vd.n47 ve.n47
+    , n48 = f va.n48 vb.n48 vc.n48 vd.n48 ve.n48
+    , n49 = f va.n49 vb.n49 vc.n49 vd.n49 ve.n49
+    , n50 = f va.n50 vb.n50 vc.n50 vd.n50 ve.n50
+    , n51 = f va.n51 vb.n51 vc.n51 vd.n51 ve.n51
+    , n52 = f va.n52 vb.n52 vc.n52 vd.n52 ve.n52
+    , n53 = f va.n53 vb.n53 vc.n53 vd.n53 ve.n53
+    , n54 = f va.n54 vb.n54 vc.n54 vd.n54 ve.n54
+    , n55 = f va.n55 vb.n55 vc.n55 vd.n55 ve.n55
+    , n56 = f va.n56 vb.n56 vc.n56 vd.n56 ve.n56
+    , n57 = f va.n57 vb.n57 vc.n57 vd.n57 ve.n57
+    , n58 = f va.n58 vb.n58 vc.n58 vd.n58 ve.n58
+    , n59 = f va.n59 vb.n59 vc.n59 vd.n59 ve.n59
+    , n60 = f va.n60 vb.n60 vc.n60 vd.n60 ve.n60
+    , n61 = f va.n61 vb.n61 vc.n61 vd.n61 ve.n61
+    , n62 = f va.n62 vb.n62 vc.n62 vd.n62 ve.n62
+    , n63 = f va.n63 vb.n63 vc.n63 vd.n63 ve.n63
+    , n64 = f va.n64 vb.n64 vc.n64 vd.n64 ve.n64
+    , n65 = f va.n65 vb.n65 vc.n65 vd.n65 ve.n65
+    , n66 = f va.n66 vb.n66 vc.n66 vd.n66 ve.n66
+    , n67 = f va.n67 vb.n67 vc.n67 vd.n67 ve.n67
+    , n68 = f va.n68 vb.n68 vc.n68 vd.n68 ve.n68
+    , n69 = f va.n69 vb.n69 vc.n69 vd.n69 ve.n69
+    , n70 = f va.n70 vb.n70 vc.n70 vd.n70 ve.n70
+    , n71 = f va.n71 vb.n71 vc.n71 vd.n71 ve.n71
+    , n72 = f va.n72 vb.n72 vc.n72 vd.n72 ve.n72
+    , n73 = f va.n73 vb.n73 vc.n73 vd.n73 ve.n73
+    , n74 = f va.n74 vb.n74 vc.n74 vd.n74 ve.n74
+    , n75 = f va.n75 vb.n75 vc.n75 vd.n75 ve.n75
+    , n76 = f va.n76 vb.n76 vc.n76 vd.n76 ve.n76
+    , n77 = f va.n77 vb.n77 vc.n77 vd.n77 ve.n77
+    , n78 = f va.n78 vb.n78 vc.n78 vd.n78 ve.n78
+    , n79 = f va.n79 vb.n79 vc.n79 vd.n79 ve.n79
+    , n80 = f va.n80 vb.n80 vc.n80 vd.n80 ve.n80
+    , n81 = f va.n81 vb.n81 vc.n81 vd.n81 ve.n81
+    , n82 = f va.n82 vb.n82 vc.n82 vd.n82 ve.n82
+    , n83 = f va.n83 vb.n83 vc.n83 vd.n83 ve.n83
+    , n84 = f va.n84 vb.n84 vc.n84 vd.n84 ve.n84
+    , n85 = f va.n85 vb.n85 vc.n85 vd.n85 ve.n85
+    , n86 = f va.n86 vb.n86 vc.n86 vd.n86 ve.n86
+    , n87 = f va.n87 vb.n87 vc.n87 vd.n87 ve.n87
+    , n88 = f va.n88 vb.n88 vc.n88 vd.n88 ve.n88
+    }
+        |> Vector
+
+
 mapItem : Index -> (a -> a) -> Vector89 a -> Vector89 a
 mapItem index mapper (Vector vector) =
     case index of
@@ -759,6 +989,7 @@ mapItem index mapper (Vector vector) =
             Vector { vector | n88 = mapper vector.n88 }
 
 
+{-| Convert a `Vector89 a` into a `List a` of length 89-}
 toList : Vector89 a -> List a
 toList (Vector vector) =
     [ vector.n0
@@ -1970,6 +2201,195 @@ intToIndex int =
             Nothing
 
 
+from89 : a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> Vector89 a
+from89 a0 a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 a18 a19 a20 a21 a22 a23 a24 a25 a26 a27 a28 a29 a30 a31 a32 a33 a34 a35 a36 a37 a38 a39 a40 a41 a42 a43 a44 a45 a46 a47 a48 a49 a50 a51 a52 a53 a54 a55 a56 a57 a58 a59 a60 a61 a62 a63 a64 a65 a66 a67 a68 a69 a70 a71 a72 a73 a74 a75 a76 a77 a78 a79 a80 a81 a82 a83 a84 a85 a86 a87 a88 =
+    { n0 = a0
+    , n1 = a1
+    , n2 = a2
+    , n3 = a3
+    , n4 = a4
+    , n5 = a5
+    , n6 = a6
+    , n7 = a7
+    , n8 = a8
+    , n9 = a9
+    , n10 = a10
+    , n11 = a11
+    , n12 = a12
+    , n13 = a13
+    , n14 = a14
+    , n15 = a15
+    , n16 = a16
+    , n17 = a17
+    , n18 = a18
+    , n19 = a19
+    , n20 = a20
+    , n21 = a21
+    , n22 = a22
+    , n23 = a23
+    , n24 = a24
+    , n25 = a25
+    , n26 = a26
+    , n27 = a27
+    , n28 = a28
+    , n29 = a29
+    , n30 = a30
+    , n31 = a31
+    , n32 = a32
+    , n33 = a33
+    , n34 = a34
+    , n35 = a35
+    , n36 = a36
+    , n37 = a37
+    , n38 = a38
+    , n39 = a39
+    , n40 = a40
+    , n41 = a41
+    , n42 = a42
+    , n43 = a43
+    , n44 = a44
+    , n45 = a45
+    , n46 = a46
+    , n47 = a47
+    , n48 = a48
+    , n49 = a49
+    , n50 = a50
+    , n51 = a51
+    , n52 = a52
+    , n53 = a53
+    , n54 = a54
+    , n55 = a55
+    , n56 = a56
+    , n57 = a57
+    , n58 = a58
+    , n59 = a59
+    , n60 = a60
+    , n61 = a61
+    , n62 = a62
+    , n63 = a63
+    , n64 = a64
+    , n65 = a65
+    , n66 = a66
+    , n67 = a67
+    , n68 = a68
+    , n69 = a69
+    , n70 = a70
+    , n71 = a71
+    , n72 = a72
+    , n73 = a73
+    , n74 = a74
+    , n75 = a75
+    , n76 = a76
+    , n77 = a77
+    , n78 = a78
+    , n79 = a79
+    , n80 = a80
+    , n81 = a81
+    , n82 = a82
+    , n83 = a83
+    , n84 = a84
+    , n85 = a85
+    , n86 = a86
+    , n87 = a87
+    , n88 = a88
+    }
+        |> Vector
+
+
+{-| See if a Vector89 a contains a value-}
+member : a -> Vector89 a -> Bool
+member a (Vector vector) =
+    a == vector.n0
+    ||     a == vector.n1
+    ||     a == vector.n2
+    ||     a == vector.n3
+    ||     a == vector.n4
+    ||     a == vector.n5
+    ||     a == vector.n6
+    ||     a == vector.n7
+    ||     a == vector.n8
+    ||     a == vector.n9
+    ||     a == vector.n10
+    ||     a == vector.n11
+    ||     a == vector.n12
+    ||     a == vector.n13
+    ||     a == vector.n14
+    ||     a == vector.n15
+    ||     a == vector.n16
+    ||     a == vector.n17
+    ||     a == vector.n18
+    ||     a == vector.n19
+    ||     a == vector.n20
+    ||     a == vector.n21
+    ||     a == vector.n22
+    ||     a == vector.n23
+    ||     a == vector.n24
+    ||     a == vector.n25
+    ||     a == vector.n26
+    ||     a == vector.n27
+    ||     a == vector.n28
+    ||     a == vector.n29
+    ||     a == vector.n30
+    ||     a == vector.n31
+    ||     a == vector.n32
+    ||     a == vector.n33
+    ||     a == vector.n34
+    ||     a == vector.n35
+    ||     a == vector.n36
+    ||     a == vector.n37
+    ||     a == vector.n38
+    ||     a == vector.n39
+    ||     a == vector.n40
+    ||     a == vector.n41
+    ||     a == vector.n42
+    ||     a == vector.n43
+    ||     a == vector.n44
+    ||     a == vector.n45
+    ||     a == vector.n46
+    ||     a == vector.n47
+    ||     a == vector.n48
+    ||     a == vector.n49
+    ||     a == vector.n50
+    ||     a == vector.n51
+    ||     a == vector.n52
+    ||     a == vector.n53
+    ||     a == vector.n54
+    ||     a == vector.n55
+    ||     a == vector.n56
+    ||     a == vector.n57
+    ||     a == vector.n58
+    ||     a == vector.n59
+    ||     a == vector.n60
+    ||     a == vector.n61
+    ||     a == vector.n62
+    ||     a == vector.n63
+    ||     a == vector.n64
+    ||     a == vector.n65
+    ||     a == vector.n66
+    ||     a == vector.n67
+    ||     a == vector.n68
+    ||     a == vector.n69
+    ||     a == vector.n70
+    ||     a == vector.n71
+    ||     a == vector.n72
+    ||     a == vector.n73
+    ||     a == vector.n74
+    ||     a == vector.n75
+    ||     a == vector.n76
+    ||     a == vector.n77
+    ||     a == vector.n78
+    ||     a == vector.n79
+    ||     a == vector.n80
+    ||     a == vector.n81
+    ||     a == vector.n82
+    ||     a == vector.n83
+    ||     a == vector.n84
+    ||     a == vector.n85
+    ||     a == vector.n86
+    ||     a == vector.n87
+    ||     a == vector.n88
+
+
 push : a -> Vector89 a -> Vector90.Vector a
 push a (Vector vector) =
     { n0 = vector.n0
@@ -2163,8 +2583,9 @@ pop (Vector vector) =
     )
 
 
-shift : Vector89 a -> ( a, Vector88.Vector a )
-shift (Vector vector) =
+{-| Split a `Vector89 a` into its first element and the rest-}
+uncons : Vector89 a -> ( a, Vector88.Vector a )
+uncons (Vector vector) =
     (vector.n0
     ,    { n0 = vector.n1
     , n1 = vector.n2
@@ -2258,8 +2679,9 @@ shift (Vector vector) =
         |> Vector88.Vector    )
 
 
-unshift : a -> Vector89 a -> Vector90.Vector a
-unshift a (Vector vector) =
+{-| Add an element to the front of a vector, incrementing the vector size by 1-}
+cons : a -> Vector89 a -> Vector90.Vector a
+cons a (Vector vector) =
     { n0 = a
     , n1 = vector.n0
     , n2 = vector.n1

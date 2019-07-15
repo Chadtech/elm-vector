@@ -4,8 +4,8 @@ module Vector22 exposing
     , get
     , push
     , pop
-    , shift
-    , unshift
+    , uncons
+    , cons
     , map
     , mapItem
     , toList
@@ -17,7 +17,45 @@ module Vector22 exposing
     , initializeFromIndex
     , indexToInt
     , intToIndex
+    , reverse
+    , member
+    , map5
+    , map4
+    , from22
     )
+
+
+{-| A vector of length 22
+
+# Vector22
+
+@docs Vector22
+
+# Creation
+
+@docs fromList, repeat, from22, fromListWithDefault, initializeFromInt, initializeFromIndex
+
+# Index
+
+@docs Index, get, indexToInt, intToIndex
+
+# Transform
+
+@docs map, mapItem, indexedMap, foldr, foldl, map2, map3, map4, map5
+
+# Lists
+
+@docs toList, toIndexedList
+
+# Methods
+
+@docs pop, uncons,  push, cons
+
+# Util
+
+@docs length, reverse, member, group
+
+-}
 
 
 import Vector22.Internal exposing (Vector(..), VectorModel)
@@ -153,6 +191,64 @@ map f (Vector vector) =
         |> Vector
 
 
+{-| -}
+map4 : (a -> b -> c -> d -> e) -> Vector22 a -> Vector22 b -> Vector22 c -> Vector22 d -> Vector22 e
+map4 f va vb vc vd =
+    { n0 = f va.n0 vb.n0 vc.n0 vd.n0
+    , n1 = f va.n1 vb.n1 vc.n1 vd.n1
+    , n2 = f va.n2 vb.n2 vc.n2 vd.n2
+    , n3 = f va.n3 vb.n3 vc.n3 vd.n3
+    , n4 = f va.n4 vb.n4 vc.n4 vd.n4
+    , n5 = f va.n5 vb.n5 vc.n5 vd.n5
+    , n6 = f va.n6 vb.n6 vc.n6 vd.n6
+    , n7 = f va.n7 vb.n7 vc.n7 vd.n7
+    , n8 = f va.n8 vb.n8 vc.n8 vd.n8
+    , n9 = f va.n9 vb.n9 vc.n9 vd.n9
+    , n10 = f va.n10 vb.n10 vc.n10 vd.n10
+    , n11 = f va.n11 vb.n11 vc.n11 vd.n11
+    , n12 = f va.n12 vb.n12 vc.n12 vd.n12
+    , n13 = f va.n13 vb.n13 vc.n13 vd.n13
+    , n14 = f va.n14 vb.n14 vc.n14 vd.n14
+    , n15 = f va.n15 vb.n15 vc.n15 vd.n15
+    , n16 = f va.n16 vb.n16 vc.n16 vd.n16
+    , n17 = f va.n17 vb.n17 vc.n17 vd.n17
+    , n18 = f va.n18 vb.n18 vc.n18 vd.n18
+    , n19 = f va.n19 vb.n19 vc.n19 vd.n19
+    , n20 = f va.n20 vb.n20 vc.n20 vd.n20
+    , n21 = f va.n21 vb.n21 vc.n21 vd.n21
+    }
+        |> Vector
+
+
+{-| -}
+map5 : (a -> b -> c -> d -> e -> f) -> Vector22 a -> Vector22 b -> Vector22 c -> Vector22 d -> Vector22 e -> Vector22 f
+map5 f va vb vc vd ve =
+    { n0 = f va.n0 vb.n0 vc.n0 vd.n0 ve.n0
+    , n1 = f va.n1 vb.n1 vc.n1 vd.n1 ve.n1
+    , n2 = f va.n2 vb.n2 vc.n2 vd.n2 ve.n2
+    , n3 = f va.n3 vb.n3 vc.n3 vd.n3 ve.n3
+    , n4 = f va.n4 vb.n4 vc.n4 vd.n4 ve.n4
+    , n5 = f va.n5 vb.n5 vc.n5 vd.n5 ve.n5
+    , n6 = f va.n6 vb.n6 vc.n6 vd.n6 ve.n6
+    , n7 = f va.n7 vb.n7 vc.n7 vd.n7 ve.n7
+    , n8 = f va.n8 vb.n8 vc.n8 vd.n8 ve.n8
+    , n9 = f va.n9 vb.n9 vc.n9 vd.n9 ve.n9
+    , n10 = f va.n10 vb.n10 vc.n10 vd.n10 ve.n10
+    , n11 = f va.n11 vb.n11 vc.n11 vd.n11 ve.n11
+    , n12 = f va.n12 vb.n12 vc.n12 vd.n12 ve.n12
+    , n13 = f va.n13 vb.n13 vc.n13 vd.n13 ve.n13
+    , n14 = f va.n14 vb.n14 vc.n14 vd.n14 ve.n14
+    , n15 = f va.n15 vb.n15 vc.n15 vd.n15 ve.n15
+    , n16 = f va.n16 vb.n16 vc.n16 vd.n16 ve.n16
+    , n17 = f va.n17 vb.n17 vc.n17 vd.n17 ve.n17
+    , n18 = f va.n18 vb.n18 vc.n18 vd.n18 ve.n18
+    , n19 = f va.n19 vb.n19 vc.n19 vd.n19 ve.n19
+    , n20 = f va.n20 vb.n20 vc.n20 vd.n20 ve.n20
+    , n21 = f va.n21 vb.n21 vc.n21 vd.n21 ve.n21
+    }
+        |> Vector
+
+
 mapItem : Index -> (a -> a) -> Vector22 a -> Vector22 a
 mapItem index mapper (Vector vector) =
     case index of
@@ -223,6 +319,7 @@ mapItem index mapper (Vector vector) =
             Vector { vector | n21 = mapper vector.n21 }
 
 
+{-| Convert a `Vector22 a` into a `List a` of length 22-}
 toList : Vector22 a -> List a
 toList (Vector vector) =
     [ vector.n0
@@ -563,6 +660,61 @@ intToIndex int =
             Nothing
 
 
+from22 : a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> Vector22 a
+from22 a0 a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 a18 a19 a20 a21 =
+    { n0 = a0
+    , n1 = a1
+    , n2 = a2
+    , n3 = a3
+    , n4 = a4
+    , n5 = a5
+    , n6 = a6
+    , n7 = a7
+    , n8 = a8
+    , n9 = a9
+    , n10 = a10
+    , n11 = a11
+    , n12 = a12
+    , n13 = a13
+    , n14 = a14
+    , n15 = a15
+    , n16 = a16
+    , n17 = a17
+    , n18 = a18
+    , n19 = a19
+    , n20 = a20
+    , n21 = a21
+    }
+        |> Vector
+
+
+{-| See if a Vector22 a contains a value-}
+member : a -> Vector22 a -> Bool
+member a (Vector vector) =
+    a == vector.n0
+    ||     a == vector.n1
+    ||     a == vector.n2
+    ||     a == vector.n3
+    ||     a == vector.n4
+    ||     a == vector.n5
+    ||     a == vector.n6
+    ||     a == vector.n7
+    ||     a == vector.n8
+    ||     a == vector.n9
+    ||     a == vector.n10
+    ||     a == vector.n11
+    ||     a == vector.n12
+    ||     a == vector.n13
+    ||     a == vector.n14
+    ||     a == vector.n15
+    ||     a == vector.n16
+    ||     a == vector.n17
+    ||     a == vector.n18
+    ||     a == vector.n19
+    ||     a == vector.n20
+    ||     a == vector.n21
+
+
 push : a -> Vector22 a -> Vector23.Vector a
 push a (Vector vector) =
     { n0 = vector.n0
@@ -622,8 +774,9 @@ pop (Vector vector) =
     )
 
 
-shift : Vector22 a -> ( a, Vector21.Vector a )
-shift (Vector vector) =
+{-| Split a `Vector22 a` into its first element and the rest-}
+uncons : Vector22 a -> ( a, Vector21.Vector a )
+uncons (Vector vector) =
     (vector.n0
     ,    { n0 = vector.n1
     , n1 = vector.n2
@@ -650,8 +803,9 @@ shift (Vector vector) =
         |> Vector21.Vector    )
 
 
-unshift : a -> Vector22 a -> Vector23.Vector a
-unshift a (Vector vector) =
+{-| Add an element to the front of a vector, incrementing the vector size by 1-}
+cons : a -> Vector22 a -> Vector23.Vector a
+cons a (Vector vector) =
     { n0 = a
     , n1 = vector.n0
     , n2 = vector.n1
