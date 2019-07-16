@@ -38,7 +38,7 @@ vectors = range 1 totalVectors
 
 
 totalVectors :: Int
-totalVectors = 65
+totalVectors = 62
 
 makeInternalFile :: Int -> Text
 makeInternalFile n =

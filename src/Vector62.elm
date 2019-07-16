@@ -2,10 +2,8 @@ module Vector62 exposing
     ( Vector62 
     , Index(..)
     , get
-    , push
     , pop
     , uncons
-    , cons
     , foldr
     , foldl
     , map
@@ -59,7 +57,7 @@ module Vector62 exposing
 
 # Methods
 
-@docs pop, uncons,  push, cons
+@docs pop, uncons
 
 # Util
 
@@ -69,7 +67,6 @@ module Vector62 exposing
 
 
 import Vector62.Internal exposing (Vector62(..), VectorModel)
-import Vector63.Internal as Vector63
 import Vector61.Internal as Vector61
 import Util exposing (andAnother, andAnotherSafe, finishOffAndAnotherSafe)
 
@@ -2663,79 +2660,6 @@ groupHelp remainingItems output =
             (remainingItems, List.reverse output)
 
 
-{-| Add an element to the end of a `Vector62 a`, incrementing its size by 1
-
-    Vector4.push 4 (Vector4.from4 0 1 2 3)
-    --> Vector5.from5 0 1 2 3 4 -}
-push : a -> Vector62 a -> Vector63.Vector63 a
-push a (Vector vector) =
-    { n0 = vector.n0
-    , n1 = vector.n1
-    , n2 = vector.n2
-    , n3 = vector.n3
-    , n4 = vector.n4
-    , n5 = vector.n5
-    , n6 = vector.n6
-    , n7 = vector.n7
-    , n8 = vector.n8
-    , n9 = vector.n9
-    , n10 = vector.n10
-    , n11 = vector.n11
-    , n12 = vector.n12
-    , n13 = vector.n13
-    , n14 = vector.n14
-    , n15 = vector.n15
-    , n16 = vector.n16
-    , n17 = vector.n17
-    , n18 = vector.n18
-    , n19 = vector.n19
-    , n20 = vector.n20
-    , n21 = vector.n21
-    , n22 = vector.n22
-    , n23 = vector.n23
-    , n24 = vector.n24
-    , n25 = vector.n25
-    , n26 = vector.n26
-    , n27 = vector.n27
-    , n28 = vector.n28
-    , n29 = vector.n29
-    , n30 = vector.n30
-    , n31 = vector.n31
-    , n32 = vector.n32
-    , n33 = vector.n33
-    , n34 = vector.n34
-    , n35 = vector.n35
-    , n36 = vector.n36
-    , n37 = vector.n37
-    , n38 = vector.n38
-    , n39 = vector.n39
-    , n40 = vector.n40
-    , n41 = vector.n41
-    , n42 = vector.n42
-    , n43 = vector.n43
-    , n44 = vector.n44
-    , n45 = vector.n45
-    , n46 = vector.n46
-    , n47 = vector.n47
-    , n48 = vector.n48
-    , n49 = vector.n49
-    , n50 = vector.n50
-    , n51 = vector.n51
-    , n52 = vector.n52
-    , n53 = vector.n53
-    , n54 = vector.n54
-    , n55 = vector.n55
-    , n56 = vector.n56
-    , n57 = vector.n57
-    , n58 = vector.n58
-    , n59 = vector.n59
-    , n60 = vector.n60
-    , n61 = vector.n61
-    , n62 = a
-    }
-        |> Vector63.Vector
-
-
 {-| Separate a `Vector62 a` into its last element and everything else.
 
     Vector4.pop (Vector4.from4 0 1 2 3)
@@ -2880,76 +2804,3 @@ uncons (Vector vector) =
     , n60 = vector.n61
     }
         |> Vector61.Vector    )
-
-
-{-| Add an element to the front of a vector, incrementing the vector size by 1
-
-    Vector4.cons -1 (Vector4.from4 0 1 2 3)
-    --> Vector5.from5 -1 0 1 2 3 -}
-cons : a -> Vector62 a -> Vector63.Vector63 a
-cons a (Vector vector) =
-    { n0 = a
-    , n1 = vector.n0
-    , n2 = vector.n1
-    , n3 = vector.n2
-    , n4 = vector.n3
-    , n5 = vector.n4
-    , n6 = vector.n5
-    , n7 = vector.n6
-    , n8 = vector.n7
-    , n9 = vector.n8
-    , n10 = vector.n9
-    , n11 = vector.n10
-    , n12 = vector.n11
-    , n13 = vector.n12
-    , n14 = vector.n13
-    , n15 = vector.n14
-    , n16 = vector.n15
-    , n17 = vector.n16
-    , n18 = vector.n17
-    , n19 = vector.n18
-    , n20 = vector.n19
-    , n21 = vector.n20
-    , n22 = vector.n21
-    , n23 = vector.n22
-    , n24 = vector.n23
-    , n25 = vector.n24
-    , n26 = vector.n25
-    , n27 = vector.n26
-    , n28 = vector.n27
-    , n29 = vector.n28
-    , n30 = vector.n29
-    , n31 = vector.n30
-    , n32 = vector.n31
-    , n33 = vector.n32
-    , n34 = vector.n33
-    , n35 = vector.n34
-    , n36 = vector.n35
-    , n37 = vector.n36
-    , n38 = vector.n37
-    , n39 = vector.n38
-    , n40 = vector.n39
-    , n41 = vector.n40
-    , n42 = vector.n41
-    , n43 = vector.n42
-    , n44 = vector.n43
-    , n45 = vector.n44
-    , n46 = vector.n45
-    , n47 = vector.n46
-    , n48 = vector.n47
-    , n49 = vector.n48
-    , n50 = vector.n49
-    , n51 = vector.n50
-    , n52 = vector.n51
-    , n53 = vector.n52
-    , n54 = vector.n53
-    , n55 = vector.n54
-    , n56 = vector.n55
-    , n57 = vector.n56
-    , n58 = vector.n57
-    , n59 = vector.n58
-    , n60 = vector.n59
-    , n61 = vector.n60
-    , n62 = vector.n61
-    }
-        |> Vector63.Vector
