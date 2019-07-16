@@ -68,7 +68,7 @@ module Vector15 exposing
 -}
 
 
-import Vector15.Internal exposing (Vector(..), VectorModel)
+import Vector15.Internal exposing (Vector15(..), VectorModel)
 import Vector16.Internal as Vector16
 import Vector14.Internal as Vector14
 import Util exposing (andAnother, andAnotherSafe, finishOffAndAnotherSafe)
@@ -76,7 +76,7 @@ import Util exposing (andAnother, andAnotherSafe, finishOffAndAnotherSafe)
 
 {-| A vector that contains exactly 15 elements -}
 type alias Vector15 a = 
-    Vector15.Internal.Vector a
+    Vector15.Internal.Vector15 a
 
 
 {-| All the indices to a `Vector15 a`. There are exactly 15 of them. Its kind of like an `Int` except there is a finite amount of them. -}
@@ -719,7 +719,13 @@ indexToInt index =
             14
 
 
-{-| Try and turn an `Int` into an `Index`, returning `Nothing` if the `Int` is above the maximum index of this `Vector15 a` -}
+{-| Try and turn an `Int` into an `Index`, returning `Nothing` if the `Int` is above the maximum index, or below the zero index, of this `Vector15 a`
+
+        Vector5.intToIndex 4
+        --> Just Vector5.Index4
+
+        Vector3.intToIndex 4
+        --> Nothing -}
 intToIndex : Int -> Maybe Index
 intToIndex int =
     case int of
@@ -772,7 +778,7 @@ intToIndex int =
             Nothing
 
 
-{-| Make a `Vector15 a` from 15elements -}
+{-| Make a `Vector15 a` from 15 elements -}
 from15 : a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> Vector15 a
 from15 a0 a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 =
     { n0 = a0
@@ -871,8 +877,11 @@ groupHelp remainingItems output =
             (remainingItems, List.reverse output)
 
 
-{-| Add an element to the end of a `Vector15 a`, incrementing its size by 1 -}
-push : a -> Vector15 a -> Vector16.Vector a
+{-| Add an element to the end of a `Vector15 a`, incrementing its size by 1
+
+    Vector4.push 4 (Vector4.from4 0 1 2 3)
+    --> Vector5.from5 0 1 2 3 4 -}
+push : a -> Vector15 a -> Vector16.Vector16 a
 push a (Vector vector) =
     { n0 = vector.n0
     , n1 = vector.n1
@@ -894,8 +903,11 @@ push a (Vector vector) =
         |> Vector16.Vector
 
 
-{-| Separate a `Vector15 a` into its last element and everything else. -}
-pop : Vector15 a -> ( Vector14.Vector a, a )
+{-| Separate a `Vector15 a` into its last element and everything else.
+
+    Vector4.pop (Vector4.from4 0 1 2 3)
+    --> (Vector3.from3 0 1 2, 3) -}
+pop : Vector15 a -> ( Vector14.Vector14 a, a )
 pop (Vector vector) =
     (
     { n0 = vector.n0
@@ -918,8 +930,11 @@ pop (Vector vector) =
     )
 
 
-{-| Split a `Vector15 a` into its first element and the rest -}
-uncons : Vector15 a -> ( a, Vector14.Vector a )
+{-| Split a `Vector15 a` into its first element and the rest
+
+    Vector4.uncons (Vector4.from4 0 1 2 3)
+    --> (0, Vector3.from3 1 2 3) -}
+uncons : Vector15 a -> ( a, Vector14.Vector14 a )
 uncons (Vector vector) =
     (vector.n0
     ,    { n0 = vector.n1
@@ -940,8 +955,11 @@ uncons (Vector vector) =
         |> Vector14.Vector    )
 
 
-{-| Add an element to the front of a vector, incrementing the vector size by 1 -}
-cons : a -> Vector15 a -> Vector16.Vector a
+{-| Add an element to the front of a vector, incrementing the vector size by 1
+
+    Vector4.cons -1 (Vector4.from4 0 1 2 3)
+    --> Vector5.from5 -1 0 1 2 3 -}
+cons : a -> Vector15 a -> Vector16.Vector16 a
 cons a (Vector vector) =
     { n0 = a
     , n1 = vector.n0

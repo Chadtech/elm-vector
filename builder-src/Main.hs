@@ -139,7 +139,7 @@ makeInternalModuleHeader :: Int -> Text
 makeInternalModuleHeader n =
   [ ["module ", T.append "Vector" <| intToText n, ".Internal exposing"]
       |> T.concat
-    , ["( Vector(..)", comma "VectorModel", ")"]
+    , [ T.concat [ "( Vector", intToText n, "(..)"] , comma "VectorModel", ")"]
     |> List.map (indent 1)
     |> T.intercalate "\n"
     ]
@@ -248,7 +248,9 @@ makeImports n =
     importThisVectorModule m =
       [ "import Vector"
         , intToText m
-        , ".Internal exposing (Vector(..), VectorModel)"
+        , ".Internal exposing (Vector"
+        , intToText m
+        , "(..), VectorModel)"
         ]
         |> T.concat
   in
@@ -297,7 +299,7 @@ makeVectorDefinition n =
     , vectorOf n "a"
     , " = "
     , "\n"
-    , indent 1 (T.concat ["Vector", intToText n, ".Internal.Vector a"])
+    , indent 1 (T.concat ["Vector", intToText n, ".Internal.", vectorOf n "a"])
     ]
     |> T.concat
 
@@ -305,7 +307,8 @@ makeVectorDefinition n =
 
 makeInternalVectorDefinition :: Int -> Text
 makeInternalVectorDefinition n =
-  [ "type Vector a"
+  [ "type "
+    , vectorOf n "a"
     , "\n"
     , indent 1 "= Vector (VectorModel a)"
     , "\n\n\n"
@@ -456,14 +459,29 @@ makePush n = if n < totalVectors
     in  [ [ "Add an element to the end of a `"
           , vectorOf n "a"
           , "`, incrementing its size by 1"
+          , "\n"
+          , "\n    Vector4.push 4 (Vector4.from4 0 1 2 3)"
+          , "\n    --> Vector5.from5 0 1 2 3 4"
           ]
             |> T.concat
             |> docBrackets
         ,  funcDef "push"
                   [("a", "a"), (vectorOf n "a", "(Vector vector)")]
-                  (["Vector", intToText (n + 1), ".Vector", " a"] |> T.concat)
+                  (["Vector"
+                    , intToText (n + 1)
+                    , ".Vector"
+                    , intToText (n + 1)
+                    , " a"
+                    ] 
+                    |> T.concat
+                  )
         , recordAllocation (List.map makeField (range 0 n))
-        , ["|> Vector", (intToText (n + 1)), ".Vector"] |> T.concat |> indent 2
+        , ["|> Vector"
+        , (intToText (n + 1))
+        , ".Vector"
+        ] 
+          |> T.concat 
+          |> indent 2
         ]
         |> T.intercalate "\n"
         |> Just
@@ -476,11 +494,16 @@ makeCons n = if n < totalVectors
       makeField :: Int -> (Text, Text)
       makeField i = (fieldName i, if i == 0 then "a" else fieldGetter (i - 1))
     in
-      [ "Add an element to the front of a vector, incrementing the vector size by 1"
+      [ ["Add an element to the front of a vector, incrementing the vector size by 1"
+      , "\n"
+      , "\n    Vector4.cons -1 (Vector4.from4 0 1 2 3)"
+      , "\n    --> Vector5.from5 -1 0 1 2 3"
+      ]
+        |> T.concat
         |> docBrackets
       , funcDef "cons"
                 [("a", "a"), (vectorOf n "a", "(Vector vector)")]
-                (["Vector", intToText (n + 1), ".Vector", " a"] |> T.concat)
+                (["Vector", intToText (n + 1), ".Vector", intToText (n + 1), " a"] |> T.concat)
       , recordAllocation (List.map makeField (range 0 n))
       , ["|> Vector", (intToText (n + 1)), ".Vector"] |> T.concat |> indent 2
       ]
@@ -498,18 +521,30 @@ makePop n = if 1 < n
     in  [ [ "Separate a `"
           , vectorOf n "a"
           , "` into its last element and everything else."
+          , "\n"
+          , "\n    Vector4.pop (Vector4.from4 0 1 2 3)"
+          , "\n    --> (Vector3.from3 0 1 2, 3)"
           ]
             |> T.concat
             |> docBrackets
         , funcDef
           "pop"
           [(vectorOf n "a", "(Vector vector)")]
-          (["( Vector", intToText (n - 1), ".Vector a", ", ", "a )"] |> T.concat
+          (["( Vector"
+           , intToText (n - 1)
+           , ".Vector"
+           , intToText (n - 1)
+           , " a, a )"] |> T.concat
           )
         , [ indent 1 "(\n"
           , recordAllocation (List.map makeField (range 0 (n - 2)))
           , "\n"
-          , ["|> Vector", (intToText (n - 1)), ".Vector"] |> T.concat |> indent
+          , ["|> Vector"
+            , (intToText (n - 1))
+            , ".Vector"
+            ] 
+              |> T.concat 
+              |> indent
             2
           , "\n"
           , indent 1 <| comma <| fieldGetter (n - 1)
@@ -528,13 +563,23 @@ makeUncons n = if 1 < n
   then
     let makeField :: Int -> (Text, Text)
         makeField i = (fieldName (i - 1), fieldGetter i)
-    in  [ ["Split a `", vectorOf n "a", "` into its first element and the rest"]
+    in  [ ["Split a `", vectorOf n "a", "` into its first element and the rest"
+          , "\n"
+          , "\n    Vector4.uncons (Vector4.from4 0 1 2 3)"
+          , "\n    --> (0, Vector3.from3 1 2 3)"
+        ]
         |> T.concat
         |> docBrackets
         , funcDef
           "uncons"
           [(vectorOf n "a", "(Vector vector)")]
-          (["( a, ", "Vector", intToText (n - 1), ".Vector a", " )"] |> T.concat
+          (["( a, Vector"
+           , intToText (n - 1)
+           , ".Vector"
+           , intToText (n - 1)
+           , " a"
+           , " )"
+           ] |> T.concat
           )
         , [ indent 1 "("
           , fieldGetter 0
@@ -542,7 +587,12 @@ makeUncons n = if 1 < n
           , indent 1 ","
           , recordAllocation (List.map makeField (range 1 (n - 1)))
           , "\n"
-          , ["|> Vector", (intToText (n - 1)), ".Vector"] |> T.concat |> indent
+          , ["|> Vector"
+            , (intToText (n - 1))
+            , ".Vector"
+            ] 
+              |> T.concat 
+              |> indent
             2
           , indent 1 ")"
           ]
@@ -568,9 +618,15 @@ makeIntToIndex :: Int -> Text
 makeIntToIndex n =
   let indexCase :: Int -> (Text, Text)
       indexCase i = (intToText i, T.append "Just " <| indexOf i)
-  in  [ [ "Try and turn an `Int` into an `Index`, returning `Nothing` if the `Int` is above the maximum index of this `"
+  in  [ [ "Try and turn an `Int` into an `Index`, returning `Nothing` if the `Int` is above the maximum index, or below the zero index, of this `"
         , vectorOf n "a"
         , "`"
+        , "\n"
+        , "\n        Vector5.intToIndex 4"
+        , "\n        --> Just Vector5.Index4"
+        , "\n"
+        , "\n        Vector3.intToIndex 4"
+        , "\n        --> Nothing"
         ]
           |> T.concat
           |> docBrackets
@@ -661,7 +717,7 @@ makeFrom n =
         , vectorOf n "a"
         , "` from "
         , intToText n
-        , "elements"
+        , " elements"
         ]
           |> T.concat
           |> docBrackets

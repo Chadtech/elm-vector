@@ -68,7 +68,7 @@ module Vector45 exposing
 -}
 
 
-import Vector45.Internal exposing (Vector(..), VectorModel)
+import Vector45.Internal exposing (Vector45(..), VectorModel)
 import Vector46.Internal as Vector46
 import Vector44.Internal as Vector44
 import Util exposing (andAnother, andAnotherSafe, finishOffAndAnotherSafe)
@@ -76,7 +76,7 @@ import Util exposing (andAnother, andAnotherSafe, finishOffAndAnotherSafe)
 
 {-| A vector that contains exactly 45 elements -}
 type alias Vector45 a = 
-    Vector45.Internal.Vector a
+    Vector45.Internal.Vector45 a
 
 
 {-| All the indices to a `Vector45 a`. There are exactly 45 of them. Its kind of like an `Int` except there is a finite amount of them. -}
@@ -1679,7 +1679,13 @@ indexToInt index =
             44
 
 
-{-| Try and turn an `Int` into an `Index`, returning `Nothing` if the `Int` is above the maximum index of this `Vector45 a` -}
+{-| Try and turn an `Int` into an `Index`, returning `Nothing` if the `Int` is above the maximum index, or below the zero index, of this `Vector45 a`
+
+        Vector5.intToIndex 4
+        --> Just Vector5.Index4
+
+        Vector3.intToIndex 4
+        --> Nothing -}
 intToIndex : Int -> Maybe Index
 intToIndex int =
     case int of
@@ -1822,7 +1828,7 @@ intToIndex int =
             Nothing
 
 
-{-| Make a `Vector45 a` from 45elements -}
+{-| Make a `Vector45 a` from 45 elements -}
 from45 : a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> Vector45 a
 from45 a0 a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 a18 a19 a20 a21 a22 a23 a24 a25 a26 a27 a28 a29 a30 a31 a32 a33 a34 a35 a36 a37 a38 a39 a40 a41 a42 a43 a44 =
     { n0 = a0
@@ -2011,8 +2017,11 @@ groupHelp remainingItems output =
             (remainingItems, List.reverse output)
 
 
-{-| Add an element to the end of a `Vector45 a`, incrementing its size by 1 -}
-push : a -> Vector45 a -> Vector46.Vector a
+{-| Add an element to the end of a `Vector45 a`, incrementing its size by 1
+
+    Vector4.push 4 (Vector4.from4 0 1 2 3)
+    --> Vector5.from5 0 1 2 3 4 -}
+push : a -> Vector45 a -> Vector46.Vector46 a
 push a (Vector vector) =
     { n0 = vector.n0
     , n1 = vector.n1
@@ -2064,8 +2073,11 @@ push a (Vector vector) =
         |> Vector46.Vector
 
 
-{-| Separate a `Vector45 a` into its last element and everything else. -}
-pop : Vector45 a -> ( Vector44.Vector a, a )
+{-| Separate a `Vector45 a` into its last element and everything else.
+
+    Vector4.pop (Vector4.from4 0 1 2 3)
+    --> (Vector3.from3 0 1 2, 3) -}
+pop : Vector45 a -> ( Vector44.Vector44 a, a )
 pop (Vector vector) =
     (
     { n0 = vector.n0
@@ -2118,8 +2130,11 @@ pop (Vector vector) =
     )
 
 
-{-| Split a `Vector45 a` into its first element and the rest -}
-uncons : Vector45 a -> ( a, Vector44.Vector a )
+{-| Split a `Vector45 a` into its first element and the rest
+
+    Vector4.uncons (Vector4.from4 0 1 2 3)
+    --> (0, Vector3.from3 1 2 3) -}
+uncons : Vector45 a -> ( a, Vector44.Vector44 a )
 uncons (Vector vector) =
     (vector.n0
     ,    { n0 = vector.n1
@@ -2170,8 +2185,11 @@ uncons (Vector vector) =
         |> Vector44.Vector    )
 
 
-{-| Add an element to the front of a vector, incrementing the vector size by 1 -}
-cons : a -> Vector45 a -> Vector46.Vector a
+{-| Add an element to the front of a vector, incrementing the vector size by 1
+
+    Vector4.cons -1 (Vector4.from4 0 1 2 3)
+    --> Vector5.from5 -1 0 1 2 3 -}
+cons : a -> Vector45 a -> Vector46.Vector46 a
 cons a (Vector vector) =
     { n0 = a
     , n1 = vector.n0

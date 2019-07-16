@@ -1,10 +1,10 @@
 module Vector29.Internal exposing
-    ( Vector(..)
+    ( Vector29(..)
     , VectorModel
     )
 
 
-type Vector a
+type Vector29 a
     = Vector (VectorModel a)
 
 

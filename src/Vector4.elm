@@ -68,7 +68,7 @@ module Vector4 exposing
 -}
 
 
-import Vector4.Internal exposing (Vector(..), VectorModel)
+import Vector4.Internal exposing (Vector4(..), VectorModel)
 import Vector5.Internal as Vector5
 import Vector3.Internal as Vector3
 import Util exposing (andAnother, andAnotherSafe, finishOffAndAnotherSafe)
@@ -76,7 +76,7 @@ import Util exposing (andAnother, andAnotherSafe, finishOffAndAnotherSafe)
 
 {-| A vector that contains exactly 4 elements -}
 type alias Vector4 a = 
-    Vector4.Internal.Vector a
+    Vector4.Internal.Vector4 a
 
 
 {-| All the indices to a `Vector4 a`. There are exactly 4 of them. Its kind of like an `Int` except there is a finite amount of them. -}
@@ -367,7 +367,13 @@ indexToInt index =
             3
 
 
-{-| Try and turn an `Int` into an `Index`, returning `Nothing` if the `Int` is above the maximum index of this `Vector4 a` -}
+{-| Try and turn an `Int` into an `Index`, returning `Nothing` if the `Int` is above the maximum index, or below the zero index, of this `Vector4 a`
+
+        Vector5.intToIndex 4
+        --> Just Vector5.Index4
+
+        Vector3.intToIndex 4
+        --> Nothing -}
 intToIndex : Int -> Maybe Index
 intToIndex int =
     case int of
@@ -387,7 +393,7 @@ intToIndex int =
             Nothing
 
 
-{-| Make a `Vector4 a` from 4elements -}
+{-| Make a `Vector4 a` from 4 elements -}
 from4 : a -> a -> a -> a -> Vector4 a
 from4 a0 a1 a2 a3 =
     { n0 = a0
@@ -453,8 +459,11 @@ groupHelp remainingItems output =
             (remainingItems, List.reverse output)
 
 
-{-| Add an element to the end of a `Vector4 a`, incrementing its size by 1 -}
-push : a -> Vector4 a -> Vector5.Vector a
+{-| Add an element to the end of a `Vector4 a`, incrementing its size by 1
+
+    Vector4.push 4 (Vector4.from4 0 1 2 3)
+    --> Vector5.from5 0 1 2 3 4 -}
+push : a -> Vector4 a -> Vector5.Vector5 a
 push a (Vector vector) =
     { n0 = vector.n0
     , n1 = vector.n1
@@ -465,8 +474,11 @@ push a (Vector vector) =
         |> Vector5.Vector
 
 
-{-| Separate a `Vector4 a` into its last element and everything else. -}
-pop : Vector4 a -> ( Vector3.Vector a, a )
+{-| Separate a `Vector4 a` into its last element and everything else.
+
+    Vector4.pop (Vector4.from4 0 1 2 3)
+    --> (Vector3.from3 0 1 2, 3) -}
+pop : Vector4 a -> ( Vector3.Vector3 a, a )
 pop (Vector vector) =
     (
     { n0 = vector.n0
@@ -478,8 +490,11 @@ pop (Vector vector) =
     )
 
 
-{-| Split a `Vector4 a` into its first element and the rest -}
-uncons : Vector4 a -> ( a, Vector3.Vector a )
+{-| Split a `Vector4 a` into its first element and the rest
+
+    Vector4.uncons (Vector4.from4 0 1 2 3)
+    --> (0, Vector3.from3 1 2 3) -}
+uncons : Vector4 a -> ( a, Vector3.Vector3 a )
 uncons (Vector vector) =
     (vector.n0
     ,    { n0 = vector.n1
@@ -489,8 +504,11 @@ uncons (Vector vector) =
         |> Vector3.Vector    )
 
 
-{-| Add an element to the front of a vector, incrementing the vector size by 1 -}
-cons : a -> Vector4 a -> Vector5.Vector a
+{-| Add an element to the front of a vector, incrementing the vector size by 1
+
+    Vector4.cons -1 (Vector4.from4 0 1 2 3)
+    --> Vector5.from5 -1 0 1 2 3 -}
+cons : a -> Vector4 a -> Vector5.Vector5 a
 cons a (Vector vector) =
     { n0 = a
     , n1 = vector.n0

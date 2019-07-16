@@ -66,14 +66,14 @@ module Vector1 exposing
 -}
 
 
-import Vector1.Internal exposing (Vector(..), VectorModel)
+import Vector1.Internal exposing (Vector1(..), VectorModel)
 import Vector2.Internal as Vector2
 import Util exposing (andAnother, andAnotherSafe, finishOffAndAnotherSafe)
 
 
 {-| A vector that contains exactly 1 elements -}
 type alias Vector1 a = 
-    Vector1.Internal.Vector a
+    Vector1.Internal.Vector1 a
 
 
 {-| All the indices to a `Vector1 a`. There are exactly 1 of them. Its kind of like an `Int` except there is a finite amount of them. -}
@@ -269,7 +269,13 @@ indexToInt index =
             0
 
 
-{-| Try and turn an `Int` into an `Index`, returning `Nothing` if the `Int` is above the maximum index of this `Vector1 a` -}
+{-| Try and turn an `Int` into an `Index`, returning `Nothing` if the `Int` is above the maximum index, or below the zero index, of this `Vector1 a`
+
+        Vector5.intToIndex 4
+        --> Just Vector5.Index4
+
+        Vector3.intToIndex 4
+        --> Nothing -}
 intToIndex : Int -> Maybe Index
 intToIndex int =
     case int of
@@ -280,7 +286,7 @@ intToIndex int =
             Nothing
 
 
-{-| Make a `Vector1 a` from 1elements -}
+{-| Make a `Vector1 a` from 1 elements -}
 from1 : a -> Vector1 a
 from1 a0 =
     { n0 = a0
@@ -337,8 +343,11 @@ groupHelp remainingItems output =
             (remainingItems, List.reverse output)
 
 
-{-| Add an element to the end of a `Vector1 a`, incrementing its size by 1 -}
-push : a -> Vector1 a -> Vector2.Vector a
+{-| Add an element to the end of a `Vector1 a`, incrementing its size by 1
+
+    Vector4.push 4 (Vector4.from4 0 1 2 3)
+    --> Vector5.from5 0 1 2 3 4 -}
+push : a -> Vector1 a -> Vector2.Vector2 a
 push a (Vector vector) =
     { n0 = vector.n0
     , n1 = a
@@ -346,8 +355,11 @@ push a (Vector vector) =
         |> Vector2.Vector
 
 
-{-| Add an element to the front of a vector, incrementing the vector size by 1 -}
-cons : a -> Vector1 a -> Vector2.Vector a
+{-| Add an element to the front of a vector, incrementing the vector size by 1
+
+    Vector4.cons -1 (Vector4.from4 0 1 2 3)
+    --> Vector5.from5 -1 0 1 2 3 -}
+cons : a -> Vector1 a -> Vector2.Vector2 a
 cons a (Vector vector) =
     { n0 = a
     , n1 = vector.n0
