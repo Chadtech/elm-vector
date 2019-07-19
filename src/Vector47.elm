@@ -31,6 +31,7 @@ module Vector47 exposing
     , map2
     , length
     , group
+    , indices
     , from47
     )
 
@@ -47,7 +48,7 @@ module Vector47 exposing
 
 # Index
 
-@docs Index, get, set, indexToInt, intToIndex, nextIndex, previousIndex
+@docs Index, get, set, indices, indexToInt, intToIndex, nextIndex, previousIndex
 
 # Transform
 
@@ -2091,6 +2092,12 @@ groupHelp remainingItems output =
 
         _ ->
             (remainingItems, List.reverse output)
+
+
+{-| A list of all the indices, from 0 to 46 -}
+indices : Vector47 Index
+indices =
+    initializeFromIndex identity
 
 
 {-| Add an element to the end of a `Vector47 a`, incrementing its size by 1

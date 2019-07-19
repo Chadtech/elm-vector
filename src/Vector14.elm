@@ -31,6 +31,7 @@ module Vector14 exposing
     , map2
     , length
     , group
+    , indices
     , from14
     )
 
@@ -47,7 +48,7 @@ module Vector14 exposing
 
 # Index
 
-@docs Index, get, set, indexToInt, intToIndex, nextIndex, previousIndex
+@docs Index, get, set, indices, indexToInt, intToIndex, nextIndex, previousIndex
 
 # Transform
 
@@ -837,6 +838,12 @@ groupHelp remainingItems output =
 
         _ ->
             (remainingItems, List.reverse output)
+
+
+{-| A list of all the indices, from 0 to 13 -}
+indices : Vector14 Index
+indices =
+    initializeFromIndex identity
 
 
 {-| Add an element to the end of a `Vector14 a`, incrementing its size by 1

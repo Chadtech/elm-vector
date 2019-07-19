@@ -31,6 +31,7 @@ module Vector58 exposing
     , map2
     , length
     , group
+    , indices
     , from58
     )
 
@@ -47,7 +48,7 @@ module Vector58 exposing
 
 # Index
 
-@docs Index, get, set, indexToInt, intToIndex, nextIndex, previousIndex
+@docs Index, get, set, indices, indexToInt, intToIndex, nextIndex, previousIndex
 
 # Transform
 
@@ -2509,6 +2510,12 @@ groupHelp remainingItems output =
 
         _ ->
             (remainingItems, List.reverse output)
+
+
+{-| A list of all the indices, from 0 to 57 -}
+indices : Vector58 Index
+indices =
+    initializeFromIndex identity
 
 
 {-| Add an element to the end of a `Vector58 a`, incrementing its size by 1

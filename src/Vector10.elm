@@ -31,6 +31,7 @@ module Vector10 exposing
     , map2
     , length
     , group
+    , indices
     , from10
     )
 
@@ -47,7 +48,7 @@ module Vector10 exposing
 
 # Index
 
-@docs Index, get, set, indexToInt, intToIndex, nextIndex, previousIndex
+@docs Index, get, set, indices, indexToInt, intToIndex, nextIndex, previousIndex
 
 # Transform
 
@@ -685,6 +686,12 @@ groupHelp remainingItems output =
 
         _ ->
             (remainingItems, List.reverse output)
+
+
+{-| A list of all the indices, from 0 to 9 -}
+indices : Vector10 Index
+indices =
+    initializeFromIndex identity
 
 
 {-| Add an element to the end of a `Vector10 a`, incrementing its size by 1
