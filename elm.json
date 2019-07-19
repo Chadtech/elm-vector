@@ -3,7 +3,7 @@
     "name": "Chadtech/elm-vector",
     "summary": "Collection types of a fixed length",
     "license": "BSD-3-Clause",
-    "version": "3.0.1",
+    "version": "3.0.2",
     "exposed-modules": [
         "Vector1",
         "Vector2",
