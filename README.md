@@ -4,6 +4,8 @@ A vector is a collection type, kind of similar to a `List` or an `Array`, except
 
 This package exposes 59 vector modules, for vector types of length 1 to 60. Each module has an assortment of types and functions that make these vectors useful.
 
+[Heres a demo](https://ellie-app.com/686GT6WNpWva1
+
 # Background
 
 I have written this exact code many times:
@@ -33,7 +35,7 @@ type alias Board a =
     , lowerRight : a
     }
 ```
-Using this type would be a lot more difficult, but it would be a complete representation of the board that does not include any of these where `Nothing` cases that we know do not exist.
+Using this type would be a lot more difficult, but it would be a complete representation of the board that does not include any of these weird `Nothing` cases that we know do not exist.
 
 **Thats when I realized**
 - This type is really just a 2D vector.

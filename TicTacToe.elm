@@ -6,7 +6,24 @@ import Html.Grid as Grid
 import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes as Attrs
 import Html.Styled.Events as Events
-import Vector3 exposing (Vector3)
+import Vector3 exposing (Index(..), Vector3)
+
+
+
+-- MAIN --
+
+
+main : Program () Model Msg
+main =
+    Browser.sandbox
+        { init = initialModel
+        , view = Html.toUnstyled << view
+        , update = update
+        }
+
+
+
+-- TYPES --
 
 
 type alias Model =
@@ -26,6 +43,26 @@ type Spot
     | Taken Player
 
 
+type alias Coords =
+    { row : Index
+    , column : Index
+    }
+
+
+type Msg
+    = SquareClicked Coords
+    | PlayAgainClicked
+
+
+
+-- HELPERS --
+
+
+getAtCoords : Coords -> Vector3 (Vector3 Spot) -> Spot
+getAtCoords { row, column } =
+    Vector3.get column << Vector3.get row
+
+
 initialModel : Model
 initialModel =
     { board = Vector3.repeat (Vector3.repeat Empty)
@@ -39,37 +76,37 @@ mapBoard f model =
     { model | board = f model.board }
 
 
-setSquareToSpot :
-    Player
-    -> { row : Vector3.Index, column : Vector3.Index }
-    -> Vector3 (Vector3 Spot)
-    -> Vector3 (Vector3 Spot)
-setSquareToSpot player { row, column } board =
-    Vector3.mapItem row (Vector3.set column (Taken player)) board
+setSquareToSpot : Player -> Coords -> Vector3 (Vector3 Spot) -> Vector3 (Vector3 Spot)
+setSquareToSpot player { row, column } =
+    Vector3.mapItem row (Vector3.set column (Taken player))
 
 
 checkForWinConditions : Model -> Model
 checkForWinConditions model =
     { model
         | winner =
-            [ checkForHorizontalWin model.board 
+            [ checkForHorizontalWin model.board
             , checkForVerticalWin model.board
             , checkForFirstDiagonalWin model.board
+            , checkForSecondDiagonalWin model.board
             ]
                 |> firstJust
     }
 
 
-checkForFirstDiagonalWin : Vector3 (Vector3 Spot) -> Maybe Player
-checkForFirstDiagonalWin board =
+checkForSecondDiagonalWin : Vector3 (Vector3 Spot) -> Maybe Player
+checkForSecondDiagonalWin board =
     let
-        getAt : Vector3.Index -> Spot
-        getAt index =
-            Vector3.get index (Vector3.get index board)
+        getAt : Index -> Index -> Spot
+        getAt row column =
+            getAtCoords { row = row, column = column } board
 
         diagonal : Vector3 Spot
         diagonal =
-            Vector.initializeFromIndex getAt
+            Vector3.map2
+                getAt
+                Vector3.indices
+                (Vector3.reverse Vector3.indices)
 
         isDiagonal : Player -> Bool
         isDiagonal player =
@@ -77,8 +114,35 @@ checkForFirstDiagonalWin board =
     in
     if isDiagonal X then
         Just X
+
     else if isDiagonal O then
         Just O
+
+    else
+        Nothing
+
+
+checkForFirstDiagonalWin : Vector3 (Vector3 Spot) -> Maybe Player
+checkForFirstDiagonalWin board =
+    let
+        getAt : Index -> Spot
+        getAt index =
+            getAtCoords { row = index, column = index } board
+
+        diagonal : Vector3 Spot
+        diagonal =
+            Vector3.initializeFromIndex getAt
+
+        isDiagonal : Player -> Bool
+        isDiagonal player =
+            diagonal == Vector3.repeat (Taken player)
+    in
+    if isDiagonal X then
+        Just X
+
+    else if isDiagonal O then
+        Just O
+
     else
         Nothing
 
@@ -96,7 +160,7 @@ checkForHorizontalWin =
             if rowIsAll X then
                 Just X
 
-            else rowIsAll O then
+            else if rowIsAll O then
                 Just O
 
             else
@@ -108,12 +172,12 @@ checkForHorizontalWin =
 checkForVerticalWin : Vector3 (Vector3 Spot) -> Maybe Player
 checkForVerticalWin board =
     let
-        isThreeInAColumn : Vector3.Index -> Maybe Player -> Maybe Player
-        isThreeInAColumn columnIndex winnerState =
+        isThreeInAColumn : Index -> Maybe Player -> Maybe Player
+        isThreeInAColumn column winnerState =
             let
-                getFirstColumnOfRow : Vector3.Index -> Spot
-                getFirstColumnOfRow rowIndex =
-                    Vector3.get columnIndex <| Vector3.get rowIndex board
+                getFirstColumnOfRow : Index -> Spot
+                getFirstColumnOfRow row =
+                    getAtCoords { row = row, column = column } board
 
                 columnIsAll : Player -> Bool
                 columnIsAll player =
@@ -124,12 +188,12 @@ checkForVerticalWin board =
                 Just X
 
             else if columnIsAll O then
-                Just Y
+                Just O
 
             else
                 winnerState
     in
-    Vector3.foldr isThreeInAColumn Nothing (Vector.initializeFromIndex identity)
+    Vector3.foldr isThreeInAColumn Nothing Vector3.indices
 
 
 firstJust : List (Maybe a) -> Maybe a
@@ -158,8 +222,18 @@ toggleTurn model =
     }
 
 
-type Msg
-    = SquareClicked { row : Vector3.Index, column : Vector3.Index }
+playerToString : Player -> String
+playerToString player =
+    case player of
+        X ->
+            "X"
+
+        O ->
+            "O"
+
+
+
+-- UPDATE --
 
 
 update : Msg -> Model -> Model
@@ -171,18 +245,58 @@ update msg model =
                 |> mapBoard (setSquareToSpot model.turn coords)
                 |> checkForWinConditions
 
+        PlayAgainClicked ->
+            initialModel
+
+
+
+-- VIEW --
+
 
 view : Model -> Html Msg
 view model =
+    let
+        mainContent : List (Html Msg)
+        mainContent =
+            [ List.map rowView <| Vector3.toIndexedList model.board
+            , winView model.winner
+            ]
+                |> List.concat
+    in
     Grid.box
         [ borderTop3 (px 1) solid (hex "#000000")
         , display block
         , width (px 300)
         ]
-        (List.map rowView <| Vector3.toIndexedList model.board)
+        mainContent
 
 
-rowView : ( Vector3.Index, Vector3 Spot ) -> Html Msg
+winView : Maybe Player -> List (Html Msg)
+winView maybeWinner =
+    case maybeWinner of
+        Just winner ->
+            [ Grid.row
+                []
+                [ Grid.column
+                    []
+                    [ Html.text (playerToString winner ++ " wins!") ]
+                ]
+            , Grid.row
+                []
+                [ Grid.column
+                    []
+                    [ Html.button
+                        [ Events.onClick PlayAgainClicked ]
+                        [ Html.text "play again" ]
+                    ]
+                ]
+            ]
+
+        Nothing ->
+            []
+
+
+rowView : ( Index, Vector3 Spot ) -> Html Msg
 rowView ( rowIndex, column ) =
     Grid.row
         [ borderRight3 (px 1) solid (hex "#000000")
@@ -192,17 +306,17 @@ rowView ( rowIndex, column ) =
         (List.map (columnView rowIndex) <| Vector3.toIndexedList column)
 
 
-columnView : Vector3.Index -> ( Vector3.Index, Spot ) -> Grid.Column Msg
-columnView rowIndex ( columnIndex, spot ) =
+columnView : Index -> ( Index, Spot ) -> Grid.Column Msg
+columnView row ( column, spot ) =
     Grid.column
         [ borderLeft3 (px 1) solid (hex "#000000")
         , Grid.exactWidthColumn (px 100)
         , position relative
         ]
-        [ cellContent { row = rowIndex, column = columnIndex } spot ]
+        [ cellContent { row = row, column = column } spot ]
 
 
-cellContent : { row : Vector3.Index, column : Vector3.Index } -> Spot -> Html Msg
+cellContent : Coords -> Spot -> Html Msg
 cellContent coords spot =
     case spot of
         Empty ->
@@ -211,11 +325,12 @@ cellContent coords spot =
                 , Attrs.css
                     [ width (pct 100)
                     , height (pct 100)
+                    , cursor pointer
                     ]
                 ]
                 []
 
-        Taken player  ->
+        Taken player ->
             Grid.box
                 [ lineHeight (pct 100)
                 , width (pct 100)
@@ -224,14 +339,4 @@ cellContent coords spot =
                 , displayFlex
                 , justifyContent center
                 ]
-                [ Html.text <| playerToString player }
-
-
-
-main : Program () Model Msg
-main =
-    Browser.sandbox
-        { init = initialModel
-        , view = Html.toUnstyled << view
-        , update = update
-        }
+                [ Html.text <| playerToString player ]
