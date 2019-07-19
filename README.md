@@ -4,7 +4,7 @@ A vector is a collection type, kind of similar to a `List` or an `Array`, except
 
 This package exposes 59 vector modules, for vector types of length 1 to 60. Each module has an assortment of types and functions that make these vectors useful.
 
-[Heres a demo](https://ellie-app.com/686GT6WNpWva1
+[Heres a demo](https://ellie-app.com/686GT6WNpWva1)
 
 # Background
 
