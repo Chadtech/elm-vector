@@ -8,6 +8,6 @@ type Vector1 a
     = Vector (VectorModel a)
 
 
-type alias VectorModel a  =
+type alias VectorModel a =
     { n0 : a
     }
